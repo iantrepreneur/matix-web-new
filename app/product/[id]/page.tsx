@@ -6,13 +6,6 @@ import { Card } from '@/components/ui/card';
 import { ArrowLeft, Star, ShoppingCart, Heart, Share2, Plus, Minus, Phone, Truck, Clock, Shield, Award, MapPin } from 'lucide-react';
 import Link from 'next/link';
 
-export async function generateStaticParams() {
-  // Générer les paramètres statiques pour les IDs de produits 1 à 30
-  return Array.from({ length: 30 }, (_, i) => ({
-    id: (i + 1).toString()
-  }));
-}
-
 export default function ProductDetail() {
   const [selectedImage, setSelectedImage] = useState(0);
   const [quantity, setQuantity] = useState(1);
