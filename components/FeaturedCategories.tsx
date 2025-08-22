@@ -4,18 +4,12 @@ import { Card } from '@/components/ui/card';
 
 export default function FeaturedCategories() {
   const categories = [
-    { name: "Poulets Chair", icon: "🐔", count: "250+ produits" },
     { name: "Poussins", icon: "🐥", count: "120+ produits" },
     { name: "Œufs à Couver", icon: "🥚", count: "80+ produits" },
     { name: "Poulaillers", icon: "🏠", count: "90+ produits" },
-    { name: "Mangeoires", icon: "🍽️", count: "150+ produits" },
-    { name: "Abreuvoirs", icon: "💧", count: "110+ produits" },
     { name: "Aliments", icon: "🌾", count: "200+ produits" },
     { name: "Vaccins", icon: "💉", count: "60+ produits" },
-    { name: "Hygiène", icon: "🧽", count: "85+ produits" },
     { name: "Équipements", icon: "⚡", count: "180+ produits" },
-    { name: "Transport", icon: "🚚", count: "45+ produits" },
-    { name: "Formation", icon: "📚", count: "25+ cours" }
   ];
 
   return (
