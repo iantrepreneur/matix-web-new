@@ -5,6 +5,8 @@ import { useState, useEffect } from 'react';
 
 export default function HeroSection() {
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [timeLeft1, setTimeLeft1] = useState({ days: 2, hours: 15, minutes: 30, seconds: 45 });
+  const [timeLeft2] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
 
   const slides = [
     {
@@ -15,35 +17,40 @@ export default function HeroSection() {
     }
   ];
 
-  const coupons = [
-    {
-      title: "Promo Ramadan",
-      discount: "10% Off",
-      status: "Inactive",
-      code: "RAMADAN25",
-      image: "https://images.pexels.com/photos/1556909/pexels-photo-1556909.jpeg?auto=compress&cs=tinysrgb&w=100",
-      description: "This coupon apply when shopping more then 50,000 FCFA"
-    },
-    {
-      title: "Nouveau Client", 
-      discount: "5,000 FCFA Off",
-      status: "Inactive",
-      code: "NEWBIRD50",
-      image: "https://images.pexels.com/photos/1267697/pexels-photo-1267697.jpeg?auto=compress&cs=tinysrgb&w=100",
-      description: "This coupon apply when shopping more then 25,000 FCFA"
-    }
-  ];
+  // Timer countdown effect
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setTimeLeft1(prev => {
+        if (prev.seconds > 0) {
+          return { ...prev, seconds: prev.seconds - 1 };
+        } else if (prev.minutes > 0) {
+          return { ...prev, minutes: prev.minutes - 1, seconds: 59 };
+        } else if (prev.hours > 0) {
+          return { ...prev, hours: prev.hours - 1, minutes: 59, seconds: 59 };
+        } else if (prev.days > 0) {
+          return { ...prev, days: prev.days - 1, hours: 23, minutes: 59, seconds: 59 };
+        }
+        return prev;
+      });
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, []);
 
   return (
     <>
       {/* Fixed Floating Cart */}
-      <div className="fixed top-1/2 -translate-y-1/2 right-4 z-50 bg-white rounded-lg shadow-lg p-4 border-2 border-gray-200">
-        <div className="text-center">
-          <div className="w-8 h-8 mx-auto mb-2 bg-green-100 rounded-full flex items-center justify-center">
-            <span className="text-green-600">🛒</span>
+      <div className="fixed top-1/2 -translate-y-1/2 right-4 z-50 w-20 shadow-lg">
+        <div className="bg-white rounded-t-lg p-3 text-center border-b">
+          <div className="w-8 h-8 mx-auto mb-1 flex items-center justify-center">
+            <svg className="w-6 h-6 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M3 1a1 1 0 000 2h1.22l.305 1.222a.997.997 0 00.01.042l1.358 5.43-.893.892C3.74 11.846 4.632 14 6.414 14H15a1 1 0 000-2H6.414l1-1H14a1 1 0 00.894-.553l3-6A1 1 0 0017 3H6.28l-.31-1.243A1 1 0 005 1H3zM16 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zM6.5 18a1.5 1.5 0 100-3 1.5 1.5 0 000 3z"/>
+            </svg>
           </div>
-          <div className="text-sm text-gray-600 mb-1">0 Items</div>
-          <div className="font-bold text-green-600">0 FCFA</div>
+          <div className="text-xs text-gray-600">4 Items</div>
+        </div>
+        <div className="bg-green-600 rounded-b-lg p-3 text-center">
+          <div className="text-sm font-bold text-white">385000 FCFA</div>
         </div>
       </div>
 
@@ -96,53 +103,123 @@ export default function HeroSection() {
 
             {/* Right Content - Coupons (40%) */}
             <div className="lg:col-span-2">
-              <div className="bg-orange-50 border-2 border-orange-300 rounded-xl p-6">
-                <h3 className="text-lg font-bold text-center mb-6 text-orange-800">
+              <div className="bg-orange-50 border-4 border-orange-400 rounded-xl p-6 relative">
+                <h3 className="text-lg font-bold text-center mb-6 text-gray-800">
                   Latest Super Discount Active Coupon Code
                 </h3>
                 
-                <div className="space-y-4">
-                  {coupons.map((coupon, index) => (
-                    <div key={index} className="bg-white rounded-lg p-4 border shadow-sm">
-                      <div className="flex items-center gap-3 mb-3">
+                <div className="space-y-6">
+                  {/* COUPON 1 - ACTIF */}
+                  <div className="bg-white rounded-lg p-4 shadow-sm relative">
+                    <div className="grid grid-cols-12 gap-3 items-center">
+                      {/* Image produit */}
+                      <div className="col-span-3">
                         <img 
-                          src={coupon.image}
-                          alt={coupon.title}
-                          className="w-12 h-12 rounded-lg object-cover"
+                          src="https://images.pexels.com/photos/1300357/pexels-photo-1300357.jpeg?auto=compress&cs=tinysrgb&w=120"
+                          alt="Poulets fermiers"
+                          className="w-16 h-16 rounded-lg object-cover"
                         />
-                        <div className="flex-1">
-                          <div className="flex items-center gap-2 mb-1">
-                            <span className="bg-red-500 text-white px-2 py-1 text-xs rounded font-bold">
-                              {coupon.discount}
-                            </span>
-                            <span className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded">
-                              {coupon.status}
-                            </span>
-                          </div>
-                          <h4 className="font-medium text-sm text-gray-800">{coupon.title}</h4>
+                      </div>
+                      
+                      {/* Section centrale */}
+                      <div className="col-span-6">
+                        <div className="flex items-center gap-2 mb-2">
+                          <span className="bg-red-500 text-white px-3 py-1 text-sm rounded-full font-bold">
+                            25% Off
+                          </span>
+                          <span className="bg-green-500 text-white px-3 py-1 text-xs rounded-full">
+                            Active
+                          </span>
                         </div>
-                        <div className="text-right">
-                          <div className="bg-green-100 border border-green-300 px-3 py-1 rounded text-green-700 font-mono text-sm font-bold">
-                            {coupon.code}
+                        <h4 className="font-semibold text-gray-800 mb-3">Promo Ramadan</h4>
+                        
+                        {/* Compteur dégressif */}
+                        <div className="flex items-center gap-1">
+                          <div className="bg-green-500 text-white px-2 py-1 rounded text-sm font-bold min-w-[32px] text-center">
+                            {String(timeLeft1.days).padStart(2, '0')}
+                          </div>
+                          <span className="text-gray-600 font-bold">:</span>
+                          <div className="bg-green-500 text-white px-2 py-1 rounded text-sm font-bold min-w-[32px] text-center">
+                            {String(timeLeft1.hours).padStart(2, '0')}
+                          </div>
+                          <span className="text-gray-600 font-bold">:</span>
+                          <div className="bg-green-500 text-white px-2 py-1 rounded text-sm font-bold min-w-[32px] text-center">
+                            {String(timeLeft1.minutes).padStart(2, '0')}
+                          </div>
+                          <span className="text-gray-600 font-bold">:</span>
+                          <div className="bg-green-500 text-white px-2 py-1 rounded text-sm font-bold min-w-[32px] text-center">
+                            {String(timeLeft1.seconds).padStart(2, '0')}
                           </div>
                         </div>
                       </div>
                       
-                      <div className="flex items-center justify-center gap-1 text-sm mb-3">
-                        <span className="bg-red-500 text-white px-2 py-1 rounded min-w-[30px] text-center font-bold">00</span>
-                        <span className="text-gray-600">:</span>
-                        <span className="bg-red-500 text-white px-2 py-1 rounded min-w-[30px] text-center font-bold">00</span>
-                        <span className="text-gray-600">:</span>
-                        <span className="bg-red-500 text-white px-2 py-1 rounded min-w-[30px] text-center font-bold">00</span>
-                        <span className="text-gray-600">:</span>
-                        <span className="bg-red-500 text-white px-2 py-1 rounded min-w-[30px] text-center font-bold">00</span>
+                      {/* Code section */}
+                      <div className="col-span-3 text-right">
+                        <div className="border-2 border-dashed border-green-400 bg-green-50 px-3 py-2 rounded-lg mb-2">
+                          <span className="text-green-700 font-mono text-sm font-bold">RAMADAN25</span>
+                        </div>
+                        <p className="text-xs text-gray-500">
+                          * This coupon apply when shopping more then 50000 FCFA
+                        </p>
                       </div>
-                      
-                      <p className="text-xs text-gray-500 text-center">
-                        * {coupon.description}
-                      </p>
                     </div>
-                  ))}
+                  </div>
+
+                  {/* COUPON 2 - INACTIF */}
+                  <div className="bg-white rounded-lg p-4 shadow-sm relative opacity-75">
+                    <div className="grid grid-cols-12 gap-3 items-center">
+                      {/* Image produit */}
+                      <div className="col-span-3">
+                        <img 
+                          src="https://images.pexels.com/photos/1267697/pexels-photo-1267697.jpeg?auto=compress&cs=tinysrgb&w=120"
+                          alt="Équipement avicole"
+                          className="w-16 h-16 rounded-lg object-cover"
+                        />
+                      </div>
+                      
+                      {/* Section centrale */}
+                      <div className="col-span-6">
+                        <div className="flex items-center gap-2 mb-2">
+                          <span className="bg-red-500 text-white px-3 py-1 text-sm rounded-full font-bold">
+                            5000 FCFA Off
+                          </span>
+                          <span className="bg-gray-400 text-white px-3 py-1 text-xs rounded-full">
+                            Inactive
+                          </span>
+                        </div>
+                        <h4 className="font-semibold text-gray-800 mb-3">Nouveau Client</h4>
+                        
+                        {/* Compteur expiré */}
+                        <div className="flex items-center gap-1">
+                          <div className="bg-red-500 text-white px-2 py-1 rounded text-sm font-bold min-w-[32px] text-center">
+                            00
+                          </div>
+                          <span className="text-gray-600 font-bold">:</span>
+                          <div className="bg-red-500 text-white px-2 py-1 rounded text-sm font-bold min-w-[32px] text-center">
+                            00
+                          </div>
+                          <span className="text-gray-600 font-bold">:</span>
+                          <div className="bg-red-500 text-white px-2 py-1 rounded text-sm font-bold min-w-[32px] text-center">
+                            00
+                          </div>
+                          <span className="text-gray-600 font-bold">:</span>
+                          <div className="bg-red-500 text-white px-2 py-1 rounded text-sm font-bold min-w-[32px] text-center">
+                            00
+                          </div>
+                        </div>
+                      </div>
+                      
+                      {/* Code section */}
+                      <div className="col-span-3 text-right">
+                        <div className="border-2 border-dashed border-green-400 bg-green-50 px-3 py-2 rounded-lg mb-2">
+                          <span className="text-green-700 font-mono text-sm font-bold">KORITE50</span>
+                        </div>
+                        <p className="text-xs text-gray-500">
+                          * This coupon apply when shopping more then 25000 FCFA
+                        </p>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
