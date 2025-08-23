@@ -175,11 +175,12 @@ export default function ProductDetail() {
                   className="w-10 h-10 p-0"
                 >
                   <Plus className="h-4 w-4" />
+                </Button>
                 <Button 
                   className="flex-1 bg-green-600 hover:bg-green-700"
                   onClick={handleAddToCart}
                 >
-                <Button className="flex-1 bg-green-600 hover:bg-green-700 text-white">
+                  <ShoppingCart className="h-4 w-4 mr-2" />
                   Ajouter au Panier
                 </Button>
               </div>
