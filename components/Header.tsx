@@ -4,12 +4,15 @@ import { useState } from 'react';
 import { Search, Heart, ShoppingCart, User, Menu, X, Mic } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import CartSidebar from './CartSidebar';
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isCartOpen, setIsCartOpen] = useState(false);
 
   return (
-    <header className="bg-white shadow-sm sticky top-0 z-50">
+    <>
+      <header className="bg-white shadow-sm sticky top-0 z-50">
       {/* Promotional Banner */}
       <div className="bg-green-600 text-white text-center py-2 text-sm">
         <p>🎉 Livraison gratuite pour les commandes de plus de 50 000 FCFA dans le Grand Dakar</p>
@@ -55,7 +58,12 @@ export default function Header() {
             <Button variant="ghost" size="sm" className="hidden sm:flex">
               <Heart className="h-5 w-5" />
             </Button>
-            <Button variant="ghost" size="sm" className="relative">
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              className="relative"
+              onClick={() => setIsCartOpen(true)}
+            >
               <ShoppingCart className="h-5 w-5" />
               <span className="absolute -top-1 -right-1 bg-green-600 text-white rounded-full text-xs w-5 h-5 flex items-center justify-center">3</span>
             </Button>
@@ -107,6 +115,13 @@ export default function Header() {
           </div>
         )}
       </div>
-    </header>
+      </header>
+
+      {/* Cart Sidebar */}
+      <CartSidebar 
+        isOpen={isCartOpen}
+        onClose={() => setIsCartOpen(false)}
+      />
+    </>
   );
 }

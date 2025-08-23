@@ -2,11 +2,13 @@
 
 import { Button } from '@/components/ui/button';
 import { useState, useEffect } from 'react';
+import CartSidebar from './CartSidebar';
 
 export default function HeroSection() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [timeLeft1, setTimeLeft1] = useState({ days: 2, hours: 15, minutes: 30, seconds: 45 });
   const [timeLeft2] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
+  const [isCartOpen, setIsCartOpen] = useState(false);
 
   const slides = [
     {
@@ -40,7 +42,10 @@ export default function HeroSection() {
   return (
     <>
       {/* Fixed Floating Cart */}
-      <div className="fixed top-1/2 -translate-y-1/2 right-4 z-50 w-20 shadow-lg">
+      <div 
+        className="fixed top-1/2 -translate-y-1/2 right-4 z-50 w-20 shadow-lg cursor-pointer hover:scale-105 transition-transform"
+        onClick={() => setIsCartOpen(true)}
+      >
         <div className="bg-white rounded-t-lg p-3 text-center border-b">
           <div className="w-8 h-8 mx-auto mb-1 flex items-center justify-center">
             <svg className="w-6 h-6 text-green-600" fill="currentColor" viewBox="0 0 20 20">
@@ -226,6 +231,12 @@ export default function HeroSection() {
           </div>
         </div>
       </section>
+
+      {/* Cart Sidebar */}
+      <CartSidebar 
+        isOpen={isCartOpen}
+        onClose={() => setIsCartOpen(false)}
+      />
     </>
   );
 }
