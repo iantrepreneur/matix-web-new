@@ -10,8 +10,6 @@ import DiscountedProducts from '@/components/DiscountedProducts';
 import MobileAppSection from '@/components/MobileAppSection';
 import Footer from '@/components/Footer';
 import VoiceAssistant from '@/components/VoiceAssistant';
-import FloatingCart from '@/components/FloatingCart';
-import CartSidebar from '@/components/CartSidebar';
 
 export default function Home() {
   return (
@@ -28,8 +26,6 @@ export default function Home() {
       </main>
       <Footer />
       <VoiceAssistant />
-      <FloatingCart />
-      <CartSidebar />
     </div>
   );
 }

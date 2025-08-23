@@ -5,14 +5,11 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { ArrowLeft, Star, ShoppingCart, Heart, Share2, Plus, Minus, Phone, Truck, Clock, Shield, Award, MapPin } from 'lucide-react';
 import Link from 'next/link';
-import { useCartStore } from '@/lib/cart-store';
-import ProductCard from '@/components/ProductCard';
 
 export default function ProductDetail() {
   const [selectedImage, setSelectedImage] = useState(0);
   const [quantity, setQuantity] = useState(1);
   const [activeTab, setActiveTab] = useState('description');
-  const { addItem } = useCartStore();
 
   const product = {
     name: "Poulet Fermier Bio Premium",
@@ -51,19 +48,6 @@ export default function ProductDetail() {
     { name: "Vaccin Newcastle", price: "12,500", originalPrice: "15,000", discount: "17% Off", image: "https://images.pexels.com/photos/3786215/pexels-photo-3786215.jpeg?auto=compress&cs=tinysrgb&w=300", rating: 4.8 },
     { name: "Cage Transport", price: "45,000", originalPrice: "55,000", discount: "18% Off", image: "https://images.pexels.com/photos/1300357/pexels-photo-1300357.jpeg?auto=compress&cs=tinysrgb&w=300", rating: 4.4 }
   ];
-
-  const handleAddToCart = () => {
-    const priceNumber = parseInt(product.price.replace(/,/g, ''));
-    for (let i = 0; i < quantity; i++) {
-      addItem({
-        id: 1,
-        name: product.name,
-        price: priceNumber,
-        image: product.images[0],
-        producer: product.producer
-      });
-    }
-  };
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -176,11 +160,7 @@ export default function ProductDetail() {
                 >
                   <Plus className="h-4 w-4" />
                 </Button>
-                <Button 
-                  className="flex-1 bg-green-600 hover:bg-green-700"
-                  onClick={handleAddToCart}
-                >
-                  <ShoppingCart className="h-4 w-4 mr-2" />
+                <Button className="flex-1 bg-green-600 hover:bg-green-700 text-white">
                   Ajouter au Panier
                 </Button>
               </div>
@@ -262,18 +242,37 @@ export default function ProductDetail() {
           <h3 className="text-2xl font-bold mb-6">Produits Similaires</h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {relatedProducts.map((product, index) => (
-              <ProductCard 
-                key={index} 
-                product={{
-                  id: index + 100,
-                  name: product.name,
-                  price: product.price,
-                  rating: product.rating,
-                  discount: product.discount,
-                  image: product.image,
-                  producer: "Producteur Local"
-                }} 
-              />
+              <Card key={index} className="relative overflow-hidden hover:shadow-lg transition-shadow">
+                <div className="absolute top-2 left-2 bg-red-500 text-white px-2 py-1 text-xs rounded z-10">
+                  {product.discount}
+                </div>
+                <div className="aspect-square overflow-hidden bg-gray-100 p-4">
+                  <img 
+                    src={product.image} 
+                    alt={product.name}
+                    className="w-full h-full object-contain hover:scale-105 transition-transform"
+                  />
+                </div>
+                <div className="p-4">
+                  <h4 className="font-medium mb-2 text-sm line-clamp-2">{product.name}</h4>
+                  <div className="flex items-center gap-1 mb-2">
+                    <div className="flex">
+                      {[...Array(5)].map((_, i) => (
+                        <Star key={i} className={`h-3 w-3 ${i < Math.floor(product.rating) ? 'text-yellow-400 fill-current' : 'text-gray-300'}`} />
+                      ))}
+                    </div>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <span className="font-bold text-gray-900">{product.price} FCFA</span>
+                      <span className="text-xs text-gray-400 line-through ml-2">{product.originalPrice}</span>
+                    </div>
+                    <Button size="sm" className="bg-green-600 hover:bg-green-700 w-8 h-8 p-0 rounded-full">
+                      <Plus className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </div>
+              </Card>
             ))}
           </div>
         </div>

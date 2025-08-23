@@ -2,11 +2,9 @@
 
 import { Button } from '@/components/ui/button';
 import { useState, useEffect } from 'react';
-import { useCartStore } from '@/lib/cart-store';
 
 export default function HeroSection() {
   const [currentSlide, setCurrentSlide] = useState(0);
-  const { getTotalItems, getTotalPrice } = useCartStore();
 
   const slides = [
     {
@@ -38,6 +36,17 @@ export default function HeroSection() {
 
   return (
     <>
+      {/* Fixed Floating Cart */}
+      <div className="fixed top-1/2 -translate-y-1/2 right-4 z-50 bg-white rounded-lg shadow-lg p-4 border-2 border-gray-200">
+        <div className="text-center">
+          <div className="w-8 h-8 mx-auto mb-2 bg-green-100 rounded-full flex items-center justify-center">
+            <span className="text-green-600">🛒</span>
+          </div>
+          <div className="text-sm text-gray-600 mb-1">0 Items</div>
+          <div className="font-bold text-green-600">0 FCFA</div>
+        </div>
+      </div>
+
       <section className="bg-gray-100 py-8">
         <div className="container mx-auto px-4">
           <div className="grid lg:grid-cols-5 gap-8">
