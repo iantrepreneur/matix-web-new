@@ -1,5 +1,6 @@
 "use client";
 
+import React from 'react';
 import { useState } from 'react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
@@ -61,7 +62,7 @@ export default function CartSidebar({ isOpen, onClose }: CartSidebarProps) {
   if (!isOpen) return null;
 
   return (
-    <>
+    <React.Fragment>
       {/* Overlay */}
       <div 
         className="fixed inset-0 bg-black bg-opacity-50 z-40 transition-opacity duration-300"
@@ -190,6 +191,6 @@ export default function CartSidebar({ isOpen, onClose }: CartSidebarProps) {
           </div>
         )}
       </div>
-    </>
+    </React.Fragment>
   );
 }
