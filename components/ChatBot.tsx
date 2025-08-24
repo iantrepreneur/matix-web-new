@@ -10,10 +10,16 @@ interface Message {
   timestamp: string;
 }
 
-interface ActionButton {
+interface ChatOption {
   id: string;
   text: string;
-  action?: () => void;
+  audioUrl?: string;
+  next?: string;
+}
+
+interface ChatStep {
+  message: string;
+  options: ChatOption[];
 }
 
 export default function ChatBot() {
@@ -21,7 +27,108 @@ export default function ChatBot() {
   const [isMinimized, setIsMinimized] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
   const [isTyping, setIsTyping] = useState(false);
-  const [currentButtons, setCurrentButtons] = useState<ActionButton[]>([]);
+  const [currentStep, setCurrentStep] = useState('welcome');
+  const [selectedOption, setSelectedOption] = useState<string | null>(null);
+  const [showOptions, setShowOptions] = useState(false);
+
+  const chatFlow: Record<string, ChatStep> = {
+    welcome: {
+      message: "Bonjour ! Bienvenue sur MataMart, votre marketplace avicole. Que voulez-vous faire ?",
+      options: [
+        { id: "sell", text: "1 - Vendre mes produits", next: "sell_category" },
+        { id: "buy", text: "2 - Acheter des produits", next: "buy_category" }
+      ]
+    },
+    sell_category: {
+      message: "Que voulez-vous vendre ?",
+      options: [
+        { id: "poultry", text: "1 - Poulets/Poussins", next: "poultry_type" },
+        { id: "equipment", text: "2 - Matériel & équipements", next: "equipment_type" },
+        { id: "medicine", text: "3 - Vaccins & médicaments", next: "medicine_type" }
+      ]
+    },
+    buy_category: {
+      message: "Que voulez-vous acheter ?",
+      options: [
+        { id: "poultry", text: "1 - Poulets/Poussins", next: "poultry_type" },
+        { id: "equipment", text: "2 - Matériel & équipements", next: "equipment_type" },
+        { id: "medicine", text: "3 - Vaccins & médicaments", next: "medicine_type" }
+      ]
+    },
+    poultry_type: {
+      message: "Quel type de volaille ?",
+      options: [
+        { id: "chicks", text: "1 - Poussins 1 jour", next: "quantity" },
+        { id: "broilers", text: "2 - Poulets de chair", next: "quantity" },
+        { id: "layers", text: "3 - Poules pondeuses", next: "quantity" },
+        { id: "local", text: "4 - Poulets fermiers", next: "quantity" }
+      ]
+    },
+    equipment_type: {
+      message: "Quel matériel ?",
+      options: [
+        { id: "cages", text: "1 - Cages & poulaillers", next: "quantity" },
+        { id: "feeders", text: "2 - Mangeoires & abreuvoirs", next: "quantity" },
+        { id: "incubators", text: "3 - Couveuses & incubateurs", next: "quantity" },
+        { id: "heating", text: "4 - Chauffage & éclairage", next: "quantity" }
+      ]
+    },
+    medicine_type: {
+      message: "Quels produits vétérinaires ?",
+      options: [
+        { id: "vaccines", text: "1 - Vaccins", next: "quantity" },
+        { id: "antibiotics", text: "2 - Antibiotiques", next: "quantity" },
+        { id: "vitamins", text: "3 - Vitamines & compléments", next: "quantity" },
+        { id: "disinfectants", text: "4 - Désinfectants", next: "quantity" }
+      ]
+    },
+    quantity: {
+      message: "Combien en avez-vous ?",
+      options: [
+        { id: "small", text: "1 - Moins de 10", next: "location" },
+        { id: "medium", text: "2 - 10 à 50", next: "location" },
+        { id: "large", text: "3 - 50 à 100", next: "location" },
+        { id: "xlarge", text: "4 - Plus de 100", next: "location" }
+      ]
+    },
+    location: {
+      message: "Où êtes-vous situé ?",
+      options: [
+        { id: "dakar", text: "1 - Dakar", next: "price" },
+        { id: "thies", text: "2 - Thiès", next: "price" },
+        { id: "kaolack", text: "3 - Kaolack", next: "price" },
+        { id: "other", text: "4 - Autre ville", next: "price" }
+      ]
+    },
+    price: {
+      message: "Quel est votre prix de vente en FCFA par unité ?",
+      options: [
+        { id: "low", text: "1 - Moins de 1000 FCFA", next: "availability" },
+        { id: "medium", text: "2 - 1000 à 5000 FCFA", next: "availability" },
+        { id: "high", text: "3 - 5000 à 20000 FCFA", next: "availability" },
+        { id: "premium", text: "4 - Plus de 20000 FCFA", next: "availability" }
+      ]
+    },
+    availability: {
+      message: "Quand c'est disponible ?",
+      options: [
+        { id: "now", text: "1 - Immédiatement", next: "photo" },
+        { id: "week", text: "2 - Dans la semaine", next: "photo" },
+        { id: "month", text: "3 - Dans le mois", next: "photo" }
+      ]
+    },
+    photo: {
+      message: "Voulez-vous ajouter une photo de votre produit ?",
+      options: [
+        { id: "yes", text: "1 - Oui, ajouter une photo", next: "end" },
+        { id: "no", text: "2 - Non, continuer sans photo", next: "end" }
+      ]
+    },
+    end: {
+      message: "Parfait ! Votre annonce sera bientôt publiée. Un de nos agents vous contactera sous 24h pour finaliser.",
+      options: []
+    }
+  };
 
   const addMessage = (text: string, type: 'user' | 'bot') => {
     const newMessage: Message = {
@@ -42,144 +149,77 @@ export default function ChatBot() {
     callback();
   };
 
-  const handleButtonClick = (button: ActionButton) => {
-    addMessage(button.text, 'user');
-    setCurrentButtons([]);
+  const handleOptionSelect = (optionId: string) => {
+    setSelectedOption(optionId);
+  };
+
+  const handleContinue = () => {
+    if (!selectedOption) return;
+
+    const currentStepData = chatFlow[currentStep];
+    const selectedOptionData = currentStepData.options.find(opt => opt.id === selectedOption);
     
-    simulateTyping(() => {
-      if (button.action) {
-        button.action();
+    if (selectedOptionData) {
+      // Add user message
+      addMessage(selectedOptionData.text, 'user');
+      setShowOptions(false);
+      setSelectedOption(null);
+
+      // Move to next step
+      if (selectedOptionData.next) {
+        simulateTyping(() => {
+          const nextStepData = chatFlow[selectedOptionData.next!];
+          addMessage(nextStepData.message, 'bot');
+          setCurrentStep(selectedOptionData.next!);
+          if (nextStepData.options.length > 0) {
+            setTimeout(() => setShowOptions(true), 500);
+          }
+        });
       }
-    });
+    }
+  };
+
+  const playAudio = (audioUrl?: string) => {
+    // Simulation audio wolof
+    console.log('Playing audio:', audioUrl);
   };
 
   const restartChat = () => {
     setMessages([]);
-    setCurrentButtons([]);
+    setCurrentStep('welcome');
+    setSelectedOption(null);
+    setShowOptions(false);
     setIsTyping(false);
     
     // Start fresh conversation
     setTimeout(() => {
       simulateTyping(() => {
-        addMessage("Salut ! Je suis MataMart Bot 🤖 Comment puis-je t'aider aujourd'hui ?", 'bot');
-        setCurrentButtons(initialButtons);
+        const welcomeStep = chatFlow.welcome;
+        addMessage(welcomeStep.message, 'bot');
+        setTimeout(() => setShowOptions(true), 500);
       });
     }, 500);
   };
-
-  const showProductInfo = () => {
-    addMessage("Voici nos catégories principales :", 'bot');
-    setCurrentButtons([
-      { id: 'electronics', text: '📱 Électronique', action: () => showElectronics() },
-      { id: 'fashion', text: '👕 Mode', action: () => showFashion() },
-      { id: 'home', text: '🏠 Maison', action: () => showHome() },
-      { id: 'back', text: '← Retour', action: () => showMainMenu() }
-    ]);
-  };
-
-  const showElectronics = () => {
-    addMessage("📱 Nos produits électroniques populaires :\n• Smartphones Samsung & iPhone\n• Ordinateurs portables\n• Écouteurs sans fil\n• Accessoires tech", 'bot');
-    setCurrentButtons([
-      { id: 'back', text: '← Retour aux catégories', action: () => showProductInfo() }
-    ]);
-  };
-
-  const showFashion = () => {
-    addMessage("👕 Mode & Style :\n• Vêtements hommes & femmes\n• Chaussures tendance\n• Accessoires de mode\n• Bijoux", 'bot');
-    setCurrentButtons([
-      { id: 'back', text: '← Retour aux catégories', action: () => showProductInfo() }
-    ]);
-  };
-
-  const showHome = () => {
-    addMessage("🏠 Articles pour la maison :\n• Décoration intérieure\n• Électroménager\n• Meubles\n• Jardinage", 'bot');
-    setCurrentButtons([
-      { id: 'back', text: '← Retour aux catégories', action: () => showProductInfo() }
-    ]);
-  };
-
-  const showOrderStatus = () => {
-    addMessage("Pour vérifier votre commande, j'aurais besoin de votre numéro de commande. Vous pouvez aussi :", 'bot');
-    setCurrentButtons([
-      { id: 'login', text: '🔐 Me connecter', action: () => showLogin() },
-      { id: 'contact', text: '📞 Contacter le support', action: () => showContact() },
-      { id: 'back', text: '← Retour', action: () => showMainMenu() }
-    ]);
-  };
-
-  const showLogin = () => {
-    addMessage("Connectez-vous à votre compte MataMart pour accéder à vos commandes et profiter d'une expérience personnalisée !", 'bot');
-    setCurrentButtons([
-      { id: 'back', text: '← Retour', action: () => showOrderStatus() }
-    ]);
-  };
-
-  const showContact = () => {
-    addMessage("📞 Contactez notre équipe :\n• WhatsApp: +221 XX XXX XX XX\n• Email: support@matamart.sn\n• Horaires: 8h-20h (Lun-Sam)", 'bot');
-    setCurrentButtons([
-      { id: 'back', text: '← Retour', action: () => showMainMenu() }
-    ]);
-  };
-
-  const showHelp = () => {
-    addMessage("❓ Comment puis-je vous aider ?\n• Navigation sur le site\n• Processus de commande\n• Modes de paiement\n• Livraison", 'bot');
-    setCurrentButtons([
-      { id: 'navigation', text: '🧭 Navigation', action: () => showNavigation() },
-      { id: 'payment', text: '💳 Paiement', action: () => showPayment() },
-      { id: 'delivery', text: '🚚 Livraison', action: () => showDelivery() },
-      { id: 'back', text: '← Retour', action: () => showMainMenu() }
-    ]);
-  };
-
-  const showNavigation = () => {
-    addMessage("🧭 Navigation facile :\n• Utilisez la barre de recherche\n• Parcourez par catégories\n• Filtrez par prix et marque\n• Consultez les avis clients", 'bot');
-    setCurrentButtons([
-      { id: 'back', text: '← Retour à l\'aide', action: () => showHelp() }
-    ]);
-  };
-
-  const showPayment = () => {
-    addMessage("💳 Modes de paiement acceptés :\n• Orange Money\n• Wave\n• Cartes bancaires\n• Paiement à la livraison", 'bot');
-    setCurrentButtons([
-      { id: 'back', text: '← Retour à l\'aide', action: () => showHelp() }
-    ]);
-  };
-
-  const showDelivery = () => {
-    addMessage("🚚 Livraison :\n• Dakar: 24-48h (gratuite dès 25 000 FCFA)\n• Régions: 2-5 jours\n• Suivi en temps réel\n• Livraison sécurisée", 'bot');
-    setCurrentButtons([
-      { id: 'back', text: '← Retour à l\'aide', action: () => showHelp() }
-    ]);
-  };
-
-  const showMainMenu = () => {
-    addMessage("Comment puis-je vous aider ?", 'bot');
-    setCurrentButtons(initialButtons);
-  };
-
-  const initialButtons: ActionButton[] = [
-    { id: 'products', text: '🛍️ Voir les produits', action: showProductInfo },
-    { id: 'orders', text: '📦 Mes commandes', action: showOrderStatus },
-    { id: 'help', text: '❓ Aide', action: showHelp },
-    { id: 'contact', text: '📞 Contact', action: showContact }
-  ];
 
   // Initialize chat when opened
   useEffect(() => {
     if (isOpen && messages.length === 0) {
       setTimeout(() => {
         simulateTyping(() => {
-          addMessage("Salut ! Je suis MataMart Bot 🤖 Comment puis-je t'aider aujourd'hui ?", 'bot');
-          setCurrentButtons(initialButtons);
+          const welcomeStep = chatFlow.welcome;
+          addMessage(welcomeStep.message, 'bot');
+          setTimeout(() => setShowOptions(true), 500);
         });
       }, 500);
     }
   }, [isOpen, messages.length]);
 
+  const currentStepData = chatFlow[currentStep];
+
   return (
     <>
       {/* Floating Chat Button */}
-      <div className="fixed bottom-6 right-6 z-50">
+      <div className="fixed bottom-6 left-6 z-50">
         <Button
           size="lg"
           className="bg-matix-green-medium hover:bg-matix-green-dark text-white rounded-full h-14 w-14 shadow-matix-lg transition-all"
@@ -191,7 +231,7 @@ export default function ChatBot() {
 
       {/* Chat Modal */}
       {isOpen && (
-        <div className="fixed bottom-6 right-6 z-50">
+        <div className="fixed bottom-6 left-6 z-50">
           <div className="bg-white rounded-2xl w-80 h-96 relative shadow-matix-lg flex flex-col border border-gray-200">
             {/* Header */}
             <div className="flex items-center justify-between p-4 border-b border-gray-200 bg-matix-green-medium text-white rounded-t-2xl relative">
@@ -238,15 +278,15 @@ export default function ChatBot() {
                       {message.type === 'bot' ? (
                         <div className="flex items-start gap-2">
                           <div className="bg-white rounded-lg p-3 shadow-sm max-w-xs border">
-                            <p className="text-sm text-gray-800">{message.text}</p>
+                            <p className="text-sm text-gray-800 whitespace-pre-line">{message.text}</p>
                             <span className="text-xs text-gray-500 mt-1 block">
                               {message.timestamp}
                             </span>
                           </div>
                           <button 
-                            className="text-gray-400 hover:text-gray-600 transition-colors mt-2"
+                            className="text-gray-400 hover:text-matix-green-medium transition-colors mt-2"
                             title="Audio wolof (bientôt disponible)"
-                            disabled
+                            onClick={() => playAudio()}
                           >
                             🎤
                           </button>
@@ -277,18 +317,43 @@ export default function ChatBot() {
                     </div>
                   )}
 
-                  {/* Action Buttons */}
-                  {currentButtons.length > 0 && !isTyping && (
-                    <div className="flex flex-wrap gap-2 animate-fade-in">
-                      {currentButtons.map((button) => (
+                  {/* Options avec checkboxes */}
+                  {showOptions && currentStepData.options.length > 0 && !isTyping && (
+                    <div className="bg-gray-50 rounded-lg p-3 ml-8 animate-fade-in">
+                      <div className="space-y-2">
+                        {currentStepData.options.map((option) => (
+                          <div key={option.id} className="flex items-center justify-between py-2 px-3 hover:bg-white rounded-lg transition-colors">
+                            <label className="flex items-center cursor-pointer flex-1">
+                              <input
+                                type="radio"
+                                name="chatOption"
+                                checked={selectedOption === option.id}
+                                onChange={() => handleOptionSelect(option.id)}
+                                className="w-4 h-4 text-matix-green-medium border-2 border-gray-300 focus:ring-matix-green-medium"
+                              />
+                              <span className="ml-3 text-sm text-gray-900">
+                                {option.text}
+                              </span>
+                            </label>
+                            <button
+                              onClick={() => playAudio(option.audioUrl)}
+                              className="ml-2 p-1 text-gray-400 hover:text-matix-green-medium transition-colors"
+                              title="Écouter en wolof"
+                            >
+                              🎤
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                      
+                      {selectedOption && (
                         <Button
-                          key={button.id}
-                          onClick={() => handleButtonClick(button)}
-                          className="bg-matix-yellow hover:bg-yellow-500 text-black text-xs px-3 py-2 rounded-full transition-all"
+                          onClick={handleContinue}
+                          className="mt-3 w-full bg-matix-green-medium hover:bg-matix-green-dark text-white transition-all"
                         >
-                          {button.text}
+                          Continuer
                         </Button>
-                      ))}
+                      )}
                     </div>
                   )}
                 </div>
