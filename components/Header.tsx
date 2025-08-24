@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { Search, Heart, ShoppingCart, User, Menu, X, Mic, Bell, ChevronDown } from 'lucide-react';
+import { Search, Heart, ShoppingCart, User, Menu, X, Mic, Bell, ChevronDown, BarChart3, Package, Edit, Lock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import CartSidebar from './CartSidebar';
@@ -10,6 +10,7 @@ import CartSidebar from './CartSidebar';
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isCartOpen, setIsCartOpen] = useState(false);
+  const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
 
   return (
     <>
@@ -89,12 +90,37 @@ export default function Header() {
                 </Button>
 
                 {/* User Profile */}
-                <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-white">
+                <div 
+                  className="w-10 h-10 rounded-full overflow-hidden border-2 border-white cursor-pointer relative"
+                  onClick={() => setIsProfileDropdownOpen(!isProfileDropdownOpen)}
+                >
                   <img 
                     src="https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=100" 
                     alt="Profile"
                     className="w-full h-full object-cover"
                   />
+                  
+                  {/* Profile Dropdown */}
+                  {isProfileDropdownOpen && (
+                    <div className="absolute top-full right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50">
+                      <Link href="/dashboard" className="flex items-center gap-3 px-4 py-2 text-gray-700 hover:bg-gray-50 transition-colors">
+                        <BarChart3 className="h-4 w-4" />
+                        <span className="text-sm">Dashboard</span>
+                      </Link>
+                      <Link href="/dashboard" className="flex items-center gap-3 px-4 py-2 text-gray-700 hover:bg-gray-50 transition-colors">
+                        <Package className="h-4 w-4" />
+                        <span className="text-sm">My Orders</span>
+                      </Link>
+                      <Link href="/dashboard" className="flex items-center gap-3 px-4 py-2 text-gray-700 hover:bg-gray-50 transition-colors">
+                        <Edit className="h-4 w-4" />
+                        <span className="text-sm">Update Profile</span>
+                      </Link>
+                      <Link href="/dashboard" className="flex items-center gap-3 px-4 py-2 text-gray-700 hover:bg-gray-50 transition-colors">
+                        <Lock className="h-4 w-4" />
+                        <span className="text-sm">Change Password</span>
+                      </Link>
+                    </div>
+                  )}
                 </div>
 
                 {/* Mobile Menu Button */}
