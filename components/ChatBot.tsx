@@ -35,93 +35,93 @@ export default function ChatBot() {
     welcome: {
       message: "Bonjour ! Bienvenue sur MataMart, votre marketplace avicole. Que voulez-vous faire ?",
       options: [
-        { id: "sell", text: "1 - Vendre mes produits", next: "sell_category" },
-        { id: "buy", text: "2 - Acheter des produits", next: "buy_category" }
+        { id: "sell", text: "Vendre mes produits", next: "sell_category" },
+        { id: "buy", text: "Acheter des produits", next: "buy_category" }
       ]
     },
     sell_category: {
       message: "Que voulez-vous vendre ?",
       options: [
-        { id: "poultry", text: "1 - Poulets/Poussins", next: "poultry_type" },
-        { id: "equipment", text: "2 - Matériel & équipements", next: "equipment_type" },
-        { id: "medicine", text: "3 - Vaccins & médicaments", next: "medicine_type" }
+        { id: "poultry", text: "Poulets/Poussins", next: "poultry_type" },
+        { id: "equipment", text: "Matériel & équipements", next: "equipment_type" },
+        { id: "medicine", text: "Vaccins & médicaments", next: "medicine_type" }
       ]
     },
     buy_category: {
       message: "Que voulez-vous acheter ?",
       options: [
-        { id: "poultry", text: "1 - Poulets/Poussins", next: "poultry_type" },
-        { id: "equipment", text: "2 - Matériel & équipements", next: "equipment_type" },
-        { id: "medicine", text: "3 - Vaccins & médicaments", next: "medicine_type" }
+        { id: "poultry", text: "Poulets/Poussins", next: "poultry_type" },
+        { id: "equipment", text: "Matériel & équipements", next: "equipment_type" },
+        { id: "medicine", text: "Vaccins & médicaments", next: "medicine_type" }
       ]
     },
     poultry_type: {
       message: "Quel type de volaille ?",
       options: [
-        { id: "chicks", text: "1 - Poussins 1 jour", next: "quantity" },
-        { id: "broilers", text: "2 - Poulets de chair", next: "quantity" },
-        { id: "layers", text: "3 - Poules pondeuses", next: "quantity" },
-        { id: "local", text: "4 - Poulets fermiers", next: "quantity" }
+        { id: "chicks", text: "Poussins 1 jour", next: "quantity" },
+        { id: "broilers", text: "Poulets de chair", next: "quantity" },
+        { id: "layers", text: "Poules pondeuses", next: "quantity" },
+        { id: "local", text: "Poulets fermiers", next: "quantity" }
       ]
     },
     equipment_type: {
       message: "Quel matériel ?",
       options: [
-        { id: "cages", text: "1 - Cages & poulaillers", next: "quantity" },
-        { id: "feeders", text: "2 - Mangeoires & abreuvoirs", next: "quantity" },
-        { id: "incubators", text: "3 - Couveuses & incubateurs", next: "quantity" },
-        { id: "heating", text: "4 - Chauffage & éclairage", next: "quantity" }
+        { id: "cages", text: "Cages & poulaillers", next: "quantity" },
+        { id: "feeders", text: "Mangeoires & abreuvoirs", next: "quantity" },
+        { id: "incubators", text: "Couveuses & incubateurs", next: "quantity" },
+        { id: "heating", text: "Chauffage & éclairage", next: "quantity" }
       ]
     },
     medicine_type: {
       message: "Quels produits vétérinaires ?",
       options: [
-        { id: "vaccines", text: "1 - Vaccins", next: "quantity" },
-        { id: "antibiotics", text: "2 - Antibiotiques", next: "quantity" },
-        { id: "vitamins", text: "3 - Vitamines & compléments", next: "quantity" },
-        { id: "disinfectants", text: "4 - Désinfectants", next: "quantity" }
+        { id: "vaccines", text: "Vaccins", next: "quantity" },
+        { id: "antibiotics", text: "Antibiotiques", next: "quantity" },
+        { id: "vitamins", text: "Vitamines & compléments", next: "quantity" },
+        { id: "disinfectants", text: "Désinfectants", next: "quantity" }
       ]
     },
     quantity: {
       message: "Combien en avez-vous ?",
       options: [
-        { id: "small", text: "1 - Moins de 10", next: "location" },
-        { id: "medium", text: "2 - 10 à 50", next: "location" },
-        { id: "large", text: "3 - 50 à 100", next: "location" },
-        { id: "xlarge", text: "4 - Plus de 100", next: "location" }
+        { id: "small", text: "Moins de 10", next: "location" },
+        { id: "medium", text: "10 à 50", next: "location" },
+        { id: "large", text: "50 à 100", next: "location" },
+        { id: "xlarge", text: "Plus de 100", next: "location" }
       ]
     },
     location: {
       message: "Où êtes-vous situé ?",
       options: [
-        { id: "dakar", text: "1 - Dakar", next: "price" },
-        { id: "thies", text: "2 - Thiès", next: "price" },
-        { id: "kaolack", text: "3 - Kaolack", next: "price" },
-        { id: "other", text: "4 - Autre ville", next: "price" }
+        { id: "dakar", text: "Dakar", next: "price" },
+        { id: "thies", text: "Thiès", next: "price" },
+        { id: "kaolack", text: "Kaolack", next: "price" },
+        { id: "other", text: "Autre ville", next: "price" }
       ]
     },
     price: {
       message: "Quel est votre prix de vente en FCFA par unité ?",
       options: [
-        { id: "low", text: "1 - Moins de 1000 FCFA", next: "availability" },
-        { id: "medium", text: "2 - 1000 à 5000 FCFA", next: "availability" },
-        { id: "high", text: "3 - 5000 à 20000 FCFA", next: "availability" },
-        { id: "premium", text: "4 - Plus de 20000 FCFA", next: "availability" }
+        { id: "low", text: "Moins de 1000 FCFA", next: "availability" },
+        { id: "medium", text: "1000 à 5000 FCFA", next: "availability" },
+        { id: "high", text: "5000 à 20000 FCFA", next: "availability" },
+        { id: "premium", text: "Plus de 20000 FCFA", next: "availability" }
       ]
     },
     availability: {
       message: "Quand c'est disponible ?",
       options: [
-        { id: "now", text: "1 - Immédiatement", next: "photo" },
-        { id: "week", text: "2 - Dans la semaine", next: "photo" },
-        { id: "month", text: "3 - Dans le mois", next: "photo" }
+        { id: "now", text: "Immédiatement", next: "photo" },
+        { id: "week", text: "Dans la semaine", next: "photo" },
+        { id: "month", text: "Dans le mois", next: "photo" }
       ]
     },
     photo: {
       message: "Voulez-vous ajouter une photo de votre produit ?",
       options: [
-        { id: "yes", text: "1 - Oui, ajouter une photo", next: "end" },
-        { id: "no", text: "2 - Non, continuer sans photo", next: "end" }
+        { id: "yes", text: "Oui, ajouter une photo", next: "end" },
+        { id: "no", text: "Non, continuer sans photo", next: "end" }
       ]
     },
     end: {
@@ -219,7 +219,7 @@ export default function ChatBot() {
   return (
     <>
       {/* Floating Chat Button */}
-      <div className="fixed bottom-6 left-6 z-50">
+      <div className="fixed bottom-6 right-6 z-50">
         <Button
           size="lg"
           className="bg-matix-green-medium hover:bg-matix-green-dark text-white rounded-full h-14 w-14 shadow-matix-lg transition-all"
@@ -231,7 +231,7 @@ export default function ChatBot() {
 
       {/* Chat Modal */}
       {isOpen && (
-        <div className="fixed bottom-6 left-6 z-50">
+        <div className="fixed bottom-6 right-6 z-50">
           <div className="bg-white rounded-2xl w-80 h-96 relative shadow-matix-lg flex flex-col border border-gray-200">
             {/* Header */}
             <div className="flex items-center justify-between p-4 border-b border-gray-200 bg-matix-green-medium text-white rounded-t-2xl relative">
@@ -329,10 +329,10 @@ export default function ChatBot() {
                                 name="chatOption"
                                 checked={selectedOption === option.id}
                                 onChange={() => handleOptionSelect(option.id)}
-                                className="w-4 h-4 text-matix-green-medium border-2 border-gray-300 focus:ring-matix-green-medium"
+                                className="w-4 h-4 text-matix-yellow border-2 border-gray-300 focus:ring-matix-yellow accent-matix-yellow"
                               />
                               <span className="ml-3 text-sm text-gray-900">
-                                {option.text}
+                                {option.text.replace(/^\d+\s*-\s*/, '')}
                               </span>
                             </label>
                             <button
@@ -349,7 +349,7 @@ export default function ChatBot() {
                       {selectedOption && (
                         <Button
                           onClick={handleContinue}
-                          className="mt-3 w-full bg-matix-green-medium hover:bg-matix-green-dark text-white transition-all"
+                          className="mt-3 w-full bg-matix-yellow hover:bg-yellow-500 text-black font-semibold transition-all"
                         >
                           Continuer
                         </Button>
