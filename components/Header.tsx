@@ -90,15 +90,17 @@ export default function Header() {
                 </Button>
 
                 {/* User Profile */}
-                <div 
-                  className="w-10 h-10 rounded-full overflow-hidden border-2 border-white cursor-pointer relative"
-                  onClick={() => setIsProfileDropdownOpen(!isProfileDropdownOpen)}
-                >
-                  <img 
-                    src="https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=100" 
-                    alt="Profile"
-                    className="w-full h-full object-cover"
-                  />
+                <div className="relative">
+                  <div 
+                    className="w-10 h-10 rounded-full overflow-hidden border-2 border-white cursor-pointer"
+                    onClick={() => setIsProfileDropdownOpen(!isProfileDropdownOpen)}
+                  >
+                    <img 
+                      src="https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=100" 
+                      alt="Profile"
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
                   
                   {/* Profile Dropdown */}
                   {isProfileDropdownOpen && (
