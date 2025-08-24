@@ -136,9 +136,9 @@ export default function CartSidebar({ isOpen, onClose }: CartSidebarProps) {
                         {item.quantity}
                       </span>
                       <button
-                        className="flex-1 focus:ring-2 focus:ring-matix-yellow border-matix-green-pale"
+                        onClick={() => updateQuantity(item.id, item.quantity + 1)}
                         className="p-1 hover:bg-gray-100 transition-colors"
-                      <Button className="bg-matix-button hover:bg-matix-yellow text-black px-6 font-semibold transition-all">
+                      >
                         <Plus className="h-3 w-3 text-gray-600" />
                       </button>
                     </div>
@@ -150,7 +150,7 @@ export default function CartSidebar({ isOpen, onClose }: CartSidebarProps) {
                     >
                       <Trash2 className="h-4 w-4" />
                     </button>
-                  <span className="text-matix-green-dark">{totalCost.toLocaleString()} FCFA</span>
+                  </div>
                 </div>
               ))}
             </div>
