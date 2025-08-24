@@ -1,5 +1,6 @@
 "use client";
 
+import Link from 'next/link';
 import { Card } from '@/components/ui/card';
 
 export default function FeaturedCategories() {
@@ -27,14 +28,15 @@ export default function FeaturedCategories() {
 
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 gap-6">
           {categories.map((category, index) => (
-            <Card 
-              key={index} 
-              className="p-6 text-center hover:shadow-lg transition-all cursor-pointer hover:scale-105"
-            >
-              <div className="text-4xl mb-4">{category.icon}</div>
-              <h3 className="font-semibold text-lg mb-2">{category.name}</h3>
-              <p className="text-sm text-gray-500">{category.count}</p>
-            </Card>
+            <Link key={index} href="/categories">
+              <Card 
+                className="p-6 text-center hover:shadow-lg transition-all cursor-pointer hover:scale-105"
+              >
+                <div className="text-4xl mb-4">{category.icon}</div>
+                <h3 className="font-semibold text-lg mb-2">{category.name}</h3>
+                <p className="text-sm text-gray-500">{category.count}</p>
+              </Card>
+            </Link>
           ))}
         </div>
       </div>

@@ -133,10 +133,10 @@ export default function Header() {
             <div className="flex items-center justify-between">
               {/* Left Navigation */}
               <nav className="hidden lg:flex items-center space-x-8">
-                <div className="flex items-center gap-1 text-gray-700 hover:text-matix-green-medium cursor-pointer font-medium transition-colors">
+                <Link href="/categories" className="flex items-center gap-1 text-gray-700 hover:text-matix-green-medium cursor-pointer font-medium transition-colors">
                   <span>Catégories</span>
                   <ChevronDown className="h-4 w-4" />
-                </div>
+                </Link>
                 <a href="#" className="text-gray-700 hover:text-matix-green-medium font-medium transition-colors">À Propos</a>
                 <a href="#" className="text-gray-700 hover:text-matix-green-medium font-medium transition-colors">Contact</a>
                 <div className="flex items-center gap-1 text-gray-700 hover:text-matix-green-medium cursor-pointer font-medium transition-colors">
@@ -165,7 +165,7 @@ export default function Header() {
               {isMenuOpen && (
                 <div className="lg:hidden absolute top-full left-0 right-0 bg-white border-t border-matix-green-pale py-4 px-4 shadow-matix">
                   <nav className="flex flex-col space-y-4">
-                    <a href="#" className="text-gray-700 hover:text-matix-green-medium font-medium transition-colors">Catégories</a>
+                    <Link href="/categories" className="text-gray-700 hover:text-matix-green-medium font-medium transition-colors">Catégories</Link>
                     <a href="#" className="text-gray-700 hover:text-matix-green-medium font-medium transition-colors">À Propos</a>
                     <a href="#" className="text-gray-700 hover:text-matix-green-medium font-medium transition-colors">Contact</a>
                     <a href="#" className="text-gray-700 hover:text-matix-green-medium font-medium transition-colors">Pages</a>
