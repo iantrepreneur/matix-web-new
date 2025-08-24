@@ -144,7 +144,7 @@ export default function Header() {
                   <ChevronDown className="h-4 w-4" />
                 </div>
                 <div className="relative">
-                  <a href="#" className="text-white bg-red-500 hover:bg-red-600 px-3 py-1 rounded-full text-sm font-medium">
+                  <a href="/offres" className="text-white bg-red-500 hover:bg-red-600 px-3 py-1 rounded-full text-sm font-medium">
                     Offres
                   </a>
                   <span className="absolute -top-1 -right-1 bg-red-500 w-2 h-2 rounded-full"></span>
