@@ -1,3 +1,21 @@
+'use client';
+
+import { useState, useEffect } from 'react';
+import { MessageCircle, X, Minus } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+
+interface Message {
+  text: string;
+  type: 'user' | 'bot';
+  timestamp: string;
+}
+
+interface ActionButton {
+  id: string;
+  text: string;
+  action?: () => void;
+}
+
 export default function ChatBot() {
   const [isOpen, setIsOpen] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false);
@@ -230,7 +248,7 @@ export default function ChatBot() {
                             title="Audio wolof (bientôt disponible)"
                             disabled
                           >
-                            <Mic className="h-4 w-4" />
+                            🎤
                           </button>
                         </div>
                       ) : (
