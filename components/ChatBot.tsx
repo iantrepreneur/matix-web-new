@@ -1,116 +1,162 @@
-import { useState, useEffect, useRef } from 'react';
-import { Button } from '@/components/ui/button';
-import { MessageCircle, X, Mic, Minus } from 'lucide-react';
-
 export default function ChatBot() {
   const [isOpen, setIsOpen] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false);
-  const [messages, setMessages] = useState([
-    {
-      type: 'bot',
-      text: 'Salut ! Je suis MataMart Bot. Comment puis-je vous aider aujourd\'hui ?',
-      timestamp: new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })
-    }
-  ]);
+  const [messages, setMessages] = useState<Message[]>([]);
   const [isTyping, setIsTyping] = useState(false);
-  const [currentButtons, setCurrentButtons] = useState([
-    { id: 'products', text: 'Voir les produits' },
-    { id: 'help', text: 'Aide' },
-    { id: 'contact', text: 'Contact' }
-  ]);
+  const [currentButtons, setCurrentButtons] = useState<ActionButton[]>([]);
 
-  const messagesEndRef = useRef(null);
-
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  };
-
-  useEffect(() => {
-    scrollToBottom();
-  }, [messages]);
-
-  const addMessage = (text, type = 'bot') => {
-    const newMessage = {
-      type,
+  const addMessage = (text: string, type: 'user' | 'bot') => {
+    const newMessage: Message = {
       text,
-      timestamp: new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })
+      type,
+      timestamp: new Date().toLocaleTimeString('fr-FR', { 
+        hour: '2-digit', 
+        minute: '2-digit' 
+      })
     };
     setMessages(prev => [...prev, newMessage]);
   };
 
-  const simulateTyping = (callback, delay = 1500) => {
+  const simulateTyping = async (callback: () => void) => {
     setIsTyping(true);
-    setTimeout(() => {
-      setIsTyping(false);
-      callback();
-    }, delay);
+    await new Promise(resolve => setTimeout(resolve, 1500));
+    setIsTyping(false);
+    callback();
   };
 
-  const handleButtonClick = (button) => {
-    // Add user message
+  const handleButtonClick = (button: ActionButton) => {
     addMessage(button.text, 'user');
-    
-    // Clear current buttons
     setCurrentButtons([]);
-
-    // Simulate bot response
+    
     simulateTyping(() => {
-      switch (button.id) {
-        case 'products':
-          addMessage('Voici nos catégories de produits disponibles :');
-          setCurrentButtons([
-            { id: 'electronics', text: 'Électronique' },
-            { id: 'clothing', text: 'Vêtements' },
-            { id: 'home', text: 'Maison & Jardin' },
-            { id: 'back', text: 'Retour' }
-          ]);
-          break;
-        case 'help':
-          addMessage('Je peux vous aider avec : la navigation sur le site, les informations produits, les commandes, et bien plus !');
-          setCurrentButtons([
-            { id: 'navigation', text: 'Navigation' },
-            { id: 'orders', text: 'Commandes' },
-            { id: 'back', text: 'Retour' }
-          ]);
-          break;
-        case 'contact':
-          addMessage('Vous pouvez nous contacter :\n📞 +221 77 123 45 67\n📧 contact@matamart.sn\n🕒 Lun-Ven 8h-18h');
-          setCurrentButtons([
-            { id: 'back', text: 'Retour' }
-          ]);
-          break;
-        case 'back':
-          addMessage('Comment puis-je vous aider ?');
-          setCurrentButtons([
-            { id: 'products', text: 'Voir les produits' },
-            { id: 'help', text: 'Aide' },
-            { id: 'contact', text: 'Contact' }
-          ]);
-          break;
-        default:
-          addMessage('Merci pour votre intérêt ! Notre équipe vous contactera bientôt.');
-          setCurrentButtons([
-            { id: 'back', text: 'Retour' }
-          ]);
+      if (button.action) {
+        button.action();
       }
     });
   };
 
   const restartChat = () => {
-    setMessages([
-      {
-        type: 'bot',
-        text: 'Salut ! Je suis MataMart Bot. Comment puis-je vous aider aujourd\'hui ?',
-        timestamp: new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })
-      }
-    ]);
-    setCurrentButtons([
-      { id: 'products', text: 'Voir les produits' },
-      { id: 'help', text: 'Aide' },
-      { id: 'contact', text: 'Contact' }
-    ]);
+    setMessages([]);
+    setCurrentButtons([]);
     setIsTyping(false);
+    
+    // Start fresh conversation
+    setTimeout(() => {
+      simulateTyping(() => {
+        addMessage("Salut ! Je suis MataMart Bot 🤖 Comment puis-je t'aider aujourd'hui ?", 'bot');
+        setCurrentButtons(initialButtons);
+      });
+    }, 500);
   };
+
+  const showProductInfo = () => {
+    addMessage("Voici nos catégories principales :", 'bot');
+    setCurrentButtons([
+      { id: 'electronics', text: '📱 Électronique', action: () => showElectronics() },
+      { id: 'fashion', text: '👕 Mode', action: () => showFashion() },
+      { id: 'home', text: '🏠 Maison', action: () => showHome() },
+      { id: 'back', text: '← Retour', action: () => showMainMenu() }
+    ]);
+  };
+
+  const showElectronics = () => {
+    addMessage("📱 Nos produits électroniques populaires :\n• Smartphones Samsung & iPhone\n• Ordinateurs portables\n• Écouteurs sans fil\n• Accessoires tech", 'bot');
+    setCurrentButtons([
+      { id: 'back', text: '← Retour aux catégories', action: () => showProductInfo() }
+    ]);
+  };
+
+  const showFashion = () => {
+    addMessage("👕 Mode & Style :\n• Vêtements hommes & femmes\n• Chaussures tendance\n• Accessoires de mode\n• Bijoux", 'bot');
+    setCurrentButtons([
+      { id: 'back', text: '← Retour aux catégories', action: () => showProductInfo() }
+    ]);
+  };
+
+  const showHome = () => {
+    addMessage("🏠 Articles pour la maison :\n• Décoration intérieure\n• Électroménager\n• Meubles\n• Jardinage", 'bot');
+    setCurrentButtons([
+      { id: 'back', text: '← Retour aux catégories', action: () => showProductInfo() }
+    ]);
+  };
+
+  const showOrderStatus = () => {
+    addMessage("Pour vérifier votre commande, j'aurais besoin de votre numéro de commande. Vous pouvez aussi :", 'bot');
+    setCurrentButtons([
+      { id: 'login', text: '🔐 Me connecter', action: () => showLogin() },
+      { id: 'contact', text: '📞 Contacter le support', action: () => showContact() },
+      { id: 'back', text: '← Retour', action: () => showMainMenu() }
+    ]);
+  };
+
+  const showLogin = () => {
+    addMessage("Connectez-vous à votre compte MataMart pour accéder à vos commandes et profiter d'une expérience personnalisée !", 'bot');
+    setCurrentButtons([
+      { id: 'back', text: '← Retour', action: () => showOrderStatus() }
+    ]);
+  };
+
+  const showContact = () => {
+    addMessage("📞 Contactez notre équipe :\n• WhatsApp: +221 XX XXX XX XX\n• Email: support@matamart.sn\n• Horaires: 8h-20h (Lun-Sam)", 'bot');
+    setCurrentButtons([
+      { id: 'back', text: '← Retour', action: () => showMainMenu() }
+    ]);
+  };
+
+  const showHelp = () => {
+    addMessage("❓ Comment puis-je vous aider ?\n• Navigation sur le site\n• Processus de commande\n• Modes de paiement\n• Livraison", 'bot');
+    setCurrentButtons([
+      { id: 'navigation', text: '🧭 Navigation', action: () => showNavigation() },
+      { id: 'payment', text: '💳 Paiement', action: () => showPayment() },
+      { id: 'delivery', text: '🚚 Livraison', action: () => showDelivery() },
+      { id: 'back', text: '← Retour', action: () => showMainMenu() }
+    ]);
+  };
+
+  const showNavigation = () => {
+    addMessage("🧭 Navigation facile :\n• Utilisez la barre de recherche\n• Parcourez par catégories\n• Filtrez par prix et marque\n• Consultez les avis clients", 'bot');
+    setCurrentButtons([
+      { id: 'back', text: '← Retour à l\'aide', action: () => showHelp() }
+    ]);
+  };
+
+  const showPayment = () => {
+    addMessage("💳 Modes de paiement acceptés :\n• Orange Money\n• Wave\n• Cartes bancaires\n• Paiement à la livraison", 'bot');
+    setCurrentButtons([
+      { id: 'back', text: '← Retour à l\'aide', action: () => showHelp() }
+    ]);
+  };
+
+  const showDelivery = () => {
+    addMessage("🚚 Livraison :\n• Dakar: 24-48h (gratuite dès 25 000 FCFA)\n• Régions: 2-5 jours\n• Suivi en temps réel\n• Livraison sécurisée", 'bot');
+    setCurrentButtons([
+      { id: 'back', text: '← Retour à l\'aide', action: () => showHelp() }
+    ]);
+  };
+
+  const showMainMenu = () => {
+    addMessage("Comment puis-je vous aider ?", 'bot');
+    setCurrentButtons(initialButtons);
+  };
+
+  const initialButtons: ActionButton[] = [
+    { id: 'products', text: '🛍️ Voir les produits', action: showProductInfo },
+    { id: 'orders', text: '📦 Mes commandes', action: showOrderStatus },
+    { id: 'help', text: '❓ Aide', action: showHelp },
+    { id: 'contact', text: '📞 Contact', action: showContact }
+  ];
+
+  // Initialize chat when opened
+  useEffect(() => {
+    if (isOpen && messages.length === 0) {
+      setTimeout(() => {
+        simulateTyping(() => {
+          addMessage("Salut ! Je suis MataMart Bot 🤖 Comment puis-je t'aider aujourd'hui ?", 'bot');
+          setCurrentButtons(initialButtons);
+        });
+      }, 500);
+    }
+  }, [isOpen, messages.length]);
 
   return (
     <>
@@ -256,7 +302,7 @@ export default function ChatBot() {
           width: 8px;
           height: 8px;
           border-radius: 50%;
-          background-color: #9CA3AF;
+          background-color: #9ca3af;
           animation: typing 1.4s infinite ease-in-out;
         }
 
@@ -272,7 +318,7 @@ export default function ChatBot() {
         }
 
         .animate-fade-in {
-          animation: fadeIn 0.3s ease-in;
+          animation: fadeIn 0.3s ease-in-out;
         }
 
         @keyframes fadeIn {
