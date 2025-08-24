@@ -262,9 +262,9 @@ export default function DashboardPage() {
               {/* Menu Navigation */}
               <nav className="space-y-1">
                 {menuItems.map((item) => (
-                  <button
+                  <Link
                     key={item.id}
-                    onClick={() => setActivePage(item.id)}
+                    href={item.id === 'dashboard' ? '/dashboard' : `/dashboard/${item.id}`}
                     className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-left transition-colors ${
                       activePage === item.id 
                         ? 'bg-matix-green-pale text-matix-green-dark font-medium' 
@@ -273,7 +273,7 @@ export default function DashboardPage() {
                   >
                     {item.icon}
                     <span className="text-sm">{item.label}</span>
-                  </button>
+                  </Link>
                 ))}
               </nav>
             </Card>
