@@ -73,14 +73,14 @@ export default function CartSidebar({ isOpen, onClose }: CartSidebarProps) {
         <div className="flex items-center justify-between p-4 border-b border-gray-200 bg-white">
           <div className="flex items-center gap-2">
             <ShoppingCart className="h-5 w-5 text-gray-700" />
-            <h2 className="text-lg font-semibold text-gray-900">Shopping Cart</h2>
+            <h2 className="text-lg font-semibold text-gray-900">Panier d'Achats</h2>
           </div>
           <button
             onClick={onClose}
             className="flex items-center gap-1 text-gray-500 hover:text-gray-700 transition-colors"
           >
             <X className="h-4 w-4" />
-            <span className="text-sm">Close</span>
+            <span className="text-sm">Fermer</span>
           </button>
         </div>
 
@@ -92,7 +92,7 @@ export default function CartSidebar({ isOpen, onClose }: CartSidebarProps) {
               <h3 className="text-lg font-medium text-gray-900 mb-2">Votre panier est vide</h3>
               <p className="text-gray-500 mb-6">Ajoutez des produits pour commencer vos achats</p>
               <Button onClick={onClose} className="bg-green-600 hover:bg-green-700">
-                Continuer les achats
+                Continuer les Achats
               </Button>
             </div>
           ) : (
@@ -114,7 +114,7 @@ export default function CartSidebar({ isOpen, onClose }: CartSidebarProps) {
                       {item.name}
                     </h3>
                     <p className="text-xs text-gray-500 mb-2">
-                      Item Price {item.price.toLocaleString()} FCFA
+                      Prix Unitaire {item.price.toLocaleString()} FCFA
                     </p>
                     <p className="font-bold text-green-600 text-lg">
                       {(item.price * item.quantity).toLocaleString()} FCFA
@@ -161,14 +161,14 @@ export default function CartSidebar({ isOpen, onClose }: CartSidebarProps) {
           <div className="border-t border-gray-200 p-4 bg-white">
             {/* Subtotal */}
             <div className="flex justify-between items-center mb-2">
-              <span className="font-semibold text-gray-900">Subtotal</span>
+              <span className="font-semibold text-gray-900">Sous-total</span>
               <span className="font-bold text-xl text-gray-900">
                 {subtotal.toLocaleString()} FCFA
               </span>
             </div>
             
             <p className="text-xs text-gray-500 mb-4">
-              Shipping and taxes calculated at checkout.
+              Frais de livraison et taxes calculés lors du paiement.
             </p>
 
             {/* Action Buttons */}
@@ -178,10 +178,10 @@ export default function CartSidebar({ isOpen, onClose }: CartSidebarProps) {
                 className="w-full border-gray-300 text-gray-700 hover:bg-gray-50"
                 onClick={onClose}
               >
-                View Cart
+                Voir le Panier
               </Button>
               <Button className="w-full bg-green-600 hover:bg-green-700 text-white">
-                Checkout
+                Commander
               </Button>
             </div>
           </div>

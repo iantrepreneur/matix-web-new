@@ -18,18 +18,18 @@ export default function Header() {
           <div className="container mx-auto px-4 flex justify-between items-center">
             <div className="flex items-center gap-2">
               <span className="text-gray-600">📞</span>
-              <span>We are available 24/7, Need help?</span>
-              <span className="text-green-600 font-semibold">+099949343</span>
+              <span>Nous sommes disponibles 24h/7j, Besoin d'aide ?</span>
+              <span className="text-green-600 font-semibold">+221 77 123 45 67</span>
             </div>
             <div className="hidden md:flex items-center gap-4 text-sm">
-              <a href="#" className="hover:text-green-600">About Us</a>
+              <a href="#" className="hover:text-green-600">À Propos</a>
               <span className="text-gray-400">|</span>
-              <a href="#" className="hover:text-green-600">Contact Us</a>
+              <a href="#" className="hover:text-green-600">Nous Contacter</a>
               <span className="text-gray-400">|</span>
-              <a href="#" className="hover:text-green-600">My Account</a>
+              <a href="#" className="hover:text-green-600">Mon Compte</a>
               <span className="text-gray-400">|</span>
               <a href="#" className="hover:text-green-600 flex items-center gap-1">
-                🔒 Logout
+                🔒 Déconnexion
               </a>
             </div>
           </div>
@@ -45,8 +45,8 @@ export default function Header() {
                   <ShoppingCart className="h-6 w-6" />
                 </div>
                 <div>
-                  <h1 className="text-2xl font-bold">KACHA</h1>
-                  <p className="text-xs opacity-90">B A Z A R</p>
+                  <h1 className="text-2xl font-bold">MATIX</h1>
+                  <p className="text-xs opacity-90">M A R T</p>
                 </div>
               </div>
 
@@ -55,7 +55,7 @@ export default function Header() {
                 <div className="relative">
                   <Input
                     type="text"
-                    placeholder="Search for products (e.g. shirt, pant)"
+                    placeholder="Rechercher des produits (ex: poulet, aliment)"
                     className="w-full bg-white text-gray-900 border-0 rounded-lg pl-4 pr-12 py-3 text-sm"
                   />
                   <Button 
@@ -113,7 +113,7 @@ export default function Header() {
               <div className="relative">
                 <Input
                   type="text"
-                  placeholder="Search for products..."
+                  placeholder="Rechercher des produits..."
                   className="w-full bg-white text-gray-900 border-0 rounded-lg pl-4 pr-12 py-3"
                 />
                 <Button 
@@ -134,18 +134,18 @@ export default function Header() {
               {/* Left Navigation */}
               <nav className="hidden lg:flex items-center space-x-8">
                 <div className="flex items-center gap-1 text-gray-700 hover:text-green-600 cursor-pointer font-medium">
-                  <span>Categories</span>
+                  <span>Catégories</span>
                   <ChevronDown className="h-4 w-4" />
                 </div>
-                <a href="#" className="text-gray-700 hover:text-green-600 font-medium">About Us</a>
-                <a href="#" className="text-gray-700 hover:text-green-600 font-medium">Contact Us</a>
+                <a href="#" className="text-gray-700 hover:text-green-600 font-medium">À Propos</a>
+                <a href="#" className="text-gray-700 hover:text-green-600 font-medium">Contact</a>
                 <div className="flex items-center gap-1 text-gray-700 hover:text-green-600 cursor-pointer font-medium">
                   <span>Pages</span>
                   <ChevronDown className="h-4 w-4" />
                 </div>
                 <div className="relative">
                   <a href="#" className="text-white bg-red-500 hover:bg-red-600 px-3 py-1 rounded-full text-sm font-medium">
-                    Offers
+                    Offres
                   </a>
                   <span className="absolute -top-1 -right-1 bg-red-500 w-2 h-2 rounded-full"></span>
                 </div>
@@ -154,22 +154,22 @@ export default function Header() {
               {/* Right Navigation */}
               <div className="hidden lg:flex items-center space-x-6 text-sm">
                 <div className="flex items-center gap-2">
-                  <img src="https://flagcdn.com/w20/gb.png" alt="English" className="w-4 h-4" />
-                  <span className="text-gray-700">English</span>
+                  <img src="https://flagcdn.com/w20/sn.png" alt="Français" className="w-4 h-4" />
+                  <span className="text-gray-700">Français</span>
                 </div>
-                <a href="#" className="text-gray-700 hover:text-green-600">Privacy Policy</a>
-                <a href="#" className="text-gray-700 hover:text-green-600">Terms & Conditions</a>
+                <a href="#" className="text-gray-700 hover:text-green-600">Politique de Confidentialité</a>
+                <a href="#" className="text-gray-700 hover:text-green-600">Conditions Générales</a>
               </div>
 
               {/* Mobile Menu */}
               {isMenuOpen && (
                 <div className="lg:hidden absolute top-full left-0 right-0 bg-white border-t border-gray-200 py-4 px-4 shadow-lg">
                   <nav className="flex flex-col space-y-4">
-                    <a href="#" className="text-gray-700 hover:text-green-600 font-medium">Categories</a>
-                    <a href="#" className="text-gray-700 hover:text-green-600 font-medium">About Us</a>
-                    <a href="#" className="text-gray-700 hover:text-green-600 font-medium">Contact Us</a>
+                    <a href="#" className="text-gray-700 hover:text-green-600 font-medium">Catégories</a>
+                    <a href="#" className="text-gray-700 hover:text-green-600 font-medium">À Propos</a>
+                    <a href="#" className="text-gray-700 hover:text-green-600 font-medium">Contact</a>
                     <a href="#" className="text-gray-700 hover:text-green-600 font-medium">Pages</a>
-                    <a href="#" className="text-red-500 hover:text-red-600 font-medium">Offers</a>
+                    <a href="#" className="text-red-500 hover:text-red-600 font-medium">Offres</a>
                   </nav>
                 </div>
               )}
