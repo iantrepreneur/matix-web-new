@@ -181,7 +181,9 @@ export default function CartSidebar({ isOpen, onClose }: CartSidebarProps) {
                 Voir le Panier
               </Button>
               <Button className="w-full bg-green-600 hover:bg-green-700 text-white">
-                Commander
+                <Link href="/checkout" className="w-full">
+                  Commander
+                </Link>
               </Button>
             </div>
           </div>
