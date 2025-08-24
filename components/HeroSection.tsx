@@ -110,7 +110,7 @@ export default function HeroSection() {
             <div className="lg:col-span-2">
               <div className="bg-orange-50 border-4 border-orange-400 rounded-xl p-6 relative">
                 <h3 className="text-lg font-bold text-center mb-6 text-gray-800">
-                  Latest Super Discount Active Coupon Code
+                  Derniers Codes de Réduction Super Actifs
                 </h3>
                 
                 <div className="space-y-6">
