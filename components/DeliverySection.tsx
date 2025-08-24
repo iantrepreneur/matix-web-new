@@ -5,7 +5,7 @@ import { Clock, MapPin, Truck } from 'lucide-react';
 
 export default function DeliverySection() {
   return (
-    <section className="bg-green-600 py-16 text-white">
+    <section className="bg-matix-green-medium py-16 text-white">
       <div className="container mx-auto px-4">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           <div>
@@ -32,13 +32,13 @@ export default function DeliverySection() {
               </div>
             </div>
             
-            <Button size="lg" className="bg-white text-green-600 hover:bg-gray-100">
+            <Button size="lg" className="bg-matix-yellow text-black hover:bg-yellow-400 font-semibold transition-all">
               Commencer les Achats
             </Button>
           </div>
 
           <div className="lg:text-right">
-            <div className="bg-white/10 backdrop-blur rounded-2xl p-8 inline-block">
+            <div className="bg-matix-yellow/20 backdrop-blur rounded-2xl p-8 inline-block border border-matix-yellow/30">
               <div className="text-6xl mb-4">🛵</div>
               <h3 className="text-2xl font-bold mb-2">Livraison Express</h3>
               <p className="opacity-90">

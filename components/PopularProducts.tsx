@@ -44,9 +44,9 @@ export default function PopularProducts() {
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
           {products.map((product, index) => (
             <Link key={index} href={`/product/${product.id}`}>
-              <Card className="relative overflow-hidden hover:shadow-lg transition-all hover:scale-105 cursor-pointer">
+              <Card className="relative overflow-hidden hover:shadow-matix-lg transition-all hover:scale-105 cursor-pointer bg-white border-matix-green-pale">
                 {product.discount && (
-                  <div className="absolute top-2 left-2 bg-red-500 text-white px-2 py-1 text-xs rounded-md z-10">
+                  <div className="absolute top-2 left-2 bg-matix-yellow text-black px-2 py-1 text-xs rounded-md z-10 font-bold">
                     {product.discount}
                   </div>
                 )}
@@ -73,8 +73,8 @@ export default function PopularProducts() {
                   </div>
                   
                   <div className="flex items-center justify-between">
-                    <span className="font-bold text-green-600">{product.price} FCFA</span>
-                    <Button size="sm" className="bg-green-600 hover:bg-green-700 p-2">
+                    <span className="font-bold text-matix-green-dark">{product.price} FCFA</span>
+                    <Button size="sm" className="bg-matix-button hover:bg-matix-yellow text-black p-2 transition-all">
                       <ShoppingCart className="h-4 w-4" />
                     </Button>
                   </div>

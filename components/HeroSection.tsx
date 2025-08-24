@@ -64,27 +64,27 @@ export default function HeroSection() {
           <div className="grid lg:grid-cols-5 gap-8">
             {/* Left Content - Hero Slider (60%) */}
             <div className="lg:col-span-3">
-              <div className="relative bg-white rounded-2xl overflow-hidden shadow-sm">
+              <div className="relative bg-white rounded-2xl overflow-hidden shadow-matix">
                 <div className="relative h-96 lg:h-[400px]">
                   <img 
                     src={slides[currentSlide].image}
                     alt="Hero Background"
                     className="w-full h-full object-cover"
                   />
-                  <div className="absolute inset-0 bg-black bg-opacity-40"></div>
+                  <div className="absolute inset-0 bg-matix-hero opacity-80"></div>
                   
                   <div className="absolute inset-0 flex flex-col justify-center px-8 lg:px-12">
                     <h1 className="text-4xl lg:text-5xl font-bold text-white mb-2 leading-tight">
                       {slides[currentSlide].title}
                     </h1>
-                    <h2 className="text-3xl lg:text-4xl font-bold text-green-400 mb-4">
+                    <h2 className="text-3xl lg:text-4xl font-bold text-matix-yellow mb-4">
                       {slides[currentSlide].subtitle}
                     </h2>
                     <p className="text-lg text-white/90 mb-8 leading-relaxed max-w-lg">
                       {slides[currentSlide].description}
                     </p>
                     <div>
-                      <Button className="bg-green-500 hover:bg-green-600 text-white px-8 py-3 rounded-lg text-lg">
+                      <Button className="bg-matix-button hover:bg-matix-yellow text-black px-8 py-3 rounded-lg text-lg font-semibold transition-all">
                         Commencer Maintenant
                       </Button>
                     </div>
@@ -96,7 +96,7 @@ export default function HeroSection() {
                       <button
                         key={index}
                         className={`w-3 h-3 rounded-full ${
-                          index === 0 ? 'bg-green-500' : 'bg-white/50'
+                          index === 0 ? 'bg-matix-yellow' : 'bg-white/50'
                         }`}
                         onClick={() => setCurrentSlide(index)}
                       />
@@ -108,14 +108,14 @@ export default function HeroSection() {
 
             {/* Right Content - Coupons (40%) */}
             <div className="lg:col-span-2">
-              <div className="bg-orange-50 border-4 border-orange-400 rounded-xl p-6 relative">
-                <h3 className="text-lg font-bold text-center mb-6 text-gray-800">
+              <div className="bg-matix-green-pale border-4 border-matix-yellow rounded-xl p-6 relative">
+                <h3 className="text-lg font-bold text-center mb-6 text-matix-green-dark">
                   Derniers Codes de Réduction Super Actifs
                 </h3>
                 
                 <div className="space-y-6">
                   {/* COUPON 1 - ACTIF */}
-                  <div className="bg-white rounded-lg p-4 shadow-sm relative">
+                  <div className="bg-white rounded-lg p-4 shadow-matix relative">
                     <div className="grid grid-cols-12 gap-3 items-center">
                       {/* Image produit */}
                       <div className="col-span-3">
@@ -129,30 +129,30 @@ export default function HeroSection() {
                       {/* Section centrale */}
                       <div className="col-span-6">
                         <div className="flex items-center gap-2 mb-2">
-                          <span className="bg-red-500 text-white px-3 py-1 text-sm rounded-full font-bold">
+                          <span className="bg-matix-yellow text-black px-3 py-1 text-sm rounded-full font-bold">
                             25% Off
                           </span>
-                          <span className="bg-green-500 text-white px-3 py-1 text-xs rounded-full">
+                          <span className="bg-matix-green-light text-white px-3 py-1 text-xs rounded-full">
                             Active
                           </span>
                         </div>
-                        <h4 className="font-semibold text-gray-800 mb-3">Promo Ramadan</h4>
+                        <h4 className="font-semibold text-matix-green-dark mb-3">Promo Ramadan</h4>
                         
                         {/* Compteur dégressif */}
                         <div className="flex items-center gap-1">
-                          <div className="bg-green-500 text-white px-2 py-1 rounded text-sm font-bold min-w-[32px] text-center">
+                          <div className="bg-matix-green-light text-white px-2 py-1 rounded text-sm font-bold min-w-[32px] text-center">
                             {String(timeLeft1.days).padStart(2, '0')}
                           </div>
-                          <span className="text-gray-600 font-bold">:</span>
-                          <div className="bg-green-500 text-white px-2 py-1 rounded text-sm font-bold min-w-[32px] text-center">
+                          <span className="text-matix-green-medium font-bold">:</span>
+                          <div className="bg-matix-green-light text-white px-2 py-1 rounded text-sm font-bold min-w-[32px] text-center">
                             {String(timeLeft1.hours).padStart(2, '0')}
                           </div>
-                          <span className="text-gray-600 font-bold">:</span>
-                          <div className="bg-green-500 text-white px-2 py-1 rounded text-sm font-bold min-w-[32px] text-center">
+                          <span className="text-matix-green-medium font-bold">:</span>
+                          <div className="bg-matix-green-light text-white px-2 py-1 rounded text-sm font-bold min-w-[32px] text-center">
                             {String(timeLeft1.minutes).padStart(2, '0')}
                           </div>
-                          <span className="text-gray-600 font-bold">:</span>
-                          <div className="bg-green-500 text-white px-2 py-1 rounded text-sm font-bold min-w-[32px] text-center">
+                          <span className="text-matix-green-medium font-bold">:</span>
+                          <div className="bg-matix-green-light text-white px-2 py-1 rounded text-sm font-bold min-w-[32px] text-center">
                             {String(timeLeft1.seconds).padStart(2, '0')}
                           </div>
                         </div>
@@ -160,8 +160,8 @@ export default function HeroSection() {
                       
                       {/* Code section */}
                       <div className="col-span-3 text-right">
-                        <div className="border-2 border-dashed border-green-400 bg-green-50 px-3 py-2 rounded-lg mb-2">
-                          <span className="text-green-700 font-mono text-sm font-bold">RAMADAN25</span>
+                        <div className="border-2 border-dashed border-matix-yellow bg-matix-yellow/20 px-3 py-2 rounded-lg mb-2">
+                          <span className="text-matix-green-dark font-mono text-sm font-bold">RAMADAN25</span>
                         </div>
                         <p className="text-xs text-gray-500">
                           * This coupon apply when shopping more then 50000 FCFA
@@ -171,7 +171,7 @@ export default function HeroSection() {
                   </div>
 
                   {/* COUPON 2 - INACTIF */}
-                  <div className="bg-white rounded-lg p-4 shadow-sm relative opacity-75">
+                  <div className="bg-white rounded-lg p-4 shadow-matix relative opacity-75">
                     <div className="grid grid-cols-12 gap-3 items-center">
                       {/* Image produit */}
                       <div className="col-span-3">
@@ -185,14 +185,14 @@ export default function HeroSection() {
                       {/* Section centrale */}
                       <div className="col-span-6">
                         <div className="flex items-center gap-2 mb-2">
-                          <span className="bg-red-500 text-white px-3 py-1 text-sm rounded-full font-bold">
+                          <span className="bg-matix-yellow text-black px-3 py-1 text-sm rounded-full font-bold">
                             5000 FCFA Off
                           </span>
                           <span className="bg-gray-400 text-white px-3 py-1 text-xs rounded-full">
                             Inactive
                           </span>
                         </div>
-                        <h4 className="font-semibold text-gray-800 mb-3">Nouveau Client</h4>
+                        <h4 className="font-semibold text-matix-green-dark mb-3">Nouveau Client</h4>
                         
                         {/* Compteur expiré */}
                         <div className="flex items-center gap-1">
@@ -216,8 +216,8 @@ export default function HeroSection() {
                       
                       {/* Code section */}
                       <div className="col-span-3 text-right">
-                        <div className="border-2 border-dashed border-green-400 bg-green-50 px-3 py-2 rounded-lg mb-2">
-                          <span className="text-green-700 font-mono text-sm font-bold">KORITE50</span>
+                        <div className="border-2 border-dashed border-matix-yellow bg-matix-yellow/20 px-3 py-2 rounded-lg mb-2">
+                          <span className="text-matix-green-dark font-mono text-sm font-bold">KORITE50</span>
                         </div>
                         <p className="text-xs text-gray-500">
                           * This coupon apply when shopping more then 25000 FCFA

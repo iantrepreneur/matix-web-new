@@ -44,8 +44,8 @@ export default function DiscountedProducts() {
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
           {discountedProducts.map((product, index) => (
             <Link key={index} href={`/product/${product.id}`}>
-              <Card className="relative overflow-hidden hover:shadow-lg transition-all hover:scale-105 cursor-pointer">
-                <div className="absolute top-2 left-2 bg-pink-500 text-white px-2 py-1 text-xs rounded-md z-10">
+              <Card className="relative overflow-hidden hover:shadow-matix-lg transition-all hover:scale-105 cursor-pointer bg-white border-matix-green-pale">
+                <div className="absolute top-2 left-2 bg-matix-yellow text-black px-2 py-1 text-xs rounded-md z-10 font-bold">
                   {product.discount}
                 </div>
                 
@@ -71,12 +71,12 @@ export default function DiscountedProducts() {
                   
                   <div className="mb-3">
                     <div className="flex items-center gap-2">
-                      <span className="font-bold text-green-600">{product.price} FCFA</span>
+                      <span className="font-bold text-matix-green-dark">{product.price} FCFA</span>
                       <span className="text-xs text-gray-400 line-through">{product.originalPrice}</span>
                     </div>
                   </div>
                   
-                  <Button size="sm" className="w-full bg-green-600 hover:bg-green-700 flex items-center gap-2">
+                  <Button size="sm" className="w-full bg-matix-button hover:bg-matix-yellow text-black flex items-center gap-2 font-semibold transition-all">
                     <ShoppingCart className="h-4 w-4" />
                     Ajouter au Panier
                   </Button>

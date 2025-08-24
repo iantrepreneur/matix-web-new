@@ -92,7 +92,7 @@ export default function CartSidebar({ isOpen, onClose }: CartSidebarProps) {
               <ShoppingCart className="h-16 w-16 text-gray-300 mb-4" />
               <h3 className="text-lg font-medium text-gray-900 mb-2">Votre panier est vide</h3>
               <p className="text-gray-500 mb-6">Ajoutez des produits pour commencer vos achats</p>
-              <Button onClick={onClose} className="bg-green-600 hover:bg-green-700">
+              <Button onClick={onClose} className="bg-matix-button hover:bg-matix-yellow text-black font-semibold transition-all">
                 Continuer les Achats
               </Button>
             </div>
@@ -117,7 +117,7 @@ export default function CartSidebar({ isOpen, onClose }: CartSidebarProps) {
                     <p className="text-xs text-gray-500 mb-2">
                       Prix Unitaire {item.price.toLocaleString()} FCFA
                     </p>
-                    <p className="font-bold text-green-600 text-lg">
+                    <p className="font-bold text-matix-green-dark text-lg">
                       {(item.price * item.quantity).toLocaleString()} FCFA
                     </p>
                   </div>
@@ -136,9 +136,9 @@ export default function CartSidebar({ isOpen, onClose }: CartSidebarProps) {
                         {item.quantity}
                       </span>
                       <button
-                        onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                        className="flex-1 focus:ring-2 focus:ring-matix-yellow border-matix-green-pale"
                         className="p-1 hover:bg-gray-100 transition-colors"
-                      >
+                      <Button className="bg-matix-button hover:bg-matix-yellow text-black px-6 font-semibold transition-all">
                         <Plus className="h-3 w-3 text-gray-600" />
                       </button>
                     </div>
@@ -150,7 +150,7 @@ export default function CartSidebar({ isOpen, onClose }: CartSidebarProps) {
                     >
                       <Trash2 className="h-4 w-4" />
                     </button>
-                  </div>
+                  <span className="text-matix-green-dark">{totalCost.toLocaleString()} FCFA</span>
                 </div>
               ))}
             </div>
@@ -176,12 +176,12 @@ export default function CartSidebar({ isOpen, onClose }: CartSidebarProps) {
             <div className="space-y-3">
               <Button 
                 variant="outline" 
-                className="w-full border-gray-300 text-gray-700 hover:bg-gray-50"
+               className="w-full border-matix-green-medium text-matix-green-medium hover:bg-matix-green-pale transition-colors"
                 onClick={onClose}
               >
                 Voir le Panier
               </Button>
-              <Button className="w-full bg-green-600 hover:bg-green-700 text-white">
+             <Button className="w-full bg-matix-button hover:bg-matix-yellow text-black font-semibold transition-all">
                 <Link href="/checkout" className="w-full">
                   Commander
                 </Link>
