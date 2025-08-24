@@ -4,6 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
+import InvoiceModal from '@/components/InvoiceModal';
 import { 
   BarChart3, 
   Package, 
@@ -24,6 +25,9 @@ import {
 export default function DashboardPage() {
   const [activePage, setActivePage] = useState('dashboard');
   const [currentPage, setCurrentPage] = useState(1);
+  const [showInvoice, setShowInvoice] = useState(false);
+  const [selectedOrderId, setSelectedOrderId] = useState('');
+  const [selectedOrder, setSelectedOrder] = useState<any>(null);
   const itemsPerPage = 10;
 
   const user = {
@@ -334,7 +338,16 @@ export default function DashboardPage() {
                         <td className="py-3 px-4 text-gray-600">{order.shippingCost}</td>
                         <td className="py-3 px-4 font-medium text-gray-900">{order.total}</td>
                         <td className="py-3 px-4">
-                          <Button variant="ghost" size="sm" className="text-matix-green-medium hover:text-matix-green-dark">
+                          <Button 
+                            variant="ghost" 
+                            size="sm" 
+                            className="text-matix-green-medium hover:text-matix-green-dark"
+                            onClick={() => {
+                              setSelectedOrderId(order.id);
+                              setSelectedOrder(order);
+                              setShowInvoice(true);
+                            }}
+                          >
                             <Eye className="h-4 w-4" />
                           </Button>
                         </td>
@@ -402,6 +415,14 @@ export default function DashboardPage() {
           </div>
         </div>
       </div>
+
+      {/* Invoice Modal */}
+      <InvoiceModal 
+        isOpen={showInvoice}
+        onClose={() => setShowInvoice(false)}
+        orderId={selectedOrderId}
+        orderData={selectedOrder}
+      />
 
       {/* Section App */}
       <div className="bg-gradient-to-r from-green-50 to-blue-50 py-16">
