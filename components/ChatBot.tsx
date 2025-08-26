@@ -182,7 +182,7 @@ export default function ChatBot() {
   };
 
   const playAudio = (audioId: string) => {
-    const audioUrl = "https://github.com/iantrepreneur/bank_audio/blob/main/AUDIO-2025-06-30-14-18-39.m4a?raw=true";
+    const audioUrl = "https://raw.githubusercontent.com/iantrepreneur/bank_audio/main/AUDIO-2025-06-30-14-18-39.m4a";
     
     if (playingAudio === audioId) {
       // Pause audio
