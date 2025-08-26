@@ -201,7 +201,11 @@ export default function ChatBot() {
       // Play new audio
       const newAudio = new Audio(audioUrl);
       newAudio.play().catch(err => {
-        console.error('Error playing audio:', err);
+        if (err.name === 'AbortError') {
+          console.log('Audio playback interrupted:', err.message);
+        } else {
+          console.error('Error playing audio:', err);
+        }
         // Fallback: simulate audio playing
         setPlayingAudio(audioId);
         setTimeout(() => setPlayingAudio(null), 3000);
