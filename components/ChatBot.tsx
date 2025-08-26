@@ -31,7 +31,7 @@ export default function ChatBot() {
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
   const [showOptions, setShowOptions] = useState(false);
   const [playingAudio, setPlayingAudio] = useState<string | null>(null);
-  const [currentAudio, setCurrentAudio] = useState<HTMLAudioElement | null>(null);
+  const [audio, setAudio] = useState<HTMLAudioElement | null>(null);
 
   const chatFlow: Record<string, ChatStep> = {
     welcome: {
