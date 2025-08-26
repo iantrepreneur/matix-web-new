@@ -70,16 +70,11 @@ export default function DiscountedProducts() {
                   </div>
                   
                   <div className="mb-3">
-                    <div className="flex items-center gap-2">
-                      <span className="font-bold text-matix-green-dark">{product.price} FCFA</span>
-                      <span className="text-xs text-gray-400 line-through">{product.originalPrice}</span>
-                    </div>
+                    <span className="font-bold text-matix-green-dark">{product.price} FCFA</span>
+                    <Button size="sm" className="bg-matix-button hover:bg-matix-yellow text-black p-2 transition-all">
+                      <ShoppingCart className="h-4 w-4" />
+                    </Button>
                   </div>
-                  
-                  <Button size="sm" className="w-full bg-matix-button hover:bg-matix-yellow text-black flex items-center gap-2 font-semibold transition-all">
-                    <ShoppingCart className="h-4 w-4" />
-                    Ajouter au Panier
-                  </Button>
                 </div>
               </Card>
             </Link>
