@@ -270,13 +270,15 @@ export default function ChatBot() {
   return (
     <>
       {/* Floating Chat Button */}
-      <div className="fixed bottom-6 right-6 z-50">
+      <div className="fixed bottom-4 right-4 z-50">
         <Button
-          size="lg"
-          className="bg-matix-green-medium hover:bg-matix-green-dark text-white rounded-full h-14 w-14 shadow-matix-lg transition-all"
+          className="bg-matix-yellow hover:bg-yellow-400 text-black rounded-full px-6 py-3 shadow-lg transition-all flex items-center gap-2 font-medium"
           onClick={() => setIsOpen(true)}
         >
-          <MessageCircle className="h-6 w-6 animate-bounce" />
+          <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M8 5v14l11-7z"/>
+          </svg>
+          Demander à Adja
         </Button>
       </div>
 
