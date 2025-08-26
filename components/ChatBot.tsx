@@ -30,6 +30,8 @@ export default function ChatBot() {
   const [currentStep, setCurrentStep] = useState('welcome');
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
   const [showOptions, setShowOptions] = useState(false);
+  const [playingAudio, setPlayingAudio] = useState<string | null>(null);
+  const [currentAudio, setCurrentAudio] = useState<HTMLAudioElement | null>(null);
 
   const chatFlow: Record<string, ChatStep> = {
     welcome: {
@@ -179,9 +181,40 @@ export default function ChatBot() {
     }
   };
 
-  const playAudio = (audioUrl?: string) => {
-    // Simulation audio wolof
-    console.log('Playing audio:', audioUrl);
+  const playAudio = (audioId: string) => {
+    const audioUrl = "https://github.com/iantrepreneur/bank_audio/blob/main/AUDIO-2025-06-30-14-18-39.m4a?raw=true";
+    
+    if (playingAudio === audioId) {
+      // Pause audio
+      if (audio) {
+        audio.pause();
+        setAudio(null);
+      }
+      setPlayingAudio(null);
+    } else {
+      // Stop current audio if playing
+      if (audio) {
+        audio.pause();
+        setAudio(null);
+      }
+      
+      // Play new audio
+      const newAudio = new Audio(audioUrl);
+      newAudio.play().catch(err => {
+        console.error('Error playing audio:', err);
+        // Fallback: simulate audio playing
+        setPlayingAudio(audioId);
+        setTimeout(() => setPlayingAudio(null), 3000);
+      });
+      
+      newAudio.onended = () => {
+        setPlayingAudio(null);
+        setAudio(null);
+      };
+      
+      setAudio(newAudio);
+      setPlayingAudio(audioId);
+    }
   };
 
   const restartChat = () => {
@@ -190,6 +223,11 @@ export default function ChatBot() {
     setSelectedOption(null);
     setShowOptions(false);
     setIsTyping(false);
+    setPlayingAudio(null);
+    if (audio) {
+      audio.pause();
+      setAudio(null);
+    }
     
     // Start fresh conversation
     setTimeout(() => {
@@ -214,6 +252,15 @@ export default function ChatBot() {
     }
   }, [isOpen, messages.length]);
 
+  // Cleanup audio on unmount
+  useEffect(() => {
+    return () => {
+      if (audio) {
+        audio.pause();
+        setAudio(null);
+      }
+    };
+  }, [audio]);
   const currentStepData = chatFlow[currentStep];
 
   return (
@@ -285,10 +332,10 @@ export default function ChatBot() {
                           </div>
                           <button 
                             className="text-gray-400 hover:text-matix-green-medium transition-colors mt-2"
-                            title="Audio wolof (bientôt disponible)"
-                            onClick={() => playAudio()}
+                            title={playingAudio === `bot-${index}` ? "Pause audio" : "Jouer audio"}
+                            onClick={() => playAudio(`bot-${index}`)}
                           >
-                            🎤
+                            {playingAudio === `bot-${index}` ? '⏸️' : '▶️'}
                           </button>
                         </div>
                       ) : (
@@ -336,11 +383,11 @@ export default function ChatBot() {
                               </span>
                             </label>
                             <button
-                              onClick={() => playAudio(option.audioUrl)}
+                              onClick={() => playAudio(`option-${option.id}`)}
                               className="ml-2 p-1 text-gray-400 hover:text-matix-green-medium transition-colors"
-                              title="Écouter en wolof"
+                              title={playingAudio === `option-${option.id}` ? "Pause audio" : "Jouer audio"}
                             >
-                              🎤
+                              {playingAudio === `option-${option.id}` ? '⏸️' : '▶️'}
                             </button>
                           </div>
                         ))}
