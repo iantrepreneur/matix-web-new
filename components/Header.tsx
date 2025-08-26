@@ -166,12 +166,7 @@ export default function Header() {
                   <span>Catégories</span>
                   <ChevronDown className="h-4 w-4" />
                 </Link>
-                <a href="#" className="text-gray-700 hover:text-matix-green-medium font-medium transition-colors">À Propos</a>
-                <a href="#" className="text-gray-700 hover:text-matix-green-medium font-medium transition-colors">Contact</a>
-                <div className="flex items-center gap-1 text-gray-700 hover:text-matix-green-medium cursor-pointer font-medium transition-colors">
-                  <span>Pages</span>
-                  <ChevronDown className="h-4 w-4" />
-                </div>
+                <Link href="/marques" className="text-gray-700 hover:text-matix-green-medium font-medium transition-colors">Marques Distributeurs</Link>
                 <div className="relative">
                   <a href="/offres" className="text-black bg-matix-yellow hover:bg-yellow-500 px-3 py-1 rounded-full text-sm font-medium transition-colors">
                     Offres
@@ -195,9 +190,7 @@ export default function Header() {
                 <div className="lg:hidden absolute top-full left-0 right-0 bg-white border-t border-matix-green-pale py-4 px-4 shadow-matix">
                   <nav className="flex flex-col space-y-4">
                     <Link href="/categories" className="text-gray-700 hover:text-matix-green-medium font-medium transition-colors">Catégories</Link>
-                    <a href="#" className="text-gray-700 hover:text-matix-green-medium font-medium transition-colors">À Propos</a>
-                    <a href="#" className="text-gray-700 hover:text-matix-green-medium font-medium transition-colors">Contact</a>
-                    <a href="#" className="text-gray-700 hover:text-matix-green-medium font-medium transition-colors">Pages</a>
+                    <Link href="/marques" className="text-gray-700 hover:text-matix-green-medium font-medium transition-colors">Marques Distributeurs</Link>
                     <a href="#" className="text-matix-yellow hover:text-yellow-600 font-medium transition-colors">Offres</a>
                   </nav>
                 </div>

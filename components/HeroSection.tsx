@@ -3,6 +3,7 @@
 import { Button } from '@/components/ui/button';
 import { useState, useEffect } from 'react';
 import CartSidebar from './CartSidebar';
+import ChatBot from './ChatBot';
 
 export default function HeroSection() {
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -237,6 +238,9 @@ export default function HeroSection() {
         isOpen={isCartOpen}
         onClose={() => setIsCartOpen(false)}
       />
+
+      {/* ChatBot Widget */}
+      <ChatBot />
     </>
   );
 }
