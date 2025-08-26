@@ -70,10 +70,14 @@ export default function DiscountedProducts() {
                   </div>
                   
                   <div className="mb-3">
-                    <span className="font-bold text-matix-green-dark">{product.price} FCFA</span>
-                    <Button size="sm" className="bg-matix-button hover:bg-matix-yellow text-black p-2 transition-all">
-                      <ShoppingCart className="h-4 w-4" />
-                    </Button>
+                    <div className="w-full">
+                      <span className="font-bold text-matix-green-dark">{product.price} FCFA</span>
+                      <div className="flex justify-end mt-2">
+                        <Button size="sm" className="bg-matix-button hover:bg-matix-yellow text-black rounded-full w-8 h-8 p-0">
+                          <ShoppingCart className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </Card>
