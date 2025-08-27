@@ -165,7 +165,7 @@ export default function HeroSection() {
                           <span className="text-matix-green-dark font-mono text-sm font-bold">RAMADAN25</span>
                         </div>
                         <p className="text-xs text-gray-500">
-                          * This coupon apply when shopping more then 50000 FCFA
+                          * Ce coupon s'applique pour des achats de plus de 50000 FCFA
                         </p>
                       </div>
                     </div>
@@ -221,7 +221,7 @@ export default function HeroSection() {
                           <span className="text-matix-green-dark font-mono text-sm font-bold">KORITE50</span>
                         </div>
                         <p className="text-xs text-gray-500">
-                          * This coupon apply when shopping more then 25000 FCFA
+                          * Ce coupon s'applique pour des achats de plus de 25000 FCFA
                         </p>
                       </div>
                     </div>
