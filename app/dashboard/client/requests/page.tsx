@@ -24,12 +24,14 @@ import {
 export default function DeliveryRequestsPage() {
   const [activePage, setActivePage] = useState('requests');
   const [showModal, setShowModal] = useState(false);
+  const [activeTab, setActiveTab] = useState('active');
   const [newRequest, setNewRequest] = useState({
     description: '',
-    quantity: '',
-    address: '',
-    budget: '',
+    quantity: '', 
+    budgetMin: '',
+    budgetMax: '',
     date: '',
+    address: '',
     notes: ''
   });
 
@@ -42,60 +44,60 @@ export default function DeliveryRequestsPage() {
   const requests = [
     {
       id: "DEM001",
-      date: "28/08/25",
-      description: "10 poulets fermiers bio",
-      budget: "45,000 FCFA",
-      adresse: "Pikine, Dakar",
-      statut: "En cours",
-      devisRecus: 3
+      date: "27/08/25",
+      description: "10 poulets fermiers pour baptême",
+      budget: "40,000-50,000 FCFA",
+      devisRecus: 3,
+      statut: "Ouverte"
     },
     {
       id: "DEM002", 
-      date: "25/08/25",
-      description: "Mangeoire automatique 20 poules",
-      budget: "15,000 FCFA",
-      adresse: "Pikine, Dakar",
-      statut: "Fermée",
-      devisRecus: 5
+      date: "24/08/25",
+      description: "Équipement démarrage élevage",
+      budget: "200,000 FCFA",
+      devisRecus: 1,
+      statut: "En cours"
     },
     {
       id: "DEM003",
-      date: "22/08/25",
-      description: "50 poussins pondeuses + aliments",
-      budget: "30,000 FCFA",
-      adresse: "Pikine, Dakar", 
-      statut: "Acceptée",
+      date: "20/08/25",
+      description: "50kg aliment ponte",
+      budget: "25,000 FCFA",
       devisRecus: 2
+      statut: "Terminée"
     }
   ];
 
   const receivedQuotes = [
     {
       id: "DEV001",
-      distributeur: "FreshFarm Sénégal",
-      produits: "10 poulets fermiers bio",
-      prix: "42,000 FCFA",
+      distributeur: "Ferme Diallo",
+      produits: "10 poulets fermiers",
+      prix: "45,000 FCFA",
       livraison: "Demain",
       note: 4.8,
-      statut: "Nouveau"
+      statut: "Nouveau",
+      details: "Poulets élevés au grain, certification bio"
     },
     {
       id: "DEV002",
-      distributeur: "Élevage Premium", 
-      produits: "10 poulets fermiers bio",
-      prix: "45,000 FCFA",
+      distributeur: "Distribution Sénégal", 
+      produits: "10 poulets fermiers",
+      prix: "48,000 FCFA",
       livraison: "2 jours",
       note: 4.6,
-      statut: "Vu"
+      statut: "Vu",
+      details: "Livraison gratuite incluse"
     },
     {
       id: "DEV003",
-      distributeur: "Bio Sénégal",
-      produits: "10 poulets fermiers bio", 
-      prix: "48,000 FCFA",
+      distributeur: "Élevage Premium",
+      produits: "10 poulets fermiers", 
+      prix: "42,000 FCFA",
       livraison: "3 jours",
       note: 4.7,
-      statut: "Vu"
+      statut: "Négociation",
+      details: "Prix négociable selon quantité"
     }
   ];
 
@@ -110,9 +112,10 @@ export default function DeliveryRequestsPage() {
 
   const getStatusBadge = (status: string) => {
     const statusStyles = {
+      'Ouverte': 'bg-green-100 text-green-800',
       'En cours': 'bg-blue-100 text-blue-800',
-      'Fermée': 'bg-gray-100 text-gray-800',
-      'Acceptée': 'bg-green-100 text-green-800'
+      'Terminée': 'bg-gray-100 text-gray-800',
+      'Annulée': 'bg-red-100 text-red-800'
     };
     
     return (
@@ -126,7 +129,8 @@ export default function DeliveryRequestsPage() {
     const statusStyles = {
       'Nouveau': 'bg-green-100 text-green-800',
       'Vu': 'bg-blue-100 text-blue-800',
-      'Accepté': 'bg-purple-100 text-purple-800'
+      'Accepté': 'bg-purple-100 text-purple-800',
+      'Négociation': 'bg-orange-100 text-orange-800'
     };
     
     return (
@@ -143,9 +147,10 @@ export default function DeliveryRequestsPage() {
     setNewRequest({
       description: '',
       quantity: '',
-      address: '',
-      budget: '',
+      budgetMin: '',
+      budgetMax: '',
       date: '',
+      address: '',
       notes: ''
     });
   };
@@ -257,11 +262,50 @@ export default function DeliveryRequestsPage() {
               </Button>
             </div>
 
+            {/* Onglets */}
+            <div className="mb-6">
+              <div className="flex border-b border-gray-200">
+                <button
+                  className={`px-6 py-3 font-medium text-sm ${
+                    activeTab === 'active'
+                      ? 'border-b-2 border-purple-600 text-purple-600'
+                      : 'text-gray-500 hover:text-gray-700'
+                  }`}
+                  onClick={() => setActiveTab('active')}
+                >
+                  Demandes Actives
+                </button>
+                <button
+                  className={`px-6 py-3 font-medium text-sm ${
+                    activeTab === 'quotes'
+                      ? 'border-b-2 border-purple-600 text-purple-600'
+                      : 'text-gray-500 hover:text-gray-700'
+                  }`}
+                  onClick={() => setActiveTab('quotes')}
+                >
+                  Devis Reçus
+                </button>
+                <button
+                  className={`px-6 py-3 font-medium text-sm ${
+                    activeTab === 'history'
+                      ? 'border-b-2 border-purple-600 text-purple-600'
+                      : 'text-gray-500 hover:text-gray-700'
+                  }`}
+                  onClick={() => setActiveTab('history')}
+                >
+                  Historique
+                </button>
+              </div>
+            </div>
             <div className="grid lg:grid-cols-3 gap-6">
               {/* Mes Demandes - 66% */}
               <div className="lg:col-span-2">
                 <Card className="p-6">
-                  <h2 className="text-lg font-semibold mb-4">Mes Demandes</h2>
+                  <h2 className="text-lg font-semibold mb-4">
+                    {activeTab === 'active' ? 'Demandes Actives' : 
+                     activeTab === 'quotes' ? 'Tous les Devis Reçus' : 
+                     'Historique des Demandes'}
+                  </h2>
                   <div className="overflow-x-auto">
                     <table className="w-full">
                       <thead>
@@ -276,7 +320,11 @@ export default function DeliveryRequestsPage() {
                         </tr>
                       </thead>
                       <tbody>
-                        {requests.map((request, index) => (
+                        {requests.filter(req => {
+                          if (activeTab === 'active') return req.statut === 'Ouverte' || req.statut === 'En cours';
+                          if (activeTab === 'history') return req.statut === 'Terminée';
+                          return true;
+                        }).map((request, index) => (
                           <tr key={index} className="border-b border-gray-100 hover:bg-gray-50 transition-colors">
                             <td className="py-3 px-4 font-medium text-gray-900">{request.id}</td>
                             <td className="py-3 px-4 text-gray-600">{request.date}</td>
@@ -304,7 +352,9 @@ export default function DeliveryRequestsPage() {
               {/* Devis Reçus - 33% */}
               <div className="lg:col-span-1">
                 <Card className="p-6">
-                  <h3 className="text-lg font-semibold mb-4">Devis Reçus</h3>
+                  <h3 className="text-lg font-semibold mb-4">
+                    {activeTab === 'quotes' ? 'Détails des Devis' : 'Derniers Devis Reçus'}
+                  </h3>
                   <div className="space-y-4">
                     {receivedQuotes.map((quote, index) => (
                       <div key={index} className="bg-gray-50 border border-gray-200 rounded-lg p-3">
@@ -313,6 +363,7 @@ export default function DeliveryRequestsPage() {
                           {getQuoteStatusBadge(quote.statut)}
                         </div>
                         <p className="text-xs text-gray-600 mb-2">{quote.produits}</p>
+                        <p className="text-xs text-gray-500 mb-2">{quote.details}</p>
                         <div className="flex items-center justify-between mb-2">
                           <span className="font-bold text-purple-600">{quote.prix}</span>
                           <span className="text-xs text-gray-500">Livraison: {quote.livraison}</span>
@@ -322,16 +373,21 @@ export default function DeliveryRequestsPage() {
                             <span className="text-xs text-gray-500">Note:</span>
                             <span className="text-xs font-medium">{quote.note}/5</span>
                           </div>
-                          <Button size="sm" className="bg-purple-600 hover:bg-purple-700 text-white text-xs">
-                            Accepter
-                          </Button>
+                          <div className="flex gap-1">
+                            <Button size="sm" className="bg-green-600 hover:bg-green-700 text-white text-xs px-2">
+                              Accepter
+                            </Button>
+                            <Button size="sm" variant="outline" className="text-orange-600 border-orange-600 hover:bg-orange-50 text-xs px-2">
+                              Négocier
+                            </Button>
+                          </div>
                         </div>
                       </div>
                     ))}
                   </div>
                   
                   <Button variant="outline" className="w-full mt-4 text-sm">
-                    Voir tous les devis
+                    {activeTab === 'quotes' ? 'Actualiser' : 'Voir tous les devis'}
                   </Button>
                 </Card>
               </div>
@@ -358,12 +414,13 @@ export default function DeliveryRequestsPage() {
             <form onSubmit={handleCreateRequest} className="p-6 space-y-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Description du produit souhaité
+                  Description détaillée du besoin
                 </label>
-                <Input
+                <textarea
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 h-20 resize-none"
                   value={newRequest.description}
                   onChange={(e) => setNewRequest({...newRequest, description: e.target.value})}
-                  placeholder="Ex: 10 poulets fermiers bio"
+                  placeholder="Ex: 10 poulets fermiers pour baptême, qualité premium souhaitée"
                   required
                 />
               </div>
@@ -382,32 +439,40 @@ export default function DeliveryRequestsPage() {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Adresse de livraison
-                </label>
-                <Input
-                  value={newRequest.address}
-                  onChange={(e) => setNewRequest({...newRequest, address: e.target.value})}
-                  placeholder="Votre adresse complète"
-                  required
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
                   Budget indicatif (FCFA)
                 </label>
+                <div className="grid grid-cols-2 gap-2">
+                  <Input
+                    type="number"
+                    value={newRequest.budgetMin}
+                    onChange={(e) => setNewRequest({...newRequest, budgetMin: e.target.value})}
+                    placeholder="Min: 40000"
+                    required
+                  />
+                  <Input
+                    type="number"
+                    value={newRequest.budgetMax}
+                    onChange={(e) => setNewRequest({...newRequest, budgetMax: e.target.value})}
+                    placeholder="Max: 50000"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Date souhaitée de livraison
+                </label>
                 <Input
-                  type="number"
-                  value={newRequest.budget}
-                  onChange={(e) => setNewRequest({...newRequest, budget: e.target.value})}
-                  placeholder="Ex: 45000"
+                  type="date"
+                  value={newRequest.date}
+                  onChange={(e) => setNewRequest({...newRequest, date: e.target.value})}
                   required
                 />
               </div>
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Date souhaitée
                 </label>
                 <Input
                   type="date"
