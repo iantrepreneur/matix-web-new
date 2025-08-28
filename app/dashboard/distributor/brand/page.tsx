@@ -19,19 +19,34 @@ import {
   Check,
   Eye,
   Edit,
-  Trash2
+  Trash2,
+  Plus,
+  ExternalLink,
+  Share2,
+  TrendingUp
 } from 'lucide-react';
 
 export default function BrandPage() {
   const [activePage, setActivePage] = useState('brand');
+  const [activeTab, setActiveTab] = useState('configuration');
   const [brandColors, setBrandColors] = useState({
     primary: '#2563EB',
     secondary: '#FFC107',
     accent: '#10B981'
   });
   const [copiedUrl, setCopiedUrl] = useState(false);
-  const [brandName, setBrandName] = useState('Fatou Enterprises Store');
-  const [brandDescription, setBrandDescription] = useState('Distributeur officiel de produits avicoles de qualité');
+  const [brandName, setBrandName] = useState('FreshFarm Sénégal');
+  const [brandSlogan, setBrandSlogan] = useState('Fraîcheur garantie du producteur au consommateur');
+  const [brandAddress, setBrandAddress] = useState('Marché Colobane, Dakar');
+  const [brandPhone, setBrandPhone] = useState('+221 77 123 45 67');
+  const [brandEmail, setBrandEmail] = useState('contact@freshfarm.sn');
+  const [brandWebsite, setBrandWebsite] = useState('');
+
+  const brandStats = {
+    visits: 247,
+    orders: 12,
+    revenue: '340,000'
+  };
 
   const user = {
     name: "Fatou Enterprises",
@@ -80,7 +95,7 @@ export default function BrandPage() {
     { id: 'logout', label: 'Déconnexion', icon: <LogOut className="h-4 w-4" /> }
   ];
 
-  const publicUrl = "https://matix.sn/store/fatou-enterprises";
+  const publicUrl = "https://matix.sn/boutique/freshfarm-senegal";
 
   const copyUrl = async () => {
     try {
