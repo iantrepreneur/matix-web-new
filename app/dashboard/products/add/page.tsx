@@ -389,7 +389,6 @@ export default function AddProductPage() {
                       defaultValue="Route de Rufisque, Sangalkam, Dakar"
                     />
                   </div>
-                </div>
 
                 {/* Boutons */}
                 <div className="flex gap-4 pt-8 border-t border-gray-200">
