@@ -14,10 +14,9 @@ import {
   Users, 
   User as UserIcon, 
   LogOut,
-  ShoppingCart,
   TrendingUp,
-  AlertTriangle,
   DollarSign,
+  AlertTriangle,
   Eye,
   ChevronLeft,
   ChevronRight
