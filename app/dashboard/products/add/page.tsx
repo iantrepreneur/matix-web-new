@@ -153,143 +153,253 @@ export default function AddProductPage() {
                   Retour
                 </Button>
               </Link>
-              <h1 className="text-2xl font-bold text-gray-900">Ajouter un Produit</h1>
+              <h1 className="text-2xl font-bold text-gray-900">Ajouter un Nouveau Produit</h1>
             </div>
 
             <Card className="p-6">
               <form className="space-y-6">
-                {/* Catégorie */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Catégorie *
-                  </label>
-                  <select 
-                    className="w-full border border-gray-300 rounded-lg px-3 py-2 bg-white"
-                    value={selectedCategory}
-                    onChange={(e) => setSelectedCategory(e.target.value)}
-                    required
-                  >
-                    <option value="">Sélectionner une catégorie</option>
-                    {categories.map((category, index) => (
-                      <option key={index} value={category}>{category}</option>
-                    ))}
-                  </select>
-                </div>
-
-                {/* Nom et Description */}
+                {/* Formulaire 2 colonnes */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Nom du Produit *
-                    </label>
-                    <Input 
-                      type="text" 
-                      placeholder="Ex: Poulet Fermier Bio"
-                      required
-                    />
+                  {/* Colonne Gauche */}
+                  <div className="space-y-6">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Nom du Produit *
+                      </label>
+                      <Input 
+                        type="text" 
+                        placeholder="Ex: Poulet Fermier Bio Premium"
+                        required
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Catégorie *
+                      </label>
+                      <select 
+                        className="w-full border border-gray-300 rounded-lg px-3 py-2 bg-white"
+                        value={selectedCategory}
+                        onChange={(e) => setSelectedCategory(e.target.value)}
+                        required
+                      >
+                        <option value="">Sélectionner une catégorie</option>
+                        <option value="volailles">Volailles</option>
+                        <option value="oeufs">Œufs</option>
+                        <option value="equipements">Équipements</option>
+                        <option value="aliments">Aliments</option>
+                        <option value="soins">Soins</option>
+                      </select>
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Type Spécifique *
+                      </label>
+                      <Input 
+                        type="text" 
+                        placeholder="Ex: Poulet de chair, Pondeuse, Poussin 1 jour..."
+                        required
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Description Détaillée
+                      </label>
+                      <textarea
+                        className="w-full border border-gray-300 rounded-lg px-3 py-2 h-32 resize-none"
+                        placeholder="Décrivez votre produit en détail (méthode d'élevage, alimentation, conditions sanitaires...)"
+                      />
+                    </div>
                   </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Prix Unitaire (FCFA) *
-                    </label>
-                    <Input 
-                      type="number" 
-                      placeholder="Ex: 4500"
-                      required
-                    />
+
+                  {/* Colonne Droite */}
+                  <div className="space-y-6">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Prix Unitaire (FCFA) *
+                      </label>
+                      <Input 
+                        type="number" 
+                        placeholder="Ex: 4500"
+                        required
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Prix Distributeur (FCFA)
+                      </label>
+                      <Input 
+                        type="number" 
+                        placeholder="Prix de gros (optionnel)"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Stock Disponible *
+                      </label>
+                      <Input 
+                        type="number" 
+                        placeholder="Ex: 50"
+                        required
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Unité de Mesure
+                      </label>
+                      <select className="w-full border border-gray-300 rounded-lg px-3 py-2 bg-white">
+                        <option value="piece">Pièce</option>
+                        <option value="kg">Kilogramme</option>
+                        <option value="lot">Lot</option>
+                        <option value="sac">Sac</option>
+                      </select>
+                    </div>
                   </div>
                 </div>
 
+                {/* Section Photos - Pleine largeur */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Description *
-                  </label>
-                  <textarea
-                    className="w-full border border-gray-300 rounded-lg px-3 py-2 h-24 resize-none"
-                    placeholder="Décrivez votre produit en détail..."
-                    required
-                  />
-                </div>
-
-                {/* Stock et Disponibilité */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Stock Disponible *
-                    </label>
-                    <Input 
-                      type="number" 
-                      placeholder="Ex: 50"
-                      required
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Date de Disponibilité *
-                    </label>
-                    <Input 
-                      type="date" 
-                      required
-                    />
-                  </div>
-                </div>
-
-                {/* Upload Photos */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Photos du Produit *
-                  </label>
+                  <h3 className="text-lg font-semibold mb-4">Photos du Produit</h3>
                   <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center">
                     <Upload className="h-8 w-8 text-gray-400 mx-auto mb-2" />
-                    <p className="text-gray-600 mb-1">Glissez vos images ici ou cliquez pour sélectionner</p>
-                    <p className="text-xs text-gray-400">(Formats acceptés: *.jpeg, *.png, *.jpg - Max 5 photos)</p>
+                    <p className="text-gray-600 mb-1">Ajouter jusqu'à 5 photos</p>
+                    <p className="text-xs text-gray-400">(Glissez vos images ici ou cliquez pour sélectionner)</p>
+                    <p className="text-xs text-gray-400 mt-1">Formats acceptés: *.jpeg, *.png, *.jpg</p>
+                  </div>
+                </div>
+
+                {/* Informations Avicoles */}
+                <div>
+                  <h3 className="text-lg font-semibold mb-4">Informations Avicoles</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Âge (pour volailles)
+                      </label>
+                      <div className="flex items-center gap-2">
+                        <Input 
+                          type="number" 
+                          placeholder="Ex: 12"
+                          className="flex-1"
+                        />
+                        <span className="text-sm text-gray-600">semaines</span>
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Poids Moyen
+                      </label>
+                      <div className="flex items-center gap-2">
+                        <Input 
+                          type="number" 
+                          step="0.1"
+                          placeholder="Ex: 1.8"
+                          className="flex-1"
+                        />
+                        <select className="border border-gray-300 rounded px-2 py-1 text-sm">
+                          <option value="kg">kg</option>
+                          <option value="g">grammes</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Race/Souche
+                      </label>
+                      <Input 
+                        type="text" 
+                        placeholder="Ex: ISA Brown, Ross 308, Locale..."
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Vaccination
+                      </label>
+                      <div className="flex items-center gap-3">
+                        <div className="flex items-center gap-2">
+                          <input type="radio" name="vaccination" value="oui" className="text-matix-green-medium" />
+                          <span className="text-sm">Oui</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <input type="radio" name="vaccination" value="non" className="text-matix-green-medium" />
+                          <span className="text-sm">Non</span>
+                        </div>
+                      </div>
+                      <Input 
+                        type="text" 
+                        placeholder="Détails vaccination (optionnel)"
+                        className="mt-2"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Disponibilité */}
+                <div>
+                  <h3 className="text-lg font-semibold mb-4">Disponibilité</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Date de Disponibilité
+                      </label>
+                      <Input 
+                        type="date" 
+                        required
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Date Limite de Vente
+                      </label>
+                      <Input 
+                        type="date"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Quantité Minimum Commande
+                      </label>
+                      <Input 
+                        type="number" 
+                        placeholder="Ex: 5"
+                      />
+                    </div>
                   </div>
                 </div>
 
                 {/* Localisation */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Adresse de la Ferme *
-                  </label>
-                  <Input 
-                    type="text" 
-                    placeholder="Ex: Ferme Diallo, Route de Rufisque, Dakar"
-                    required
-                  />
-                </div>
-
-                {/* Informations Complémentaires */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
+                    <h3 className="text-lg font-semibold mb-4">Localisation</h3>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Poids Moyen (kg)
+                      Adresse de la Ferme
                     </label>
                     <Input 
-                      type="number" 
-                      step="0.1"
-                      placeholder="Ex: 1.8"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Âge (semaines)
-                    </label>
-                    <Input 
-                      type="number" 
-                      placeholder="Ex: 12"
+                      type="text" 
+                      placeholder="Ex: Ferme Diallo, Route de Rufisque, Dakar"
+                      defaultValue="Route de Rufisque, Sangalkam, Dakar"
                     />
                   </div>
                 </div>
 
                 {/* Boutons */}
-                <div className="flex gap-4 pt-6">
+                <div className="flex gap-4 pt-8 border-t border-gray-200">
                   <Link href="/dashboard/products" className="flex-1">
-                    <Button variant="outline" className="w-full">
+                    <Button variant="outline" className="w-full border-gray-300 text-gray-700 hover:bg-gray-50">
                       Annuler
                     </Button>
                   </Link>
                   <Button type="submit" className="flex-1 bg-matix-green-medium hover:bg-matix-green-dark text-white">
-                    Publier le Produit
+                    Enregistrer le Produit
                   </Button>
                 </div>
               </form>
