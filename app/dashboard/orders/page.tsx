@@ -3,8 +3,8 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { Card } from '@/components/ui/card';
-import InvoiceModal from '@/components/InvoiceModal';
 import { 
   BarChart3, 
   Package, 
@@ -13,18 +13,26 @@ import {
   Edit, 
   Lock, 
   LogOut,
+  Search,
+  Filter,
+  RotateCcw,
   Eye,
-  ChevronLeft,
-  ChevronRight
+  CheckCircle,
+  Truck,
+  Phone,
+  Printer,
+  ChevronDown,
+  ShoppingCart,
+  MapPin
 } from 'lucide-react';
 
-export default function MyOrdersPage() {
+export default function ProducerOrdersPage() {
   const [activePage, setActivePage] = useState('orders');
-  const [currentPage, setCurrentPage] = useState(1);
-  const [showInvoice, setShowInvoice] = useState(false);
-  const [selectedOrderId, setSelectedOrderId] = useState('');
-  const [selectedOrder, setSelectedOrder] = useState<any>(null);
-  const itemsPerPage = 10;
+  const [searchTerm, setSearchTerm] = useState('');
+  const [statusFilter, setStatusFilter] = useState('all');
+  const [dateFrom, setDateFrom] = useState('');
+  const [dateTo, setDateTo] = useState('');
+  const [openDropdown, setOpenDropdown] = useState<string | null>(null);
 
   const user = {
     name: "Amadou Diallo",
@@ -34,112 +42,119 @@ export default function MyOrdersPage() {
 
   const orders = [
     {
-      id: "B9K2",
-      orderTime: "24 Août, 2025",
-      method: "Orange Money",
-      status: "En traitement",
-      shipping: "Express Dakar",
-      shippingCost: "2500 FCFA",
-      total: "50000 FCFA"
+      id: "CM001",
+      date: "28/08/25",
+      client: "Fatou Sall",
+      contact: "+221 76 987 654",
+      product: "Poulets fermiers",
+      quantity: "5",
+      unitPrice: "4,500",
+      total: "22,500",
+      status: "Nouvelle"
     },
     {
-      id: "D185", 
-      orderTime: "23 Août, 2025",
-      method: "Wave",
-      status: "En attente",
-      shipping: "Standard",
-      shippingCost: "2000 FCFA",
-      total: "35000 FCFA"
+      id: "CM002", 
+      date: "27/08/25",
+      client: "Ibrahima Ba",
+      contact: "+221 78 444 567",
+      product: "Œufs bio x30",
+      quantity: "2",
+      unitPrice: "3,000",
+      total: "6,000",
+      status: "Confirmée"
     },
     {
-      id: "B6B1",
-      orderTime: "21 Août, 2025", 
-      method: "Espèces",
-      status: "En attente",
-      shipping: "Express",
-      shippingCost: "2500 FCFA",
-      total: "125000 FCFA"
+      id: "CM003",
+      date: "26/08/25",
+      client: "Distributeur Thiès",
+      contact: "+221 77 123 456", 
+      product: "Poussins x50",
+      quantity: "1",
+      unitPrice: "125,000",
+      total: "125,000",
+      status: "En préparation"
     },
     {
-      id: "6230",
-      orderTime: "21 Août, 2025",
-      method: "Free Money", 
-      status: "Livrée",
-      shipping: "UPS",
-      shippingCost: "3000 FCFA",
-      total: "28000 FCFA"
+      id: "CM004",
+      date: "25/08/25",
+      client: "Aïcha Ndiaye",
+      contact: "+221 70 555 888",
+      product: "Aliment ponte 25kg",
+      quantity: "3",
+      unitPrice: "18,500",
+      total: "55,500",
+      status: "Expédiée"
     },
     {
-      id: "CCFC",
-      orderTime: "20 Août, 2025",
-      method: "Espèces",
-      status: "En attente", 
-      shipping: "Express Dakar",
-      shippingCost: "2500 FCFA",
-      total: "210000 FCFA"
+      id: "CM005",
+      date: "24/08/25",
+      client: "Moussa Diop",
+      contact: "+221 76 333 222",
+      product: "Poulets chair x10",
+      quantity: "1",
+      unitPrice: "45,000",
+      total: "45,000",
+      status: "Nouvelle"
     },
     {
-      id: "112E",
-      orderTime: "20 Août, 2025",
-      method: "Orange Money",
-      status: "En attente",
-      shipping: "Standard", 
-      shippingCost: "2000 FCFA",
-      total: "272000 FCFA"
+      id: "CM006",
+      date: "23/08/25",
+      client: "Khadija Fall",
+      contact: "+221 77 888 999",
+      product: "Mangeoires automatiques",
+      quantity: "2",
+      unitPrice: "15,500",
+      total: "31,000",
+      status: "Confirmée"
     },
     {
-      id: "D601",
-      orderTime: "19 Août, 2025",
-      method: "Wave",
-      status: "Livrée",
-      shipping: "Express Dakar",
-      shippingCost: "2000 FCFA", 
-      total: "118030 FCFA"
+      id: "CM007",
+      date: "22/08/25",
+      client: "Omar Sy",
+      contact: "+221 78 111 333",
+      product: "Vaccins Newcastle",
+      quantity: "5",
+      unitPrice: "12,500",
+      total: "62,500",
+      status: "Expédiée"
     },
     {
-      id: "0755",
-      orderTime: "19 Août, 2025", 
-      method: "Espèces",
-      status: "Livrée",
-      shipping: "UPS",
-      shippingCost: "2000 FCFA",
-      total: "100000 FCFA"
-    },
-    {
-      id: "E58D",
-      orderTime: "18 Août, 2025",
-      method: "Free Money",
-      status: "Livrée", 
-      shipping: "Express Dakar",
-      shippingCost: "2000 FCFA",
-      total: "740850 FCFA"
-    },
-    {
-      id: "2857",
-      orderTime: "18 Août, 2025",
-      method: "Orange Money",
-      status: "Livrée",
-      shipping: "Standard",
-      shippingCost: "6000 FCFA",
-      total: "793380 FCFA"
+      id: "CM008",
+      date: "21/08/25",
+      client: "Bineta Sarr",
+      contact: "+221 76 777 444",
+      product: "Abreuvoirs 5L",
+      quantity: "4",
+      unitPrice: "3,200",
+      total: "12,800",
+      status: "Expédiée"
     }
   ];
 
   const menuItems = [
     { id: 'dashboard', label: 'Dashboard', icon: <BarChart3 className="h-4 w-4" /> },
-    { id: 'orders', label: 'Mes Commandes', icon: <Package className="h-4 w-4" /> },
-    { id: 'reviews', label: 'Mes Avis', icon: <Star className="h-4 w-4" /> },
-    { id: 'account', label: 'Mon Compte', icon: <User className="h-4 w-4" /> },
-    { id: 'profile', label: 'Modifier Profil', icon: <Edit className="h-4 w-4" /> },
-    { id: 'password', label: 'Changer Mot de Passe', icon: <Lock className="h-4 w-4" /> },
+    { id: 'products', label: 'Mes Produits', icon: <Package className="h-4 w-4" /> },
+    { id: 'orders', label: 'Commandes Reçues', icon: <ShoppingCart className="h-4 w-4" /> },
+    { id: 'stats', label: 'Statistiques', icon: <BarChart3 className="h-4 w-4" /> },
+    { id: 'location', label: 'Géolocalisation', icon: <MapPin className="h-4 w-4" /> },
+    { id: 'profile', label: 'Mon Profil', icon: <UserIcon className="h-4 w-4" /> },
     { id: 'logout', label: 'Déconnexion', icon: <LogOut className="h-4 w-4" /> }
+  ];
+
+  const statusOptions = [
+    { value: 'all', label: 'Toutes' },
+    { value: 'nouvelle', label: 'Nouvelles' },
+    { value: 'confirmee', label: 'Confirmées' },
+    { value: 'preparation', label: 'En préparation' },
+    { value: 'expediee', label: 'Expédiées' }
   ];
 
   const getStatusBadge = (status: string) => {
     const statusStyles = {
-      'En traitement': 'bg-blue-100 text-blue-800',
-      'En attente': 'bg-orange-100 text-orange-800', 
-      'Livrée': 'bg-green-100 text-green-800',
+      'Nouvelle': 'bg-blue-100 text-blue-800',
+      'Confirmée': 'bg-orange-100 text-orange-800', 
+      'En préparation': 'bg-yellow-100 text-yellow-800',
+      'Expédiée': 'bg-green-100 text-green-800',
       'Annulée': 'bg-red-100 text-red-800'
     };
     
@@ -150,10 +165,17 @@ export default function MyOrdersPage() {
     );
   };
 
-  const totalPages = Math.ceil(orders.length / itemsPerPage);
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
-  const currentOrders = orders.slice(startIndex, endIndex);
+  const handleAction = (action: string, orderId: string) => {
+    console.log(`Action ${action} pour commande ${orderId}`);
+    setOpenDropdown(null);
+  };
+
+  const resetFilters = () => {
+    setSearchTerm('');
+    setStatusFilter('all');
+    setDateFrom('');
+    setDateTo('');
+  };
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -226,6 +248,7 @@ export default function MyOrdersPage() {
                 </div>
                 <h3 className="font-semibold text-gray-900">{user.name}</h3>
                 <p className="text-sm text-gray-500">{user.email}</p>
+                <p className="text-xs text-green-600">Producteur</p>
               </div>
 
               {/* Menu Navigation */}
@@ -251,49 +274,151 @@ export default function MyOrdersPage() {
           {/* Main Content */}
           <div className="lg:col-span-3">
             <div className="mb-6">
-              <h1 className="text-2xl font-bold text-gray-900">Mes Commandes</h1>
+              <h1 className="text-2xl font-bold text-gray-900">Commandes Reçues</h1>
             </div>
 
-            {/* Orders Table */}
+            {/* Filtres */}
+            <Card className="p-6 mb-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
+                {/* Recherche */}
+                <div className="relative">
+                  <Search className="h-4 w-4 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                  <Input
+                    placeholder="Rechercher client/produit..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="pl-10"
+                  />
+                </div>
+
+                {/* Statut */}
+                <select 
+                  className="border border-gray-300 rounded-lg px-3 py-2 bg-white"
+                  value={statusFilter}
+                  onChange={(e) => setStatusFilter(e.target.value)}
+                >
+                  {statusOptions.map((option) => (
+                    <option key={option.value} value={option.value}>
+                      {option.label}
+                    </option>
+                  ))}
+                </select>
+
+                {/* Date From */}
+                <Input
+                  type="date"
+                  value={dateFrom}
+                  onChange={(e) => setDateFrom(e.target.value)}
+                  placeholder="Date début"
+                />
+
+                {/* Date To */}
+                <Input
+                  type="date"
+                  value={dateTo}
+                  onChange={(e) => setDateTo(e.target.value)}
+                  placeholder="Date fin"
+                />
+              </div>
+
+              <div className="flex gap-3">
+                <Button className="bg-matix-green-medium hover:bg-matix-green-dark text-white flex items-center gap-2">
+                  <Filter className="h-4 w-4" />
+                  Filtrer
+                </Button>
+                <Button 
+                  variant="outline" 
+                  onClick={resetFilters}
+                  className="flex items-center gap-2"
+                >
+                  <RotateCcw className="h-4 w-4" />
+                  Reset
+                </Button>
+              </div>
+            </Card>
+
+            {/* Tableau Commandes */}
             <Card className="p-6">
-              {/* Table */}
               <div className="overflow-x-auto">
                 <table className="w-full">
                   <thead>
                     <tr className="border-b border-gray-200">
                       <th className="text-left py-3 px-4 font-medium text-gray-600">Order ID</th>
-                      <th className="text-left py-3 px-4 font-medium text-gray-600">OrderTime</th>
-                      <th className="text-left py-3 px-4 font-medium text-gray-600">Method</th>
-                      <th className="text-left py-3 px-4 font-medium text-gray-600">Status</th>
-                      <th className="text-left py-3 px-4 font-medium text-gray-600">Shipping</th>
-                      <th className="text-left py-3 px-4 font-medium text-gray-600">Shipping Cost</th>
+                      <th className="text-left py-3 px-4 font-medium text-gray-600">Date</th>
+                      <th className="text-left py-3 px-4 font-medium text-gray-600">Client</th>
+                      <th className="text-left py-3 px-4 font-medium text-gray-600">Contact</th>
+                      <th className="text-left py-3 px-4 font-medium text-gray-600">Produit</th>
+                      <th className="text-left py-3 px-4 font-medium text-gray-600">Quantité</th>
+                      <th className="text-left py-3 px-4 font-medium text-gray-600">Prix Unitaire</th>
                       <th className="text-left py-3 px-4 font-medium text-gray-600">Total</th>
-                      <th className="text-left py-3 px-4 font-medium text-gray-600">Action</th>
+                      <th className="text-left py-3 px-4 font-medium text-gray-600">Statut</th>
+                      <th className="text-left py-3 px-4 font-medium text-gray-600">Actions</th>
                     </tr>
                   </thead>
                   <tbody>
-                    {currentOrders.map((order, index) => (
+                    {orders.map((order, index) => (
                       <tr key={index} className="border-b border-gray-100 hover:bg-gray-50 transition-colors">
                         <td className="py-3 px-4 font-medium text-gray-900">{order.id}</td>
-                        <td className="py-3 px-4 text-gray-600">{order.orderTime}</td>
-                        <td className="py-3 px-4 text-gray-600">{order.method}</td>
+                        <td className="py-3 px-4 text-gray-600">{order.date}</td>
+                        <td className="py-3 px-4 text-gray-600">{order.client}</td>
+                        <td className="py-3 px-4 text-gray-600">{order.contact}</td>
+                        <td className="py-3 px-4 text-gray-600">{order.product}</td>
+                        <td className="py-3 px-4 text-gray-600">{order.quantity}</td>
+                        <td className="py-3 px-4 text-gray-600">{order.unitPrice} FCFA</td>
+                        <td className="py-3 px-4 font-medium text-gray-900">{order.total} FCFA</td>
                         <td className="py-3 px-4">{getStatusBadge(order.status)}</td>
-                        <td className="py-3 px-4 text-gray-600">{order.shipping}</td>
-                        <td className="py-3 px-4 text-gray-600">{order.shippingCost}</td>
-                        <td className="py-3 px-4 font-medium text-gray-900">{order.total}</td>
                         <td className="py-3 px-4">
-                          <Button 
-                            variant="ghost" 
-                            size="sm" 
-                            className="text-matix-green-medium hover:text-matix-green-dark"
-                            onClick={() => {
-                              setSelectedOrderId(order.id);
-                              setSelectedOrder(order);
-                              setShowInvoice(true);
-                            }}
-                          >
-                            <Eye className="h-4 w-4" />
-                          </Button>
+                          <div className="relative">
+                            <Button 
+                              variant="ghost" 
+                              size="sm" 
+                              className="text-matix-green-medium hover:text-matix-green-dark"
+                              onClick={() => setOpenDropdown(openDropdown === order.id ? null : order.id)}
+                            >
+                              <ChevronDown className="h-4 w-4" />
+                            </Button>
+                            
+                            {/* Actions Dropdown */}
+                            {openDropdown === order.id && (
+                              <div className="absolute top-full right-0 mt-1 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50">
+                                <button
+                                  onClick={() => handleAction('view', order.id)}
+                                  className="w-full flex items-center gap-3 px-4 py-2 text-gray-700 hover:bg-gray-50 transition-colors"
+                                >
+                                  <Eye className="h-4 w-4" />
+                                  <span className="text-sm">Voir détails</span>
+                                </button>
+                                <button
+                                  onClick={() => handleAction('confirm', order.id)}
+                                  className="w-full flex items-center gap-3 px-4 py-2 text-gray-700 hover:bg-gray-50 transition-colors"
+                                >
+                                  <CheckCircle className="h-4 w-4" />
+                                  <span className="text-sm">Confirmer commande</span>
+                                </button>
+                                <button
+                                  onClick={() => handleAction('ship', order.id)}
+                                  className="w-full flex items-center gap-3 px-4 py-2 text-gray-700 hover:bg-gray-50 transition-colors"
+                                >
+                                  <Truck className="h-4 w-4" />
+                                  <span className="text-sm">Marquer comme expédiée</span>
+                                </button>
+                                <button
+                                  onClick={() => handleAction('contact', order.id)}
+                                  className="w-full flex items-center gap-3 px-4 py-2 text-gray-700 hover:bg-gray-50 transition-colors"
+                                >
+                                  <Phone className="h-4 w-4" />
+                                  <span className="text-sm">Contacter client</span>
+                                </button>
+                                <button
+                                  onClick={() => handleAction('print', order.id)}
+                                  className="w-full flex items-center gap-3 px-4 py-2 text-gray-700 hover:bg-gray-50 transition-colors"
+                                >
+                                  <Printer className="h-4 w-4" />
+                                  <span className="text-sm">Imprimer bon de commande</span>
+                                </button>
+                              </div>
+                            )}
+                          </div>
                         </td>
                       </tr>
                     ))}
@@ -304,56 +429,21 @@ export default function MyOrdersPage() {
               {/* Pagination */}
               <div className="flex items-center justify-between mt-6">
                 <p className="text-sm text-gray-600">
-                  SHOWING {startIndex + 1}-{Math.min(endIndex, orders.length)} OF 1007
+                  SHOWING 1-{orders.length} OF {orders.length}
                 </p>
                 
                 <div className="flex items-center gap-2">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
-                    disabled={currentPage === 1}
-                  >
-                    <ChevronLeft className="h-4 w-4" />
-                  </Button>
-                  
-                  {[1, 2, 3, 4, 5].map((pageNum) => (
-                    <Button
-                      key={pageNum}
-                      variant={currentPage === pageNum ? "default" : "outline"}
-                      size="sm"
-                      onClick={() => setCurrentPage(pageNum)}
-                      className={currentPage === pageNum ? "bg-matix-green-medium text-white" : ""}
-                    >
-                      {pageNum}
-                    </Button>
-                  ))}
-                  
-                  <span className="text-gray-400">...</span>
-                  <Button variant="outline" size="sm">101</Button>
-                  
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
-                    disabled={currentPage === totalPages}
-                  >
-                    <ChevronRight className="h-4 w-4" />
-                  </Button>
+                  <Button variant="outline" size="sm">‹</Button>
+                  <Button size="sm" className="bg-matix-green-medium text-white">1</Button>
+                  <Button variant="outline" size="sm">2</Button>
+                  <Button variant="outline" size="sm">3</Button>
+                  <Button variant="outline" size="sm">›</Button>
                 </div>
               </div>
             </Card>
           </div>
         </div>
       </div>
-
-      {/* Invoice Modal */}
-      <InvoiceModal 
-        isOpen={showInvoice}
-        onClose={() => setShowInvoice(false)}
-        orderId={selectedOrderId}
-        orderData={selectedOrder}
-      />
 
       {/* Section App */}
       <div className="bg-gradient-to-r from-green-50 to-blue-50 py-16">
