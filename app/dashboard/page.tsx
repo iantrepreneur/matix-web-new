@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import InvoiceModal from '@/components/InvoiceModal';
-import { authService, User } from '@/lib/auth';
+import { authService, User as UserType } from '@/lib/auth';
 import { 
   BarChart3, 
   Package, 
@@ -29,7 +29,7 @@ export default function DashboardPage() {
   const [showInvoice, setShowInvoice] = useState(false);
   const [selectedOrderId, setSelectedOrderId] = useState('');
   const [selectedOrder, setSelectedOrder] = useState<any>(null);
-  const [currentUser, setCurrentUser] = useState<User | null>(null);
+  const [currentUser, setCurrentUser] = useState<UserType | null>(null);
   const itemsPerPage = 10;
 
   useEffect(() => {
