@@ -1,11 +1,10 @@
 "use client";
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { Card } from '@/components/ui/card';
-import InvoiceModal from '@/components/InvoiceModal';
-import { authService, User as UserType } from '@/lib/auth';
 import { 
   BarChart3, 
   Package, 
@@ -14,157 +13,31 @@ import {
   Edit, 
   Lock, 
   LogOut,
+  Upload,
+  ArrowLeft,
   ShoppingCart,
-  Clock,
-  Settings,
-  CheckCircle,
-  Eye,
-  ChevronLeft,
-  ChevronRight
+  MapPin
 } from 'lucide-react';
 
-export default function DashboardPage() {
-  const [activePage, setActivePage] = useState('dashboard');
-  const [currentPage, setCurrentPage] = useState(1);
-  const [showInvoice, setShowInvoice] = useState(false);
-  const [selectedOrderId, setSelectedOrderId] = useState('');
-  const [selectedOrder, setSelectedOrder] = useState<any>(null);
-  const [currentUser, setCurrentUser] = useState<UserType | null>(null);
-  const itemsPerPage = 10;
+export default function AddProductPage() {
+  const [activePage, setActivePage] = useState('products');
+  const [selectedCategory, setSelectedCategory] = useState('');
 
-  useEffect(() => {
-    const user = authService.getCurrentUser();
-    setCurrentUser(user);
-  }, []);
+  const user = {
+    name: "Amadou Diallo",
+    email: "amadou@gmail.com",
+    avatar: "https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=100"
+  };
 
-  if (!currentUser) {
-    return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold text-gray-900 mb-4">Accès non autorisé</h1>
-          <p className="text-gray-600 mb-6">Veuillez vous connecter pour accéder au dashboard.</p>
-          <Link href="/">
-            <Button className="bg-matix-green-medium hover:bg-matix-green-dark text-white">
-              Retour à l'accueil
-            </Button>
-          </Link>
-        </div>
-      </div>
-    );
-  }
-
-  const stats = [
-    {
-      title: "Produits Publiés",
-      value: "45",
-      icon: <ShoppingCart className="h-6 w-6" />,
-      bgColor: "bg-pink-100",
-      iconColor: "text-pink-600"
-    },
-    {
-      title: "Commandes Reçues", 
-      value: "23",
-      icon: <Clock className="h-6 w-6" />,
-      bgColor: "bg-orange-100",
-      iconColor: "text-orange-600"
-    },
-    {
-      title: "Commandes en Cours",
-      value: "8", 
-      icon: <Settings className="h-6 w-6" />,
-      bgColor: "bg-blue-100",
-      iconColor: "text-blue-600"
-    },
-    {
-      title: "Revenus du Mois",
-      value: "450,000 FCFA",
-      icon: <CheckCircle className="h-6 w-6" />,
-      bgColor: "bg-green-100", 
-      iconColor: "text-green-600"
-    }
-  ];
-
-  const receivedOrders = [
-    {
-      id: "B9K2",
-      client: "Amadou Diallo",
-      product: "Poulet Fermier Bio",
-      quantity: "2",
-      total: "9000 FCFA",
-      status: "En cours"
-    },
-    {
-      id: "D185", 
-      client: "Fatou Sall",
-      product: "Poussins ISA Brown",
-      quantity: "10",
-      total: "8500 FCFA",
-      status: "Confirmée"
-    },
-    {
-      id: "B6B1",
-      client: "Ibrahima Ba",
-      product: "Œufs à Couver",
-      quantity: "50",
-      total: "6250 FCFA",
-      status: "Livrée"
-    },
-    {
-      id: "6230",
-      client: "Aïcha Ndiaye",
-      product: "Aliment Ponte Premium",
-      quantity: "1",
-      total: "18500 FCFA",
-      status: "En cours"
-    },
-    {
-      id: "CCFC",
-      client: "Moussa Diop",
-      product: "Poulet Chair Ross",
-      quantity: "5",
-      total: "22500 FCFA",
-      status: "Confirmée"
-    },
-    {
-      id: "112E",
-      client: "Khadija Fall",
-      product: "Mangeoire Automatique",
-      quantity: "2",
-      total: "31000 FCFA",
-      status: "En cours"
-    },
-    {
-      id: "D601",
-      client: "Omar Sy",
-      product: "Vaccin Newcastle",
-      quantity: "3",
-      total: "37500 FCFA",
-      status: "Livrée"
-    },
-    {
-      id: "0755",
-      client: "Bineta Sarr",
-      product: "Abreuvoir Nipple",
-      quantity: "4",
-      total: "12800 FCFA",
-      status: "Livrée"
-    },
-    {
-      id: "E58D",
-      client: "Cheikh Ndiaye",
-      product: "Couveuse 100 Œufs",
-      quantity: "1",
-      total: "89500 FCFA",
-      status: "Confirmée"
-    },
-    {
-      id: "2857",
-      client: "Mariama Cissé",
-      product: "Désinfectant Bio",
-      quantity: "2",
-      total: "17000 FCFA",
-      status: "En cours"
-    }
+  const categories = [
+    "Poulets de Chair",
+    "Poules Pondeuses", 
+    "Poussins",
+    "Œufs à Couver",
+    "Aliments Avicoles",
+    "Équipements d'Élevage",
+    "Produits Vétérinaires",
+    "Matériel de Transport"
   ];
 
   const menuItems = [
@@ -172,30 +45,10 @@ export default function DashboardPage() {
     { id: 'products', label: 'Mes Produits', icon: <Package className="h-4 w-4" /> },
     { id: 'orders', label: 'Commandes Reçues', icon: <ShoppingCart className="h-4 w-4" /> },
     { id: 'stats', label: 'Statistiques', icon: <BarChart3 className="h-4 w-4" /> },
-    { id: 'location', label: 'Géolocalisation', icon: <Star className="h-4 w-4" /> },
+    { id: 'location', label: 'Géolocalisation', icon: <MapPin className="h-4 w-4" /> },
     { id: 'profile', label: 'Mon Profil', icon: <UserIcon className="h-4 w-4" /> },
     { id: 'logout', label: 'Déconnexion', icon: <LogOut className="h-4 w-4" /> }
   ];
-
-  const getStatusBadge = (status: string) => {
-    const statusStyles = {
-      'En cours': 'bg-blue-100 text-blue-800',
-      'Confirmée': 'bg-orange-100 text-orange-800', 
-      'Livrée': 'bg-green-100 text-green-800',
-      'Annulée': 'bg-red-100 text-red-800'
-    };
-    
-    return (
-      <span className={`px-2 py-1 rounded-full text-xs font-medium ${statusStyles[status as keyof typeof statusStyles] || 'bg-blue-100 text-blue-800'}`}>
-        {status}
-      </span>
-    );
-  };
-
-  const totalPages = Math.ceil(receivedOrders.length / itemsPerPage);
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
-  const currentOrders = receivedOrders.slice(startIndex, endIndex);
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -261,14 +114,14 @@ export default function DashboardPage() {
               <div className="text-center mb-6">
                 <div className="w-16 h-16 rounded-full overflow-hidden mx-auto mb-3">
                   <img 
-                    src={currentUser.avatar} 
-                    alt={currentUser.name}
+                    src={user.avatar} 
+                    alt={user.name}
                     className="w-full h-full object-cover"
                   />
                 </div>
-                <h3 className="font-semibold text-gray-900">{currentUser.name}</h3>
-                <p className="text-sm text-gray-500">{currentUser.email}</p>
-                <p className="text-xs text-matix-green-medium capitalize">{currentUser.profile}</p>
+                <h3 className="font-semibold text-gray-900">{user.name}</h3>
+                <p className="text-sm text-gray-500">{user.email}</p>
+                <p className="text-xs text-green-600">Producteur</p>
               </div>
 
               {/* Menu Navigation */}
@@ -293,142 +146,157 @@ export default function DashboardPage() {
 
           {/* Main Content */}
           <div className="lg:col-span-3">
-            <div className="mb-6">
-              <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
+            <div className="flex items-center gap-4 mb-6">
+              <Link href="/dashboard/products">
+                <Button variant="ghost" size="sm">
+                  <ArrowLeft className="h-4 w-4 mr-2" />
+                  Retour
+                </Button>
+              </Link>
+              <h1 className="text-2xl font-bold text-gray-900">Ajouter un Produit</h1>
             </div>
 
-            {/* Stats Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-              {stats.map((stat, index) => (
-                <Card key={index} className="p-6">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm text-gray-600 mb-1">{stat.title}</p>
-                      <p className="text-2xl font-bold text-gray-900">{stat.value}</p>
-                    </div>
-                    <div className={`p-3 rounded-full ${stat.bgColor}`}>
-                      <div className={stat.iconColor}>
-                        {stat.icon}
-                      </div>
-                    </div>
-                  </div>
-                </Card>
-              ))}
-            </div>
-
-            {/* Recent Orders */}
             <Card className="p-6">
-              <h2 className="text-xl font-semibold text-gray-900 mb-6">Commandes Reçues Récentes</h2>
-              
-              {/* Table */}
-              <div className="overflow-x-auto">
-                <table className="w-full">
-                  <thead>
-                    <tr className="border-b border-gray-200">
-                      <th className="text-left py-3 px-4 font-medium text-gray-600">Order ID</th>
-                      <th className="text-left py-3 px-4 font-medium text-gray-600">Client</th>
-                      <th className="text-left py-3 px-4 font-medium text-gray-600">Produit</th>
-                      <th className="text-left py-3 px-4 font-medium text-gray-600">Quantité</th>
-                      <th className="text-left py-3 px-4 font-medium text-gray-600">Status</th>
-                      <th className="text-left py-3 px-4 font-medium text-gray-600">Prix Total</th>
-                      <th className="text-left py-3 px-4 font-medium text-gray-600">Action</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {currentOrders.map((order, index) => (
-                      <tr key={index} className="border-b border-gray-100 hover:bg-gray-50 transition-colors">
-                        <td className="py-3 px-4 font-medium text-gray-900">{order.id}</td>
-                        <td className="py-3 px-4 text-gray-600">{order.client}</td>
-                        <td className="py-3 px-4 text-gray-600">{order.product}</td>
-                        <td className="py-3 px-4 text-gray-600">{order.quantity}</td>
-                        <td className="py-3 px-4">{getStatusBadge(order.status)}</td>
-                        <td className="py-3 px-4 font-medium text-gray-900">{order.total}</td>
-                        <td className="py-3 px-4">
-                          <Button 
-                            variant="ghost" 
-                            size="sm" 
-                            className="text-matix-green-medium hover:text-matix-green-dark"
-                            onClick={() => {
-                              setSelectedOrderId(order.id);
-                              setSelectedOrder(order);
-                              setShowInvoice(true);
-                            }}
-                          >
-                            <Eye className="h-4 w-4" />
-                          </Button>
-                        </td>
-                      </tr>
+              <form className="space-y-6">
+                {/* Catégorie */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Catégorie *
+                  </label>
+                  <select 
+                    className="w-full border border-gray-300 rounded-lg px-3 py-2 bg-white"
+                    value={selectedCategory}
+                    onChange={(e) => setSelectedCategory(e.target.value)}
+                    required
+                  >
+                    <option value="">Sélectionner une catégorie</option>
+                    {categories.map((category, index) => (
+                      <option key={index} value={category}>{category}</option>
                     ))}
-                  </tbody>
-                </table>
-              </div>
+                  </select>
+                </div>
 
-              {/* Pagination */}
-              <div className="flex items-center justify-between mt-6">
-                <p className="text-sm text-gray-600">
-                  SHOWING {startIndex + 1}-{Math.min(endIndex, receivedOrders.length)} OF {receivedOrders.length}
-                </p>
-                
-                <div className="flex items-center gap-2">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
-                    disabled={currentPage === 1}
-                  >
-                    <ChevronLeft className="h-4 w-4" />
-                  </Button>
-                  
-                  {[...Array(Math.min(5, totalPages))].map((_, i) => {
-                    const pageNum = i + 1;
-                    return (
-                      <Button
-                        key={pageNum}
-                        variant={currentPage === pageNum ? "default" : "outline"}
-                        size="sm"
-                        onClick={() => setCurrentPage(pageNum)}
-                        className={currentPage === pageNum ? "bg-matix-green-medium text-white" : ""}
-                      >
-                        {pageNum}
-                      </Button>
-                    );
-                  })}
-                  
-                  {totalPages > 5 && (
-                    <>
-                      <span className="text-gray-400">...</span>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => setCurrentPage(totalPages)}
-                      >
-                        {totalPages}
-                      </Button>
-                    </>
-                  )}
-                  
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
-                    disabled={currentPage === totalPages}
-                  >
-                    <ChevronRight className="h-4 w-4" />
+                {/* Nom et Description */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Nom du Produit *
+                    </label>
+                    <Input 
+                      type="text" 
+                      placeholder="Ex: Poulet Fermier Bio"
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Prix Unitaire (FCFA) *
+                    </label>
+                    <Input 
+                      type="number" 
+                      placeholder="Ex: 4500"
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Description *
+                  </label>
+                  <textarea
+                    className="w-full border border-gray-300 rounded-lg px-3 py-2 h-24 resize-none"
+                    placeholder="Décrivez votre produit en détail..."
+                    required
+                  />
+                </div>
+
+                {/* Stock et Disponibilité */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Stock Disponible *
+                    </label>
+                    <Input 
+                      type="number" 
+                      placeholder="Ex: 50"
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Date de Disponibilité *
+                    </label>
+                    <Input 
+                      type="date" 
+                      required
+                    />
+                  </div>
+                </div>
+
+                {/* Upload Photos */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Photos du Produit *
+                  </label>
+                  <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center">
+                    <Upload className="h-8 w-8 text-gray-400 mx-auto mb-2" />
+                    <p className="text-gray-600 mb-1">Glissez vos images ici ou cliquez pour sélectionner</p>
+                    <p className="text-xs text-gray-400">(Formats acceptés: *.jpeg, *.png, *.jpg - Max 5 photos)</p>
+                  </div>
+                </div>
+
+                {/* Localisation */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Adresse de la Ferme *
+                  </label>
+                  <Input 
+                    type="text" 
+                    placeholder="Ex: Ferme Diallo, Route de Rufisque, Dakar"
+                    required
+                  />
+                </div>
+
+                {/* Informations Complémentaires */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Poids Moyen (kg)
+                    </label>
+                    <Input 
+                      type="number" 
+                      step="0.1"
+                      placeholder="Ex: 1.8"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Âge (semaines)
+                    </label>
+                    <Input 
+                      type="number" 
+                      placeholder="Ex: 12"
+                    />
+                  </div>
+                </div>
+
+                {/* Boutons */}
+                <div className="flex gap-4 pt-6">
+                  <Link href="/dashboard/products" className="flex-1">
+                    <Button variant="outline" className="w-full">
+                      Annuler
+                    </Button>
+                  </Link>
+                  <Button type="submit" className="flex-1 bg-matix-green-medium hover:bg-matix-green-dark text-white">
+                    Publier le Produit
                   </Button>
                 </div>
-              </div>
+              </form>
             </Card>
           </div>
         </div>
       </div>
-
-      {/* Invoice Modal */}
-      <InvoiceModal 
-        isOpen={showInvoice}
-        onClose={() => setShowInvoice(false)}
-        orderId={selectedOrderId}
-        orderData={selectedOrder}
-      />
 
       {/* Section App */}
       <div className="bg-gradient-to-r from-green-50 to-blue-50 py-16">
@@ -564,10 +432,10 @@ export default function DashboardPage() {
                 </div>
               </div>
               <p className="text-gray-300 mb-4">
-                987 André Plain Suite High Street 838, Lake Hestertown, USA
+                Marché Colobane, Dakar, Sénégal
               </p>
-              <p className="text-gray-300 mb-2">Tel : +02 356 1666</p>
-              <p className="text-gray-300">Email : ccruidk@test.com</p>
+              <p className="text-gray-300 mb-2">Tél : +221 77 123 45 67</p>
+              <p className="text-gray-300">Email : contact@matix.sn</p>
             </div>
           </div>
 
@@ -575,7 +443,7 @@ export default function DashboardPage() {
           <div className="border-t border-gray-800 mt-12 pt-8">
             <div className="flex flex-col lg:flex-row justify-between items-center gap-6">
               <div className="flex items-center gap-4">
-                <span className="text-gray-400">Follow Us</span>
+                <span className="text-gray-400">Suivez-nous:</span>
                 <div className="flex gap-3">
                   <div className="bg-blue-600 p-2 rounded-full">
                     <span className="text-white text-sm">f</span>
@@ -597,7 +465,7 @@ export default function DashboardPage() {
 
               <div className="text-center">
                 <p className="text-gray-400">
-                  Call Us: <span className="text-matix-yellow font-bold text-xl">+659988776</span>
+                  Appelez-nous: <span className="text-matix-yellow font-bold text-xl">+221771234567</span>
                 </p>
               </div>
 
@@ -611,7 +479,7 @@ export default function DashboardPage() {
 
             <div className="text-center mt-8 pt-6 border-t border-gray-800">
               <p className="text-gray-400">
-                Copyright 2025 © <span className="text-matix-yellow">HtmlLover</span>. All rights reserved.
+                Copyright 2024 © <span className="text-matix-yellow">MatixLover</span>. Tous droits réservés.
               </p>
             </div>
           </div>

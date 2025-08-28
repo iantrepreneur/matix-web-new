@@ -1,11 +1,9 @@
 "use client";
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import InvoiceModal from '@/components/InvoiceModal';
-import { authService, User as UserType } from '@/lib/auth';
 import { 
   BarChart3, 
   Package, 
@@ -14,156 +12,68 @@ import {
   Edit, 
   Lock, 
   LogOut,
-  ShoppingCart,
-  Clock,
-  Settings,
-  CheckCircle,
+  Plus,
   Eye,
-  ChevronLeft,
-  ChevronRight
+  Copy,
+  Power,
+  ShoppingCart,
+  MapPin
 } from 'lucide-react';
 
-export default function DashboardPage() {
-  const [activePage, setActivePage] = useState('dashboard');
-  const [currentPage, setCurrentPage] = useState(1);
-  const [showInvoice, setShowInvoice] = useState(false);
-  const [selectedOrderId, setSelectedOrderId] = useState('');
-  const [selectedOrder, setSelectedOrder] = useState<any>(null);
-  const [currentUser, setCurrentUser] = useState<UserType | null>(null);
-  const itemsPerPage = 10;
+export default function MyProductsPage() {
+  const [activePage, setActivePage] = useState('products');
 
-  useEffect(() => {
-    const user = authService.getCurrentUser();
-    setCurrentUser(user);
-  }, []);
+  const user = {
+    name: "Amadou Diallo",
+    email: "amadou@gmail.com",
+    avatar: "https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=100"
+  };
 
-  if (!currentUser) {
-    return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold text-gray-900 mb-4">Accès non autorisé</h1>
-          <p className="text-gray-600 mb-6">Veuillez vous connecter pour accéder au dashboard.</p>
-          <Link href="/">
-            <Button className="bg-matix-green-medium hover:bg-matix-green-dark text-white">
-              Retour à l'accueil
-            </Button>
-          </Link>
-        </div>
-      </div>
-    );
-  }
-
-  const stats = [
+  const products = [
     {
-      title: "Produits Publiés",
-      value: "45",
-      icon: <ShoppingCart className="h-6 w-6" />,
-      bgColor: "bg-pink-100",
-      iconColor: "text-pink-600"
+      id: 1,
+      name: "Poulet Fermier Bio Premium",
+      price: "4500",
+      stock: 25,
+      status: "Actif",
+      image: "https://images.pexels.com/photos/1556909/pexels-photo-1556909.jpeg?auto=compress&cs=tinysrgb&w=120",
+      category: "Poulets de Chair"
     },
     {
-      title: "Commandes Reçues", 
-      value: "23",
-      icon: <Clock className="h-6 w-6" />,
-      bgColor: "bg-orange-100",
-      iconColor: "text-orange-600"
+      id: 2,
+      name: "Poussins ISA Brown",
+      price: "850",
+      stock: 50,
+      status: "Actif",
+      image: "https://images.pexels.com/photos/1267697/pexels-photo-1267697.jpeg?auto=compress&cs=tinysrgb&w=120",
+      category: "Poussins"
     },
     {
-      title: "Commandes en Cours",
-      value: "8", 
-      icon: <Settings className="h-6 w-6" />,
-      bgColor: "bg-blue-100",
-      iconColor: "text-blue-600"
+      id: 3,
+      name: "Œufs à Couver Fertiles",
+      price: "125",
+      stock: 200,
+      status: "Actif",
+      image: "https://images.pexels.com/photos/162712/egg-white-food-protein-162712.jpeg?auto=compress&cs=tinysrgb&w=120",
+      category: "Œufs"
     },
     {
-      title: "Revenus du Mois",
-      value: "450,000 FCFA",
-      icon: <CheckCircle className="h-6 w-6" />,
-      bgColor: "bg-green-100", 
-      iconColor: "text-green-600"
-    }
-  ];
-
-  const receivedOrders = [
-    {
-      id: "B9K2",
-      client: "Amadou Diallo",
-      product: "Poulet Fermier Bio",
-      quantity: "2",
-      total: "9000 FCFA",
-      status: "En cours"
+      id: 4,
+      name: "Aliment Ponte Premium",
+      price: "18500",
+      stock: 0,
+      status: "Rupture",
+      image: "https://images.pexels.com/photos/533360/pexels-photo-533360.jpeg?auto=compress&cs=tinysrgb&w=120",
+      category: "Aliments"
     },
     {
-      id: "D185", 
-      client: "Fatou Sall",
-      product: "Poussins ISA Brown",
-      quantity: "10",
-      total: "8500 FCFA",
-      status: "Confirmée"
-    },
-    {
-      id: "B6B1",
-      client: "Ibrahima Ba",
-      product: "Œufs à Couver",
-      quantity: "50",
-      total: "6250 FCFA",
-      status: "Livrée"
-    },
-    {
-      id: "6230",
-      client: "Aïcha Ndiaye",
-      product: "Aliment Ponte Premium",
-      quantity: "1",
-      total: "18500 FCFA",
-      status: "En cours"
-    },
-    {
-      id: "CCFC",
-      client: "Moussa Diop",
-      product: "Poulet Chair Ross",
-      quantity: "5",
-      total: "22500 FCFA",
-      status: "Confirmée"
-    },
-    {
-      id: "112E",
-      client: "Khadija Fall",
-      product: "Mangeoire Automatique",
-      quantity: "2",
-      total: "31000 FCFA",
-      status: "En cours"
-    },
-    {
-      id: "D601",
-      client: "Omar Sy",
-      product: "Vaccin Newcastle",
-      quantity: "3",
-      total: "37500 FCFA",
-      status: "Livrée"
-    },
-    {
-      id: "0755",
-      client: "Bineta Sarr",
-      product: "Abreuvoir Nipple",
-      quantity: "4",
-      total: "12800 FCFA",
-      status: "Livrée"
-    },
-    {
-      id: "E58D",
-      client: "Cheikh Ndiaye",
-      product: "Couveuse 100 Œufs",
-      quantity: "1",
-      total: "89500 FCFA",
-      status: "Confirmée"
-    },
-    {
-      id: "2857",
-      client: "Mariama Cissé",
-      product: "Désinfectant Bio",
-      quantity: "2",
-      total: "17000 FCFA",
-      status: "En cours"
+      id: 5,
+      name: "Mangeoire Automatique 5L",
+      price: "15500",
+      stock: 12,
+      status: "Actif",
+      image: "https://images.pexels.com/photos/1300357/pexels-photo-1300357.jpeg?auto=compress&cs=tinysrgb&w=120",
+      category: "Équipements"
     }
   ];
 
@@ -172,30 +82,24 @@ export default function DashboardPage() {
     { id: 'products', label: 'Mes Produits', icon: <Package className="h-4 w-4" /> },
     { id: 'orders', label: 'Commandes Reçues', icon: <ShoppingCart className="h-4 w-4" /> },
     { id: 'stats', label: 'Statistiques', icon: <BarChart3 className="h-4 w-4" /> },
-    { id: 'location', label: 'Géolocalisation', icon: <Star className="h-4 w-4" /> },
+    { id: 'location', label: 'Géolocalisation', icon: <MapPin className="h-4 w-4" /> },
     { id: 'profile', label: 'Mon Profil', icon: <UserIcon className="h-4 w-4" /> },
     { id: 'logout', label: 'Déconnexion', icon: <LogOut className="h-4 w-4" /> }
   ];
 
   const getStatusBadge = (status: string) => {
     const statusStyles = {
-      'En cours': 'bg-blue-100 text-blue-800',
-      'Confirmée': 'bg-orange-100 text-orange-800', 
-      'Livrée': 'bg-green-100 text-green-800',
-      'Annulée': 'bg-red-100 text-red-800'
+      'Actif': 'bg-green-100 text-green-800',
+      'Inactif': 'bg-gray-100 text-gray-800',
+      'Rupture': 'bg-red-100 text-red-800'
     };
     
     return (
-      <span className={`px-2 py-1 rounded-full text-xs font-medium ${statusStyles[status as keyof typeof statusStyles] || 'bg-blue-100 text-blue-800'}`}>
+      <span className={`px-2 py-1 rounded-full text-xs font-medium ${statusStyles[status as keyof typeof statusStyles] || 'bg-gray-100 text-gray-800'}`}>
         {status}
       </span>
     );
   };
-
-  const totalPages = Math.ceil(receivedOrders.length / itemsPerPage);
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
-  const currentOrders = receivedOrders.slice(startIndex, endIndex);
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -261,14 +165,14 @@ export default function DashboardPage() {
               <div className="text-center mb-6">
                 <div className="w-16 h-16 rounded-full overflow-hidden mx-auto mb-3">
                   <img 
-                    src={currentUser.avatar} 
-                    alt={currentUser.name}
+                    src={user.avatar} 
+                    alt={user.name}
                     className="w-full h-full object-cover"
                   />
                 </div>
-                <h3 className="font-semibold text-gray-900">{currentUser.name}</h3>
-                <p className="text-sm text-gray-500">{currentUser.email}</p>
-                <p className="text-xs text-matix-green-medium capitalize">{currentUser.profile}</p>
+                <h3 className="font-semibold text-gray-900">{user.name}</h3>
+                <p className="text-sm text-gray-500">{user.email}</p>
+                <p className="text-xs text-green-600">Producteur</p>
               </div>
 
               {/* Menu Navigation */}
@@ -293,142 +197,71 @@ export default function DashboardPage() {
 
           {/* Main Content */}
           <div className="lg:col-span-3">
-            <div className="mb-6">
-              <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
+            <div className="flex items-center justify-between mb-6">
+              <h1 className="text-2xl font-bold text-gray-900">Mes Produits</h1>
+              <Link href="/dashboard/products/add">
+                <Button className="bg-matix-green-medium hover:bg-matix-green-dark text-white flex items-center gap-2">
+                  <Plus className="h-4 w-4" />
+                  Ajouter Produit
+                </Button>
+              </Link>
             </div>
 
-            {/* Stats Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-              {stats.map((stat, index) => (
-                <Card key={index} className="p-6">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm text-gray-600 mb-1">{stat.title}</p>
-                      <p className="text-2xl font-bold text-gray-900">{stat.value}</p>
-                    </div>
-                    <div className={`p-3 rounded-full ${stat.bgColor}`}>
-                      <div className={stat.iconColor}>
-                        {stat.icon}
-                      </div>
-                    </div>
-                  </div>
-                </Card>
-              ))}
-            </div>
-
-            {/* Recent Orders */}
+            {/* Products Table */}
             <Card className="p-6">
-              <h2 className="text-xl font-semibold text-gray-900 mb-6">Commandes Reçues Récentes</h2>
-              
-              {/* Table */}
               <div className="overflow-x-auto">
                 <table className="w-full">
                   <thead>
                     <tr className="border-b border-gray-200">
-                      <th className="text-left py-3 px-4 font-medium text-gray-600">Order ID</th>
-                      <th className="text-left py-3 px-4 font-medium text-gray-600">Client</th>
-                      <th className="text-left py-3 px-4 font-medium text-gray-600">Produit</th>
-                      <th className="text-left py-3 px-4 font-medium text-gray-600">Quantité</th>
-                      <th className="text-left py-3 px-4 font-medium text-gray-600">Status</th>
-                      <th className="text-left py-3 px-4 font-medium text-gray-600">Prix Total</th>
-                      <th className="text-left py-3 px-4 font-medium text-gray-600">Action</th>
+                      <th className="text-left py-3 px-4 font-medium text-gray-600">Photo</th>
+                      <th className="text-left py-3 px-4 font-medium text-gray-600">Nom</th>
+                      <th className="text-left py-3 px-4 font-medium text-gray-600">Catégorie</th>
+                      <th className="text-left py-3 px-4 font-medium text-gray-600">Prix</th>
+                      <th className="text-left py-3 px-4 font-medium text-gray-600">Stock</th>
+                      <th className="text-left py-3 px-4 font-medium text-gray-600">Statut</th>
+                      <th className="text-left py-3 px-4 font-medium text-gray-600">Actions</th>
                     </tr>
                   </thead>
                   <tbody>
-                    {currentOrders.map((order, index) => (
+                    {products.map((product, index) => (
                       <tr key={index} className="border-b border-gray-100 hover:bg-gray-50 transition-colors">
-                        <td className="py-3 px-4 font-medium text-gray-900">{order.id}</td>
-                        <td className="py-3 px-4 text-gray-600">{order.client}</td>
-                        <td className="py-3 px-4 text-gray-600">{order.product}</td>
-                        <td className="py-3 px-4 text-gray-600">{order.quantity}</td>
-                        <td className="py-3 px-4">{getStatusBadge(order.status)}</td>
-                        <td className="py-3 px-4 font-medium text-gray-900">{order.total}</td>
                         <td className="py-3 px-4">
-                          <Button 
-                            variant="ghost" 
-                            size="sm" 
-                            className="text-matix-green-medium hover:text-matix-green-dark"
-                            onClick={() => {
-                              setSelectedOrderId(order.id);
-                              setSelectedOrder(order);
-                              setShowInvoice(true);
-                            }}
-                          >
-                            <Eye className="h-4 w-4" />
-                          </Button>
+                          <img 
+                            src={product.image} 
+                            alt={product.name}
+                            className="w-12 h-12 object-cover rounded-lg"
+                          />
+                        </td>
+                        <td className="py-3 px-4 font-medium text-gray-900">{product.name}</td>
+                        <td className="py-3 px-4 text-gray-600">{product.category}</td>
+                        <td className="py-3 px-4 font-medium text-gray-900">{product.price} FCFA</td>
+                        <td className="py-3 px-4 text-gray-600">{product.stock}</td>
+                        <td className="py-3 px-4">{getStatusBadge(product.status)}</td>
+                        <td className="py-3 px-4">
+                          <div className="flex items-center gap-2">
+                            <Button variant="ghost" size="sm" className="text-blue-600 hover:text-blue-800">
+                              <Eye className="h-4 w-4" />
+                            </Button>
+                            <Button variant="ghost" size="sm" className="text-green-600 hover:text-green-800">
+                              <Edit className="h-4 w-4" />
+                            </Button>
+                            <Button variant="ghost" size="sm" className="text-orange-600 hover:text-orange-800">
+                              <Copy className="h-4 w-4" />
+                            </Button>
+                            <Button variant="ghost" size="sm" className="text-red-600 hover:text-red-800">
+                              <Power className="h-4 w-4" />
+                            </Button>
+                          </div>
                         </td>
                       </tr>
                     ))}
                   </tbody>
                 </table>
               </div>
-
-              {/* Pagination */}
-              <div className="flex items-center justify-between mt-6">
-                <p className="text-sm text-gray-600">
-                  SHOWING {startIndex + 1}-{Math.min(endIndex, receivedOrders.length)} OF {receivedOrders.length}
-                </p>
-                
-                <div className="flex items-center gap-2">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
-                    disabled={currentPage === 1}
-                  >
-                    <ChevronLeft className="h-4 w-4" />
-                  </Button>
-                  
-                  {[...Array(Math.min(5, totalPages))].map((_, i) => {
-                    const pageNum = i + 1;
-                    return (
-                      <Button
-                        key={pageNum}
-                        variant={currentPage === pageNum ? "default" : "outline"}
-                        size="sm"
-                        onClick={() => setCurrentPage(pageNum)}
-                        className={currentPage === pageNum ? "bg-matix-green-medium text-white" : ""}
-                      >
-                        {pageNum}
-                      </Button>
-                    );
-                  })}
-                  
-                  {totalPages > 5 && (
-                    <>
-                      <span className="text-gray-400">...</span>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => setCurrentPage(totalPages)}
-                      >
-                        {totalPages}
-                      </Button>
-                    </>
-                  )}
-                  
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
-                    disabled={currentPage === totalPages}
-                  >
-                    <ChevronRight className="h-4 w-4" />
-                  </Button>
-                </div>
-              </div>
             </Card>
           </div>
         </div>
       </div>
-
-      {/* Invoice Modal */}
-      <InvoiceModal 
-        isOpen={showInvoice}
-        onClose={() => setShowInvoice(false)}
-        orderId={selectedOrderId}
-        orderData={selectedOrder}
-      />
 
       {/* Section App */}
       <div className="bg-gradient-to-r from-green-50 to-blue-50 py-16">
@@ -564,10 +397,10 @@ export default function DashboardPage() {
                 </div>
               </div>
               <p className="text-gray-300 mb-4">
-                987 André Plain Suite High Street 838, Lake Hestertown, USA
+                Marché Colobane, Dakar, Sénégal
               </p>
-              <p className="text-gray-300 mb-2">Tel : +02 356 1666</p>
-              <p className="text-gray-300">Email : ccruidk@test.com</p>
+              <p className="text-gray-300 mb-2">Tél : +221 77 123 45 67</p>
+              <p className="text-gray-300">Email : contact@matix.sn</p>
             </div>
           </div>
 
@@ -575,7 +408,7 @@ export default function DashboardPage() {
           <div className="border-t border-gray-800 mt-12 pt-8">
             <div className="flex flex-col lg:flex-row justify-between items-center gap-6">
               <div className="flex items-center gap-4">
-                <span className="text-gray-400">Follow Us</span>
+                <span className="text-gray-400">Suivez-nous:</span>
                 <div className="flex gap-3">
                   <div className="bg-blue-600 p-2 rounded-full">
                     <span className="text-white text-sm">f</span>
@@ -597,7 +430,7 @@ export default function DashboardPage() {
 
               <div className="text-center">
                 <p className="text-gray-400">
-                  Call Us: <span className="text-matix-yellow font-bold text-xl">+659988776</span>
+                  Appelez-nous: <span className="text-matix-yellow font-bold text-xl">+221771234567</span>
                 </p>
               </div>
 
@@ -611,7 +444,7 @@ export default function DashboardPage() {
 
             <div className="text-center mt-8 pt-6 border-t border-gray-800">
               <p className="text-gray-400">
-                Copyright 2025 © <span className="text-matix-yellow">HtmlLover</span>. All rights reserved.
+                Copyright 2024 © <span className="text-matix-yellow">MatixLover</span>. Tous droits réservés.
               </p>
             </div>
           </div>
