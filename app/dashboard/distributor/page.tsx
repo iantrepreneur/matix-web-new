@@ -44,7 +44,7 @@ export default function DistributorDashboardPage() {
         </div>
       </div>
     );
-  }
+  };
 
   const stats = [
     {
