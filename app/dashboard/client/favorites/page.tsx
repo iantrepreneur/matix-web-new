@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { Card } from '@/components/ui/card';
 import { 
   Home, 
@@ -14,11 +15,20 @@ import {
   Star,
   ShoppingCart,
   Trash2,
-  Eye
+  Eye,
+  Filter,
+  RotateCcw,
+  Phone,
+  Share2,
+  Bell,
+  Search
 } from 'lucide-react';
 
 export default function FavoritesPage() {
   const [activePage, setActivePage] = useState('favorites');
+  const [categoryFilter, setCategoryFilter] = useState('all');
+  const [availabilityFilter, setAvailabilityFilter] = useState('all');
+  const [sortBy, setSortBy] = useState('name');
 
   const user = {
     name: "Ibrahima Ba",
@@ -29,33 +39,39 @@ export default function FavoritesPage() {
   const favoriteProducts = [
     {
       id: 1,
-      name: "Poulet Fermier Bio Premium",
+      name: "Poulets fermiers Diallo",
       price: "4,500",
       rating: 4.8,
-      reviews: 127,
+      reviews: 89,
       image: "https://images.pexels.com/photos/1556909/pexels-photo-1556909.jpeg?auto=compress&cs=tinysrgb&w=300",
-      producer: "Ferme Moussa Ba",
-      inStock: true
+      producer: "Ferme Diallo",
+      inStock: true,
+      category: "volailles",
+      stockStatus: "Disponible"
     },
     {
       id: 2,
-      name: "Poussins ISA Brown",
-      price: "850",
+      name: "Œufs bio Ferme Verte",
+      price: "200",
       rating: 4.9,
-      reviews: 89,
-      image: "https://images.pexels.com/photos/1267697/pexels-photo-1267697.jpeg?auto=compress&cs=tinysrgb&w=300",
-      producer: "Élevage Fatou Diop",
-      inStock: true
+      reviews: 156,
+      image: "https://images.pexels.com/photos/162712/egg-white-food-protein-162712.jpeg?auto=compress&cs=tinysrgb&w=300",
+      producer: "Ferme Verte Bio",
+      inStock: true,
+      category: "oeufs",
+      stockStatus: "Disponible"
     },
     {
       id: 3,
-      name: "Cage Élevage 20 Poules",
+      name: "Mangeoire automatique Pro",
       price: "125,000",
       rating: 4.7,
       reviews: 45,
       image: "https://images.pexels.com/photos/1300357/pexels-photo-1300357.jpeg?auto=compress&cs=tinysrgb&w=300",
-      producer: "Équipements Modou Fall",
-      inStock: false
+      producer: "EquipPro Solutions",
+      inStock: true,
+      category: "equipements",
+      stockStatus: "Stock limité"
     },
     {
       id: 4,
@@ -64,50 +80,86 @@ export default function FavoritesPage() {
       rating: 4.8,
       reviews: 156,
       image: "https://images.pexels.com/photos/533360/pexels-photo-533360.jpeg?auto=compress&cs=tinysrgb&w=300",
-      producer: "NMA Nutrition",
-      inStock: true
+      producer: "Nutrition Plus",
+      inStock: true,
+      category: "aliments",
+      stockStatus: "Disponible"
     },
     {
       id: 5,
-      name: "Mangeoire Automatique",
+      name: "Poussins ISA Brown",
       price: "15,500",
       rating: 4.5,
       reviews: 78,
-      image: "https://images.pexels.com/photos/1300357/pexels-photo-1300357.jpeg?auto=compress&cs=tinysrgb&w=300",
-      producer: "Solutions Avicoles",
-      inStock: true
+      image: "https://images.pexels.com/photos/1267697/pexels-photo-1267697.jpeg?auto=compress&cs=tinysrgb&w=300",
+      producer: "Élevage Premium",
+      inStock: true,
+      category: "volailles",
+      stockStatus: "Disponible"
     },
     {
       id: 6,
-      name: "Vaccin Newcastle",
+      name: "Cage Transport Volailles",
       price: "12,500",
-      rating: 4.9,
-      reviews: 134,
-      image: "https://images.pexels.com/photos/3786215/pexels-photo-3786215.jpeg?auto=compress&cs=tinysrgb&w=300",
-      producer: "VetSen Laboratoire",
-      inStock: true
+      rating: 4.6,
+      reviews: 67,
+      image: "https://images.pexels.com/photos/1300357/pexels-photo-1300357.jpeg?auto=compress&cs=tinysrgb&w=300",
+      producer: "Transport Solutions",
+      inStock: false,
+      category: "equipements",
+      stockStatus: "Rupture"
     },
     {
       id: 7,
-      name: "Abreuvoir Nipple 5L",
+      name: "Aliment Chair Croissance",
       price: "3,200",
       rating: 4.7,
       reviews: 92,
-      image: "https://images.pexels.com/photos/1300357/pexels-photo-1300357.jpeg?auto=compress&cs=tinysrgb&w=300",
-      producer: "Hydro Poultry",
-      inStock: false
+      image: "https://images.pexels.com/photos/533360/pexels-photo-533360.jpeg?auto=compress&cs=tinysrgb&w=300",
+      producer: "Nutrition Plus",
+      inStock: true,
+      category: "aliments",
+      stockStatus: "Disponible"
     },
     {
       id: 8,
-      name: "Œufs à Couver Fertiles",
-      price: "125",
+      name: "Vaccins Complets Kit",
+      price: "28,500",
       rating: 4.8,
-      reviews: 203,
-      image: "https://images.pexels.com/photos/162712/egg-white-food-protein-162712.jpeg?auto=compress&cs=tinysrgb&w=300",
-      producer: "Couvoir Premium",
-      inStock: true
+      reviews: 134,
+      image: "https://images.pexels.com/photos/3786215/pexels-photo-3786215.jpeg?auto=compress&cs=tinysrgb&w=300",
+      producer: "VetSen Laboratoire",
+      inStock: true,
+      category: "soins",
+      stockStatus: "Disponible"
     }
   ];
+
+  const categoryOptions = [
+    { value: 'all', label: 'Toutes catégories' },
+    { value: 'volailles', label: 'Volailles' },
+    { value: 'equipements', label: 'Équipements' },
+    { value: 'aliments', label: 'Aliments' },
+    { value: 'soins', label: 'Soins' }
+  ];
+
+  const availabilityOptions = [
+    { value: 'all', label: 'Tous produits' },
+    { value: 'available', label: 'Disponibles uniquement' }
+  ];
+
+  const sortOptions = [
+    { value: 'name', label: 'Nom A-Z' },
+    { value: 'price-asc', label: 'Prix croissant' },
+    { value: 'price-desc', label: 'Prix décroissant' },
+    { value: 'rating', label: 'Mieux notés' }
+  ];
+
+  const stats = {
+    totalFavorites: 12,
+    priceAlerts: 3,
+    followedSellers: 2
+  };
 
   const menuItems = [
     { id: 'dashboard', label: 'Accueil', icon: <Home className="h-4 w-4" /> },
@@ -122,6 +174,17 @@ export default function FavoritesPage() {
     console.log('Retirer des favoris:', productId);
   };
 
+  const resetFilters = () => {
+    setCategoryFilter('all');
+    setAvailabilityFilter('all');
+    setSortBy('name');
+  };
+
+  const filteredProducts = favoriteProducts.filter(product => {
+    if (categoryFilter !== 'all' && product.category !== categoryFilter) return false;
+    if (availabilityFilter === 'available' && !product.inStock) return false;
+    return true;
+  });
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header identique */}
@@ -219,17 +282,99 @@ export default function FavoritesPage() {
           {/* Main Content */}
           <div className="lg:col-span-3">
             <div className="mb-6">
-              <h1 className="text-2xl font-bold text-gray-900">Mes Produits Favoris</h1>
-              <p className="text-gray-600">Retrouvez tous vos produits préférés en un clic</p>
+              <div className="flex items-center justify-between">
+                <div>
+                  <h1 className="text-2xl font-bold text-gray-900">Mes Produits Favoris</h1>
+                  <p className="text-gray-600">Retrouvez tous vos produits préférés en un clic</p>
+                </div>
+                <div className="text-right">
+                  <div className="flex items-center gap-4 text-sm">
+                    <div className="flex items-center gap-2">
+                      <Heart className="h-4 w-4 text-purple-600" />
+                      <span className="text-gray-600">{stats.totalFavorites} favoris</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Bell className="h-4 w-4 text-orange-600" />
+                      <span className="text-gray-600">{stats.priceAlerts} alertes prix</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
 
+            {/* Filtres */}
+            <Card className="p-6 mb-6">
+              <h2 className="text-lg font-semibold mb-4">Filtres</h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Catégorie</label>
+                  <select 
+                    className="w-full border border-gray-300 rounded-lg px-3 py-2 bg-white"
+                    value={categoryFilter}
+                    onChange={(e) => setCategoryFilter(e.target.value)}
+                  >
+                    {categoryOptions.map((option) => (
+                      <option key={option.value} value={option.value}>
+                        {option.label}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Disponibilité</label>
+                  <select 
+                    className="w-full border border-gray-300 rounded-lg px-3 py-2 bg-white"
+                    value={availabilityFilter}
+                    onChange={(e) => setAvailabilityFilter(e.target.value)}
+                  >
+                    {availabilityOptions.map((option) => (
+                      <option key={option.value} value={option.value}>
+                        {option.label}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Trier par</label>
+                  <select 
+                    className="w-full border border-gray-300 rounded-lg px-3 py-2 bg-white"
+                    value={sortBy}
+                    onChange={(e) => setSortBy(e.target.value)}
+                  >
+                    {sortOptions.map((option) => (
+                      <option key={option.value} value={option.value}>
+                        {option.label}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className="flex items-end">
+                  <Button 
+                    variant="outline" 
+                    onClick={resetFilters}
+                    className="w-full flex items-center gap-2"
+                  >
+                    <RotateCcw className="h-4 w-4" />
+                    Reset
+                  </Button>
+                </div>
+              </div>
+            </Card>
             {/* Products Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {favoriteProducts.map((product) => (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              {filteredProducts.map((product) => (
                 <Card key={product.id} className="relative overflow-hidden hover:shadow-lg transition-all cursor-pointer bg-white">
                   {!product.inStock && (
                     <div className="absolute top-2 left-2 bg-red-500 text-white px-2 py-1 text-xs rounded z-10">
                       Rupture
+                    </div>
+                  )}
+                  {product.stockStatus === "Stock limité" && (
+                    <div className="absolute top-2 left-2 bg-orange-500 text-white px-2 py-1 text-xs rounded z-10">
+                      Stock limité
                     </div>
                   )}
                   
@@ -254,8 +399,17 @@ export default function FavoritesPage() {
                       <span className="text-xs text-gray-600">({product.reviews})</span>
                     </div>
                     
-                    <div className="flex items-center justify-between mb-3">
+                    <div className="mb-3">
                       <span className="font-bold text-purple-600">{product.price} FCFA</span>
+                      {product.name === "Œufs bio Ferme Verte" && (
+                        <span className="text-xs text-gray-500">/unité</span>
+                      )}
+                    </div>
+
+                    <div className="flex items-center justify-between mb-3">
+                      <span className={`text-xs ${product.inStock ? 'text-green-600' : 'text-red-500'}`}>
+                        {product.stockStatus}
+                      </span>
                       <div className="flex items-center gap-1">
                         <Button 
                           size="sm" 
@@ -268,24 +422,46 @@ export default function FavoritesPage() {
                         >
                           <ShoppingCart className="h-4 w-4" />
                         </Button>
-                        <Button 
-                          variant="ghost"
-                          size="sm" 
-                          className="text-red-500 hover:text-red-700 rounded-full w-8 h-8 p-0"
-                          onClick={() => removeFavorite(product.id)}
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
                       </div>
                     </div>
 
-                    <div className="flex items-center justify-between">
-                      <span className={`text-xs ${product.inStock ? 'text-green-600' : 'text-red-500'}`}>
-                        {product.inStock ? '✓ En stock' : '✗ Rupture de stock'}
-                      </span>
-                      <Button variant="ghost" size="sm" className="text-purple-600 hover:text-purple-800 p-1">
-                        <Eye className="h-4 w-4" />
-                      </Button>
+                    {/* Actions */}
+                    <div className="flex items-center justify-between gap-1">
+                      <div className="flex gap-1">
+                        <Button 
+                          variant="ghost"
+                          size="sm" 
+                          className="text-red-500 hover:text-red-700 rounded-full w-7 h-7 p-0"
+                          onClick={() => removeFavorite(product.id)}
+                          title="Retirer des favoris"
+                        >
+                          <Heart className="h-3 w-3 fill-current" />
+                        </Button>
+                        <Button 
+                          variant="ghost"
+                          size="sm" 
+                          className="text-blue-600 hover:text-blue-700 rounded-full w-7 h-7 p-0"
+                          title="Contacter vendeur"
+                        >
+                          <Phone className="h-3 w-3" />
+                        </Button>
+                        <Button 
+                          variant="ghost"
+                          size="sm" 
+                          className="text-orange-600 hover:text-orange-700 rounded-full w-7 h-7 p-0"
+                          title="Créer alerte prix"
+                        >
+                          <Bell className="h-3 w-3" />
+                        </Button>
+                        <Button 
+                          variant="ghost"
+                          size="sm" 
+                          className="text-gray-600 hover:text-gray-700 rounded-full w-7 h-7 p-0"
+                          title="Partager"
+                        >
+                          <Share2 className="h-3 w-3" />
+                        </Button>
+                      </div>
                     </div>
                   </div>
                 </Card>
@@ -293,16 +469,55 @@ export default function FavoritesPage() {
             </div>
 
             {/* Empty State si pas de favoris */}
-            {favoriteProducts.length === 0 && (
+            {filteredProducts.length === 0 && (
               <Card className="p-12 text-center">
                 <Heart className="h-16 w-16 text-gray-300 mx-auto mb-4" />
-                <h3 className="text-xl font-semibold text-gray-900 mb-2">Aucun favori pour le moment</h3>
-                <p className="text-gray-600 mb-6">Ajoutez des produits à vos favoris pour les retrouver facilement</p>
+                <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                  {favoriteProducts.length === 0 ? 'Aucun favori pour le moment' : 'Aucun produit ne correspond aux filtres'}
+                </h3>
+                <p className="text-gray-600 mb-6">
+                  {favoriteProducts.length === 0 
+                    ? 'Ajoutez des produits à vos favoris pour les retrouver facilement'
+                    : 'Essayez de modifier vos critères de recherche'
+                  }
+                </p>
                 <Link href="/categories">
                   <Button className="bg-purple-600 hover:bg-purple-700 text-white">
-                    Découvrir les Produits
+                    {favoriteProducts.length === 0 ? 'Découvrir les Produits' : 'Réinitialiser les filtres'}
                   </Button>
                 </Link>
+              </Card>
+            )}
+
+            {/* Statistiques Favoris */}
+            {favoriteProducts.length > 0 && (
+              <Card className="p-6 mt-6">
+                <h3 className="text-lg font-semibold mb-4">Mes Statistiques Favoris</h3>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  <div className="text-center">
+                    <div className="bg-purple-100 p-3 rounded-full w-12 h-12 mx-auto mb-3 flex items-center justify-center">
+                      <Heart className="h-6 w-6 text-purple-600" />
+                    </div>
+                    <p className="text-sm text-gray-500 mb-1">Produits en favoris</p>
+                    <p className="font-bold text-lg">{stats.totalFavorites}</p>
+                  </div>
+                  
+                  <div className="text-center">
+                    <div className="bg-orange-100 p-3 rounded-full w-12 h-12 mx-auto mb-3 flex items-center justify-center">
+                      <Bell className="h-6 w-6 text-orange-600" />
+                    </div>
+                    <p className="text-sm text-gray-500 mb-1">Alertes prix actives</p>
+                    <p className="font-bold text-lg">{stats.priceAlerts}</p>
+                  </div>
+                  
+                  <div className="text-center">
+                    <div className="bg-blue-100 p-3 rounded-full w-12 h-12 mx-auto mb-3 flex items-center justify-center">
+                      <UserIcon className="h-6 w-6 text-blue-600" />
+                    </div>
+                    <p className="text-sm text-gray-500 mb-1">Vendeurs suivis</p>
+                    <p className="font-bold text-lg">{stats.followedSellers}</p>
+                  </div>
+                </div>
               </Card>
             )}
           </div>
