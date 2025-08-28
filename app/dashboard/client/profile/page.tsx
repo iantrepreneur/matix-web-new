@@ -19,7 +19,9 @@ import {
   Calendar,
   ShoppingBag,
   DollarSign,
-  Star
+  Star,
+  Plus,
+  Trash2
 } from 'lucide-react';
 
 export default function ClientProfilePage() {
@@ -270,15 +272,67 @@ export default function ClientProfilePage() {
               </div>
             </Card>
 
+            {/* Adresses de Livraison */}
+            <Card className="p-6 mb-6">
+              <h2 className="text-xl font-semibold mb-6">Adresses de Livraison</h2>
+              
+              <div className="space-y-4">
+                {/* Adresse principale */}
+                <div className="bg-purple-50 border border-purple-200 rounded-lg p-4">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <MapPin className="h-5 w-5 text-purple-600" />
+                      <div>
+                        <p className="font-medium text-purple-900">Adresse principale</p>
+                        <p className="text-sm text-purple-700">{user.adressePrincipale}</p>
+                      </div>
+                    </div>
+                    <Button variant="outline" size="sm" className="text-purple-600 border-purple-600 hover:bg-purple-50">
+                      <Edit className="h-4 w-4 mr-1" />
+                      Modifier
+                    </Button>
+                  </div>
+                </div>
+
+                {/* Adresses secondaires */}
+                {user.adressesSecondaires.map((adresse, index) => (
+                  <div key={index} className="bg-gray-50 border border-gray-200 rounded-lg p-4">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <MapPin className="h-5 w-5 text-gray-400" />
+                        <div>
+                          <p className="font-medium text-gray-900">Adresse {index + 2}</p>
+                          <p className="text-sm text-gray-600">{adresse}</p>
+                        </div>
+                      </div>
+                      <div className="flex gap-2">
+                        <Button variant="outline" size="sm" className="text-blue-600 border-blue-600 hover:bg-blue-50">
+                          <Edit className="h-4 w-4" />
+                        </Button>
+                        <Button variant="outline" size="sm" className="text-red-600 border-red-600 hover:bg-red-50">
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+
+                {/* Ajouter nouvelle adresse */}
+                <Button variant="outline" className="w-full border-dashed border-gray-300 text-gray-600 hover:bg-gray-50">
+                  <Plus className="h-4 w-4 mr-2" />
+                  Ajouter nouvelle adresse
+                </Button>
+              </div>
+            </Card>
             {/* Préférences */}
             <Card className="p-6 mb-6">
-              <h2 className="text-xl font-semibold mb-6">Mes Préférences</h2>
+              <h2 className="text-xl font-semibold mb-6">Préférences Client</h2>
               
               <div className="space-y-4">
                 <div>
-                  <p className="text-sm font-medium text-gray-700 mb-2">Préférences d'achat</p>
+                  <p className="text-sm font-medium text-gray-700 mb-2">Types de produits préférés</p>
                   <div className="flex flex-wrap gap-2">
-                    {user.preferences.map((pref, index) => (
+                    {user.preferences.typesPreferences.map((pref, index) => (
                       <span key={index} className="bg-purple-100 text-purple-800 px-3 py-1 rounded-full text-sm">
                         {pref}
                       </span>
@@ -287,17 +341,106 @@ export default function ClientProfilePage() {
                 </div>
                 
                 <div>
-                  <p className="text-sm font-medium text-gray-700 mb-2">Type de client</p>
-                  <span className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm">
-                    {user.typeClient}
-                  </span>
+                  <p className="text-sm font-medium text-gray-700 mb-2">Budget habituel</p>
+                  <p className="text-purple-600 font-medium">
+                    {user.preferences.budgetMin.toLocaleString()} - {user.preferences.budgetMax.toLocaleString()} FCFA
+                  </p>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <p className="text-sm font-medium text-gray-700 mb-2">Fréquence d'achats</p>
+                    <p className="text-gray-900">{user.preferences.frequenceAchats}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium text-gray-700 mb-2">Mode de livraison préféré</p>
+                    <p className="text-gray-900">{user.preferences.modeLivraison}</p>
+                  </div>
                 </div>
               </div>
             </Card>
 
+            {/* Notifications */}
+            <Card className="p-6 mb-6">
+              <h2 className="text-xl font-semibold mb-6">Préférences de Notifications</h2>
+              
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="font-medium text-gray-900">Email pour nouvelles offres</p>
+                    <p className="text-sm text-gray-500">Recevez les promotions par email</p>
+                  </div>
+                  <button
+                    className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
+                      user.notifications.emailOffres ? 'bg-purple-600' : 'bg-gray-300'
+                    }`}
+                  >
+                    <span
+                      className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                        user.notifications.emailOffres ? 'translate-x-6' : 'translate-x-1'
+                      }`}
+                    />
+                  </button>
+                </div>
+
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="font-medium text-gray-900">SMS pour suivi livraison</p>
+                    <p className="text-sm text-gray-500">Notifications de livraison par SMS</p>
+                  </div>
+                  <button
+                    className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
+                      user.notifications.smsLivraison ? 'bg-purple-600' : 'bg-gray-300'
+                    }`}
+                  >
+                    <span
+                      className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                        user.notifications.smsLivraison ? 'translate-x-6' : 'translate-x-1'
+                      }`}
+                    />
+                  </button>
+                </div>
+
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="font-medium text-gray-900">Alertes prix favoris</p>
+                    <p className="text-sm text-gray-500">Notifications baisse de prix</p>
+                  </div>
+                  <button
+                    className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
+                      user.notifications.alertesPrix ? 'bg-purple-600' : 'bg-gray-300'
+                    }`}
+                  >
+                    <span
+                      className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                        user.notifications.alertesPrix ? 'translate-x-6' : 'translate-x-1'
+                      }`}
+                    />
+                  </button>
+                </div>
+
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="font-medium text-gray-900">Newsletter hebdomadaire</p>
+                    <p className="text-sm text-gray-500">Actualités et conseils avicoles</p>
+                  </div>
+                  <button
+                    className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
+                      user.notifications.newsletter ? 'bg-purple-600' : 'bg-gray-300'
+                    }`}
+                  >
+                    <span
+                      className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                        user.notifications.newsletter ? 'translate-x-6' : 'translate-x-1'
+                      }`}
+                    />
+                  </button>
+                </div>
+              </div>
+            </Card>
             {/* Statistics */}
             <Card className="p-6 mb-6">
-              <h2 className="text-xl font-semibold mb-6">Statistiques du Compte</h2>
+              <h2 className="text-xl font-semibold mb-6">Historique d'Achats</h2>
               
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 <div className="text-center">
@@ -312,7 +455,7 @@ export default function ClientProfilePage() {
                   <div className="bg-green-100 p-3 rounded-full w-12 h-12 mx-auto mb-3 flex items-center justify-center">
                     <ShoppingBag className="h-6 w-6 text-green-600" />
                   </div>
-                  <p className="text-sm text-gray-500 mb-1">Total commandes</p>
+                  <p className="text-sm text-gray-500 mb-1">Commandes passées</p>
                   <p className="font-bold text-lg">{user.totalOrders}</p>
                 </div>
                 
@@ -320,50 +463,86 @@ export default function ClientProfilePage() {
                   <div className="bg-purple-100 p-3 rounded-full w-12 h-12 mx-auto mb-3 flex items-center justify-center">
                     <DollarSign className="h-6 w-6 text-purple-600" />
                   </div>
-                  <p className="text-sm text-gray-500 mb-1">Total dépensé</p>
+                  <p className="text-sm text-gray-500 mb-1">Montant total dépensé</p>
                   <p className="font-bold text-lg">{user.totalSpent} FCFA</p>
                 </div>
                 
                 <div className="text-center">
-                  <div className="bg-yellow-100 p-3 rounded-full w-12 h-12 mx-auto mb-3 flex items-center justify-center">
-                    <Heart className="h-6 w-6 text-yellow-600" />
+                  <div className="bg-orange-100 p-3 rounded-full w-12 h-12 mx-auto mb-3 flex items-center justify-center">
+                    <UserIcon className="h-6 w-6 text-orange-600" />
                   </div>
-                  <p className="text-sm text-gray-500 mb-1">Produits favoris</p>
-                  <p className="font-bold text-lg">{user.favoriteProducts}</p>
+                  <p className="text-sm text-gray-500 mb-1">Vendeur préféré</p>
+                  <p className="font-bold text-sm">{user.vendeurPrefere}</p>
+                  <p className="text-xs text-gray-500">({user.achatsVendeurPrefere} achats)</p>
                 </div>
               </div>
             </Card>
 
+            {/* Programme Fidélité */}
+            <Card className="p-6 mb-6">
+              <h2 className="text-xl font-semibold mb-6">Programme Fidélité</h2>
+              
+              <div className="bg-gradient-to-r from-purple-50 to-blue-50 rounded-lg p-6">
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center gap-3">
+                    <div className="bg-purple-600 text-white p-2 rounded-full">
+                      <Star className="h-5 w-5" />
+                    </div>
+                    <div>
+                      <p className="font-bold text-purple-900">Statut: Client {user.fidelite.statut}</p>
+                      <p className="text-sm text-purple-700">{user.fidelite.points} points accumulés</p>
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-sm text-gray-600">Progression vers Argent</p>
+                    <p className="font-bold text-purple-600">{user.fidelite.pointsProchainNiveau} points restants</p>
+                  </div>
+                </div>
+                
+                {/* Barre de progression */}
+                <div className="mb-4">
+                  <div className="w-full bg-gray-200 rounded-full h-2">
+                    <div 
+                      className="bg-purple-600 h-2 rounded-full transition-all"
+                      style={{ width: `${(user.fidelite.points / (user.fidelite.points + user.fidelite.pointsProchainNiveau)) * 100}%` }}
+                    ></div>
+                  </div>
+                </div>
+                
+                <div className="bg-white rounded-lg p-4">
+                  <p className="text-sm font-medium text-gray-900 mb-2">Avantages actuels :</p>
+                  <p className="text-sm text-gray-700">{user.fidelite.avantages}</p>
+                </div>
+              </div>
+            </Card>
             {/* Quick Actions */}
             <Card className="p-6">
               <h2 className="text-xl font-semibold mb-6">Actions Rapides</h2>
               
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                <Link href="/dashboard/client/orders">
-                  <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white flex items-center gap-2">
-                    <Package className="h-4 w-4" />
-                    Mes Commandes
-                  </Button>
-                </Link>
-                
-                <Link href="/dashboard/client/requests">
-                  <Button className="w-full bg-green-600 hover:bg-green-700 text-white flex items-center gap-2">
-                    <FileText className="h-4 w-4" />
-                    Nouvelle Demande
-                  </Button>
-                </Link>
+                <Button className="w-full bg-green-600 hover:bg-green-700 text-white flex items-center gap-2">
+                  <Edit className="h-4 w-4" />
+                  Modifier Profil
+                </Button>
                 
                 <Link href="/dashboard/client/favorites">
-                  <Button className="w-full bg-pink-600 hover:bg-pink-700 text-white flex items-center gap-2">
+                  <Button className="w-full bg-red-600 hover:bg-red-700 text-white flex items-center gap-2">
                     <Heart className="h-4 w-4" />
                     Mes Favoris
                   </Button>
                 </Link>
                 
                 <Link href="/categories">
-                  <Button className="w-full bg-purple-600 hover:bg-purple-700 text-white flex items-center gap-2">
+                  <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white flex items-center gap-2">
                     <ShoppingCart className="h-4 w-4" />
-                    Continuer Achats
+                    Nouvelle Commande
+                  </Button>
+                </Link>
+                
+                <Link href="/dashboard/client/reviews">
+                  <Button className="w-full bg-purple-600 hover:bg-purple-700 text-white flex items-center gap-2">
+                    <Star className="h-4 w-4" />
+                    Mes Évaluations
                   </Button>
                 </Link>
               </div>
