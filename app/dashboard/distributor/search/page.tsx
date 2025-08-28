@@ -14,19 +14,26 @@ import {
   Users, 
   User as UserIcon, 
   LogOut,
-  MapPin,
-  Phone,
-  Filter,
-  RotateCcw
+  MapPin, 
+  Phone, 
+  Filter, 
+  RotateCcw,
+  Plus,
+  Minus,
+  Eye,
+  UserPlus,
+  AlertTriangle
 } from 'lucide-react';
 
 export default function SearchProducersPage() {
   const [activePage, setActivePage] = useState('search');
   const [filters, setFilters] = useState({
+    keyword: '',
+    category: '',
     product: '',
     maxDistance: 50,
     maxPrice: '',
-    minQuantity: ''
+    minStock: ''
   });
 
   const user = {
@@ -38,58 +45,58 @@ export default function SearchProducersPage() {
   const producers = [
     {
       id: 1,
-      name: "Amadou Diallo",
-      product: "Poulets fermiers",
-      price: "4,500",
+      name: "Ferme Diallo",
+      product: "Poulets fermiers", 
+      price: "4,500 FCFA/unité",
       distance: "12 km",
-      stock: "45",
+      stock: "45 dispo",
       contact: "+221 77 123 456",
       location: "Thiès",
-      rating: 4.8
+      category: "volailles"
     },
     {
       id: 2,
-      name: "Moussa Ba",
-      product: "Poussins ISA Brown",
-      price: "850",
-      distance: "8 km",
-      stock: "200",
-      contact: "+221 76 234 567",
-      location: "Rufisque",
-      rating: 4.9
+      name: "Élevage Thiès",
+      product: "Poussins pondeuses",
+      price: "2,800 FCFA/unité",
+      distance: "25 km",
+      stock: "120 dispo",
+      contact: "+221 76 987 654",
+      location: "Thiès",
+      category: "volailles"
     },
     {
       id: 3,
-      name: "Aïcha Ndiaye",
-      product: "Œufs à couver",
-      price: "125",
-      distance: "15 km",
-      stock: "500",
-      contact: "+221 78 345 678",
-      location: "Sangalkam",
-      rating: 4.7
+      name: "Bio Sénégal",
+      product: "Œufs bio",
+      price: "200 FCFA/unité",
+      distance: "8 km",
+      stock: "500 dispo",
+      contact: "+221 78 444 567",
+      location: "Rufisque",
+      category: "oeufs"
     },
     {
       id: 4,
-      name: "Ibrahima Fall",
-      product: "Aliment ponte 25kg",
-      price: "18,500",
-      distance: "20 km",
-      stock: "30",
-      contact: "+221 77 456 789",
+      name: "Nutrition Plus",
+      product: "Aliment ponte premium",
+      price: "18,500 FCFA/sac",
+      distance: "15 km",
+      stock: "30 sacs",
+      contact: "+221 77 555 888",
       location: "Pikine",
-      rating: 4.6
+      category: "aliments"
     },
     {
       id: 5,
-      name: "Khadija Diop",
+      name: "Équip Avicole",
       product: "Mangeoires automatiques",
-      price: "15,500",
-      distance: "25 km",
-      stock: "15",
-      contact: "+221 76 567 890",
+      price: "15,500 FCFA/unité",
+      distance: "18 km",
+      stock: "15 unités",
+      contact: "+221 76 333 999",
       location: "Guédiawaye",
-      rating: 4.5
+      category: "equipements"
     }
   ];
 
@@ -106,10 +113,12 @@ export default function SearchProducersPage() {
 
   const resetFilters = () => {
     setFilters({
+      keyword: '',
+      category: '',
       product: '',
       maxDistance: 50,
       maxPrice: '',
-      minQuantity: ''
+      minStock: ''
     });
   };
 
@@ -215,14 +224,30 @@ export default function SearchProducersPage() {
 
             {/* Filtres */}
             <Card className="p-6 mb-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
+              <h2 className="text-lg font-semibold mb-4">Filtres de Recherche</h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 mb-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Produit</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Mot-clé</label>
                   <Input
-                    placeholder="Ex: Poulets, Œufs..."
-                    value={filters.product}
-                    onChange={(e) => setFilters({...filters, product: e.target.value})}
+                    placeholder="ex: poulets, œufs"
+                    value={filters.keyword}
+                    onChange={(e) => setFilters({...filters, keyword: e.target.value})}
                   />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Catégorie</label>
+                  <select 
+                    className="w-full border border-gray-300 rounded-lg px-3 py-2 bg-white"
+                    value={filters.category}
+                    onChange={(e) => setFilters({...filters, category: e.target.value})}
+                  >
+                    <option value="">Toutes catégories</option>
+                    <option value="volailles">Volailles</option>
+                    <option value="equipements">Équipements</option>
+                    <option value="aliments">Aliments</option>
+                    <option value="soins">Soins</option>
+                  </select>
                 </div>
 
                 <div>
@@ -250,12 +275,12 @@ export default function SearchProducersPage() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Quantité min</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Stock min</label>
                   <Input
                     type="number"
                     placeholder="Ex: 10"
-                    value={filters.minQuantity}
-                    onChange={(e) => setFilters({...filters, minQuantity: e.target.value})}
+                    value={filters.minStock}
+                    onChange={(e) => setFilters({...filters, minStock: e.target.value})}
                   />
                 </div>
               </div>
@@ -276,115 +301,146 @@ export default function SearchProducersPage() {
               </div>
             </Card>
 
-            {/* Carte Interactive */}
-            <Card className="p-6 mb-6">
-              <h2 className="text-lg font-semibold mb-4">Carte des Producteurs</h2>
-              <div className="relative bg-gradient-to-br from-green-100 to-blue-100 rounded-lg h-80 overflow-hidden">
-                {/* Simulation Google Maps */}
-                <div className="absolute inset-0 bg-gray-200 opacity-50"></div>
+            {/* Carte et Liste - Split 50/50 */}
+            <div className="grid lg:grid-cols-2 gap-6 mb-6">
+              {/* GAUCHE - Carte Interactive */}
+              <Card className="p-6">
+                <h2 className="text-lg font-semibold mb-4">Carte des Producteurs</h2>
+                <div className="relative bg-gradient-to-br from-green-100 to-blue-100 rounded-lg h-80 overflow-hidden">
+                  {/* Simulation Google Maps */}
+                  <div className="absolute inset-0 bg-gray-200 opacity-50"></div>
+                  
+                  {/* Pins producteurs */}
+                  <div className="absolute top-1/4 left-1/3">
+                    <div className="relative">
+                      <MapPin className="h-6 w-6 text-green-500 drop-shadow-lg" />
+                      <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 bg-white px-2 py-1 rounded shadow text-xs font-medium whitespace-nowrap">
+                        Ferme D. - Poulets
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="absolute top-1/2 left-1/2">
+                    <div className="relative">
+                      <MapPin className="h-6 w-6 text-blue-500 drop-shadow-lg" />
+                      <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 bg-white px-2 py-1 rounded shadow text-xs font-medium whitespace-nowrap">
+                        Élevage T. - Poussins
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="absolute top-3/4 left-2/3">
+                    <div className="relative">
+                      <MapPin className="h-6 w-6 text-orange-500 drop-shadow-lg" />
+                      <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 bg-white px-2 py-1 rounded shadow text-xs font-medium whitespace-nowrap">
+                        Bio S. - Œufs
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Contrôles zoom */}
+                  <div className="absolute top-4 right-4 flex flex-col gap-2">
+                    <Button size="sm" className="w-8 h-8 p-0 bg-white text-gray-700 hover:bg-gray-100">
+                      <Plus className="h-4 w-4" />
+                    </Button>
+                    <Button size="sm" className="w-8 h-8 p-0 bg-white text-gray-700 hover:bg-gray-100">
+                      <Minus className="h-4 w-4" />
+                    </Button>
+                  </div>
+
+                  {/* Légende */}
+                  <div className="absolute bottom-4 left-4 bg-white p-3 rounded-lg shadow">
+                    <div className="space-y-1 text-xs">
+                      <div className="flex items-center gap-2">
+                        <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+                        <span>Volailles</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
+                        <span>Poussins</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <div className="w-3 h-3 bg-orange-500 rounded-full"></div>
+                        <span>Œufs</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </Card>
+
+              {/* DROITE - Liste Producteurs */}
+              <Card className="p-6">
+                <h2 className="text-lg font-semibold mb-4">Producteurs Trouvés ({producers.length})</h2>
                 
-                {/* Pins producteurs */}
-                <div className="absolute top-1/4 left-1/3">
-                  <div className="relative">
-                    <MapPin className="h-6 w-6 text-green-500 drop-shadow-lg" />
-                    <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 bg-white px-2 py-1 rounded shadow text-xs font-medium whitespace-nowrap">
-                      Amadou D. - Poulets
-                    </div>
-                  </div>
-                </div>
-
-                <div className="absolute top-1/2 left-1/2">
-                  <div className="relative">
-                    <MapPin className="h-6 w-6 text-blue-500 drop-shadow-lg" />
-                    <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 bg-white px-2 py-1 rounded shadow text-xs font-medium whitespace-nowrap">
-                      Moussa B. - Poussins
-                    </div>
-                  </div>
-                </div>
-
-                <div className="absolute top-3/4 left-2/3">
-                  <div className="relative">
-                    <MapPin className="h-6 w-6 text-orange-500 drop-shadow-lg" />
-                    <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 bg-white px-2 py-1 rounded shadow text-xs font-medium whitespace-nowrap">
-                      Aïcha N. - Œufs
-                    </div>
-                  </div>
-                </div>
-
-                {/* Légende */}
-                <div className="absolute bottom-4 left-4 bg-white p-3 rounded-lg shadow">
-                  <div className="space-y-1 text-xs">
-                    <div className="flex items-center gap-2">
-                      <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-                      <span>Volailles</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
-                      <span>Poussins</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <div className="w-3 h-3 bg-orange-500 rounded-full"></div>
-                      <span>Œufs</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </Card>
-
-            {/* Liste Producteurs */}
-            <Card className="p-6">
-              <h2 className="text-lg font-semibold mb-4">Producteurs Trouvés ({producers.length})</h2>
-              
-              <div className="overflow-x-auto">
-                <table className="w-full">
-                  <thead>
-                    <tr className="border-b border-gray-200">
-                      <th className="text-left py-3 px-4 font-medium text-gray-600">Producteur</th>
-                      <th className="text-left py-3 px-4 font-medium text-gray-600">Produit</th>
-                      <th className="text-left py-3 px-4 font-medium text-gray-600">Prix</th>
-                      <th className="text-left py-3 px-4 font-medium text-gray-600">Distance</th>
-                      <th className="text-left py-3 px-4 font-medium text-gray-600">Stock</th>
-                      <th className="text-left py-3 px-4 font-medium text-gray-600">Contact</th>
-                      <th className="text-left py-3 px-4 font-medium text-gray-600">Action</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {producers.map((producer, index) => (
-                      <tr key={index} className="border-b border-gray-100 hover:bg-gray-50 transition-colors">
-                        <td className="py-3 px-4">
-                          <div>
-                            <p className="font-medium text-gray-900">{producer.name}</p>
-                            <p className="text-sm text-gray-500">{producer.location}</p>
-                          </div>
-                        </td>
-                        <td className="py-3 px-4 text-gray-600">{producer.product}</td>
-                        <td className="py-3 px-4 font-medium text-gray-900">{producer.price} FCFA</td>
-                        <td className="py-3 px-4 text-gray-600">{producer.distance}</td>
-                        <td className="py-3 px-4 text-gray-600">{producer.stock}</td>
-                        <td className="py-3 px-4">
-                          <Button 
-                            variant="ghost" 
-                            size="sm" 
-                            className="text-blue-600 hover:text-blue-800"
-                          >
-                            <Phone className="h-4 w-4 mr-1" />
-                            {producer.contact}
-                          </Button>
-                        </td>
-                        <td className="py-3 px-4">
-                          <Button 
-                            size="sm" 
-                            className="bg-blue-600 hover:bg-blue-700 text-white"
-                          >
-                            Contacter
-                          </Button>
-                        </td>
+                <div className="overflow-x-auto">
+                  <table className="w-full">
+                    <thead>
+                      <tr className="border-b border-gray-200">
+                        <th className="text-left py-3 px-2 font-medium text-gray-600">Producteur</th>
+                        <th className="text-left py-3 px-2 font-medium text-gray-600">Produit</th>
+                        <th className="text-left py-3 px-2 font-medium text-gray-600">Prix</th>
+                        <th className="text-left py-3 px-2 font-medium text-gray-600">Distance</th>
+                        <th className="text-left py-3 px-2 font-medium text-gray-600">Stock</th>
+                        <th className="text-left py-3 px-2 font-medium text-gray-600">Contact</th>
+                        <th className="text-left py-3 px-2 font-medium text-gray-600">Actions</th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </Card>
+                    </thead>
+                    <tbody>
+                      {producers.map((producer, index) => (
+                        <tr key={index} className="border-b border-gray-100 hover:bg-gray-50 transition-colors">
+                          <td className="py-3 px-2">
+                            <div>
+                              <p className="font-medium text-gray-900 text-sm">{producer.name}</p>
+                              <p className="text-xs text-gray-500">{producer.location}</p>
+                            </div>
+                          </td>
+                          <td className="py-3 px-2 text-gray-600 text-sm">{producer.product}</td>
+                          <td className="py-3 px-2 font-medium text-gray-900 text-sm">{producer.price}</td>
+                          <td className="py-3 px-2 text-gray-600 text-sm">{producer.distance}</td>
+                          <td className="py-3 px-2 text-gray-600 text-sm">{producer.stock}</td>
+                          <td className="py-3 px-2">
+                            <Button 
+                              variant="ghost" 
+                              size="sm" 
+                              className="text-blue-600 hover:text-blue-800 text-xs p-1"
+                            >
+                              <Phone className="h-3 w-3 mr-1" />
+                              {producer.contact}
+                            </Button>
+                          </td>
+                          <td className="py-3 px-2">
+                            <div className="flex gap-1">
+                              <Button 
+                                size="sm" 
+                                className="bg-blue-600 hover:bg-blue-700 text-white text-xs px-2 py-1"
+                              >
+                                Contacter
+                              </Button>
+                              <Button 
+                                variant="outline"
+                                size="sm" 
+                                className="text-green-600 border-green-600 hover:bg-green-50 text-xs px-2 py-1"
+                              >
+                                <UserPlus className="h-3 w-3 mr-1" />
+                                Suivre
+                              </Button>
+                              <Button 
+                                variant="outline"
+                                size="sm" 
+                                className="text-orange-600 border-orange-600 hover:bg-orange-50 text-xs px-2 py-1"
+                              >
+                                <AlertTriangle className="h-3 w-3 mr-1" />
+                                Alerte
+                              </Button>
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </Card>
+            </div>
           </div>
         </div>
       </div>
