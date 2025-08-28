@@ -1,16 +1,53 @@
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Search, Heart, ShoppingCart, User, Menu, X, Mic, Bell, ChevronDown, BarChart3, Package, Edit, Lock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import CartSidebar from './CartSidebar';
+import AuthModal from './AuthModal';
+import { authService, User as UserType } from '@/lib/auth';
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const [currentUser, setCurrentUser] = useState<UserType | null>(null);
+
+  useEffect(() => {
+    const user = authService.getCurrentUser();
+    setCurrentUser(user);
+  }, []);
+
+  const handleLogin = (user: UserType) => {
+    setCurrentUser(user);
+  };
+
+  const handleLogout = () => {
+    authService.logout();
+    setCurrentUser(null);
+    setIsProfileDropdownOpen(false);
+  };
+
+  const getProfileColor = (profile: string) => {
+    switch (profile) {
+      case 'producteur': return 'text-green-600';
+      case 'distributeur': return 'text-blue-600';
+      case 'client': return 'text-purple-600';
+      default: return 'text-gray-600';
+    }
+  };
+
+  const getProfileLabel = (profile: string) => {
+    switch (profile) {
+      case 'producteur': return 'Producteur';
+      case 'distributeur': return 'Distributeur';
+      case 'client': return 'Client';
+      default: return '';
+    }
+  };
 
   return (
     <>
@@ -90,40 +127,64 @@ export default function Header() {
                 </Button>
 
                 {/* User Profile */}
-                <div className="relative">
-                  <div 
-                    className="w-10 h-10 rounded-full overflow-hidden border-2 border-white cursor-pointer"
-                    onClick={() => setIsProfileDropdownOpen(!isProfileDropdownOpen)}
-                  >
-                    <img 
-                      src="https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=100" 
-                      alt="Profile"
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                  
-                  {/* Profile Dropdown */}
-                  {isProfileDropdownOpen && (
-                    <div className="absolute top-full right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50">
-                      <Link href="/dashboard" className="flex items-center gap-3 px-4 py-2 text-gray-700 hover:bg-gray-50 transition-colors" onClick={() => setIsProfileDropdownOpen(false)}>
-                        <BarChart3 className="h-4 w-4" />
-                        <span className="text-sm">Dashboard</span>
-                      </Link>
-                      <Link href="/dashboard" className="flex items-center gap-3 px-4 py-2 text-gray-700 hover:bg-gray-50 transition-colors" onClick={() => setIsProfileDropdownOpen(false)}>
-                        <Package className="h-4 w-4" />
-                        <span className="text-sm">My Orders</span>
-                      </Link>
-                      <Link href="/dashboard" className="flex items-center gap-3 px-4 py-2 text-gray-700 hover:bg-gray-50 transition-colors" onClick={() => setIsProfileDropdownOpen(false)}>
-                        <Edit className="h-4 w-4" />
-                        <span className="text-sm">Update Profile</span>
-                      </Link>
-                      <Link href="/dashboard" className="flex items-center gap-3 px-4 py-2 text-gray-700 hover:bg-gray-50 transition-colors" onClick={() => setIsProfileDropdownOpen(false)}>
-                        <Lock className="h-4 w-4" />
-                        <span className="text-sm">Change Password</span>
-                      </Link>
+                {currentUser ? (
+                  <div className="relative">
+                    <div 
+                      className="w-10 h-10 rounded-full overflow-hidden border-2 border-white cursor-pointer"
+                      onClick={() => setIsProfileDropdownOpen(!isProfileDropdownOpen)}
+                    >
+                      <img 
+                        src={currentUser.avatar} 
+                        alt="Profile"
+                        className="w-full h-full object-cover"
+                      />
                     </div>
-                  )}
-                </div>
+                    
+                    {/* Profile Dropdown */}
+                    {isProfileDropdownOpen && (
+                      <div className="absolute top-full right-0 mt-2 w-56 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50">
+                        <div className="px-4 py-2 border-b border-gray-100">
+                          <p className="font-medium text-gray-900">{currentUser.name}</p>
+                          <p className={`text-xs ${getProfileColor(currentUser.profile)}`}>
+                            {getProfileLabel(currentUser.profile)}
+                          </p>
+                        </div>
+                        <Link href="/dashboard" className="flex items-center gap-3 px-4 py-2 text-gray-700 hover:bg-gray-50 transition-colors" onClick={() => setIsProfileDropdownOpen(false)}>
+                          <BarChart3 className="h-4 w-4" />
+                          <span className="text-sm">Dashboard</span>
+                        </Link>
+                        <Link href="/dashboard/orders" className="flex items-center gap-3 px-4 py-2 text-gray-700 hover:bg-gray-50 transition-colors" onClick={() => setIsProfileDropdownOpen(false)}>
+                          <Package className="h-4 w-4" />
+                          <span className="text-sm">Mes Commandes</span>
+                        </Link>
+                        <Link href="/dashboard/profile" className="flex items-center gap-3 px-4 py-2 text-gray-700 hover:bg-gray-50 transition-colors" onClick={() => setIsProfileDropdownOpen(false)}>
+                          <Edit className="h-4 w-4" />
+                          <span className="text-sm">Modifier Profil</span>
+                        </Link>
+                        <Link href="/dashboard/password" className="flex items-center gap-3 px-4 py-2 text-gray-700 hover:bg-gray-50 transition-colors" onClick={() => setIsProfileDropdownOpen(false)}>
+                          <Lock className="h-4 w-4" />
+                          <span className="text-sm">Mot de Passe</span>
+                        </Link>
+                        <button 
+                          onClick={handleLogout}
+                          className="w-full flex items-center gap-3 px-4 py-2 text-red-600 hover:bg-red-50 transition-colors"
+                        >
+                          <User className="h-4 w-4" />
+                          <span className="text-sm">Déconnexion</span>
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="text-matix-yellow hover:bg-matix-green-medium transition-colors"
+                    onClick={() => setIsAuthModalOpen(true)}
+                  >
+                    Se connecter
+                  </Button>
+                )}
 
                 {/* Mobile Menu Button */}
                 <Button
@@ -204,6 +265,13 @@ export default function Header() {
       <CartSidebar 
         isOpen={isCartOpen}
         onClose={() => setIsCartOpen(false)}
+      />
+
+      {/* Auth Modal */}
+      <AuthModal
+        isOpen={isAuthModalOpen}
+        onClose={() => setIsAuthModalOpen(false)}
+        onLogin={handleLogin}
       />
     </>
   );

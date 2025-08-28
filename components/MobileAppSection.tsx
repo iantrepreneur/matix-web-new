@@ -10,7 +10,7 @@ export default function MobileAppSection() {
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           <div>
             <h2 className="text-4xl font-bold text-matix-green-dark mb-6">
-              Recevez Vos Commandes Avicoles Via Notre App 
+              Acheter et Vendez simplement avec notre assistant
               <span className="text-matix-yellow"> Matix</span>
             </h2>
             <p className="text-xl text-matix-green-medium mb-8">
@@ -65,12 +65,12 @@ export default function MobileAppSection() {
                 <div className="bg-white rounded-2xl p-6 transform -rotate-3 shadow-matix-lg">
                   <div className="text-center">
                     <div className="text-6xl mb-4">📱</div>
-                    <h3 className="text-xl font-bold text-matix-green-dark mb-2">Matix App</h3>
+                    <h3 className="text-xl font-bold text-matix-green-dark mb-2">Matix Assistant</h3>
                     <p className="text-matix-green-medium mb-4">
                       Votre assistant avicole mobile
                     </p>
                     <div className="bg-matix-yellow/20 rounded-lg p-3">
-                      <p className="text-matix-green-dark font-medium">🎤 "Fooré ma poulet bu baax!"</p>
+                      <p className="text-matix-green-dark font-medium">🎤 "Dama beug diaye samay guinar"</p>
                       <p className="text-sm text-matix-green-medium mt-1">Commande vocale en wolof</p>
                     </div>
                   </div>

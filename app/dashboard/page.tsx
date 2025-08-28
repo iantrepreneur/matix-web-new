@@ -1,10 +1,11 @@
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import InvoiceModal from '@/components/InvoiceModal';
+import { authService, User } from '@/lib/auth';
 import { 
   BarChart3, 
   Package, 
@@ -28,13 +29,29 @@ export default function DashboardPage() {
   const [showInvoice, setShowInvoice] = useState(false);
   const [selectedOrderId, setSelectedOrderId] = useState('');
   const [selectedOrder, setSelectedOrder] = useState<any>(null);
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
   const itemsPerPage = 10;
 
-  const user = {
-    name: "Amadou Diallo",
-    email: "amadou@gmail.com",
-    avatar: "https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=100"
-  };
+  useEffect(() => {
+    const user = authService.getCurrentUser();
+    setCurrentUser(user);
+  }, []);
+
+  if (!currentUser) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold text-gray-900 mb-4">Accès non autorisé</h1>
+          <p className="text-gray-600 mb-6">Veuillez vous connecter pour accéder au dashboard.</p>
+          <Link href="/">
+            <Button className="bg-matix-green-medium hover:bg-matix-green-dark text-white">
+              Retour à l'accueil
+            </Button>
+          </Link>
+        </div>
+      </div>
+    );
+  }
 
   const stats = [
     {
@@ -254,13 +271,14 @@ export default function DashboardPage() {
               <div className="text-center mb-6">
                 <div className="w-16 h-16 rounded-full overflow-hidden mx-auto mb-3">
                   <img 
-                    src={user.avatar} 
-                    alt={user.name}
+                    src={currentUser.avatar} 
+                    alt={currentUser.name}
                     className="w-full h-full object-cover"
                   />
                 </div>
-                <h3 className="font-semibold text-gray-900">{user.name}</h3>
-                <p className="text-sm text-gray-500">{user.email}</p>
+                <h3 className="font-semibold text-gray-900">{currentUser.name}</h3>
+                <p className="text-sm text-gray-500">{currentUser.email}</p>
+                <p className="text-xs text-matix-green-medium capitalize">{currentUser.profile}</p>
               </div>
 
               {/* Menu Navigation */}
