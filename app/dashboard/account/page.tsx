@@ -8,7 +8,7 @@ import {
   BarChart3, 
   Package, 
   Star, 
-  User, 
+  User as UserIcon, 
   Edit, 
   Lock, 
   LogOut,
@@ -18,7 +18,12 @@ import {
   Calendar,
   ShoppingBag,
   CheckCircle,
-  DollarSign
+  DollarSign,
+  Upload,
+  Award,
+  FileText,
+  Shield,
+  TrendingUp
 } from 'lucide-react';
 
 export default function MyAccountPage() {
@@ -30,19 +35,27 @@ export default function MyAccountPage() {
     phone: "+221 77 123 4567",
     address: "Marché Colobane, Dakar",
     avatar: "https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=100",
+    // Informations spécifiques producteur
+    typeElevage: "Aviculture mixte (chair + ponte)",
+    licence: "AV-2024-DK-001245",
+    superficie: "2 hectares",
+    capacite: "500 têtes",
+    certificationBio: true,
+    // Statistiques producteur
     memberSince: "Janvier 2024",
-    totalOrders: 1007,
-    deliveredOrders: 442,
-    totalSpent: "2,450,000"
+    totalSales: 89,
+    revenue: "1,847,000",
+    rating: 4.8,
+    reviews: 23
   };
 
   const menuItems = [
     { id: 'dashboard', label: 'Dashboard', icon: <BarChart3 className="h-4 w-4" /> },
-    { id: 'orders', label: 'Mes Commandes', icon: <Package className="h-4 w-4" /> },
-    { id: 'reviews', label: 'Mes Avis', icon: <Star className="h-4 w-4" /> },
-    { id: 'account', label: 'Mon Compte', icon: <User className="h-4 w-4" /> },
-    { id: 'profile', label: 'Modifier Profil', icon: <Edit className="h-4 w-4" /> },
-    { id: 'password', label: 'Changer Mot de Passe', icon: <Lock className="h-4 w-4" /> },
+    { id: 'products', label: 'Mes Produits', icon: <Package className="h-4 w-4" /> },
+    { id: 'orders', label: 'Commandes Reçues', icon: <ShoppingBag className="h-4 w-4" /> },
+    { id: 'stats', label: 'Statistiques', icon: <TrendingUp className="h-4 w-4" /> },
+    { id: 'location', label: 'Géolocalisation', icon: <MapPin className="h-4 w-4" /> },
+    { id: 'account', label: 'Mon Profil', icon: <UserIcon className="h-4 w-4" /> },
     { id: 'logout', label: 'Déconnexion', icon: <LogOut className="h-4 w-4" /> }
   ];
 
@@ -147,7 +160,7 @@ export default function MyAccountPage() {
 
             {/* Profile Information */}
             <Card className="p-6 mb-6">
-              <h2 className="text-xl font-semibold mb-6">Informations du Profil</h2>
+              <h2 className="text-xl font-semibold mb-6">Informations Générales</h2>
               
               <div className="flex items-start gap-6">
                 <div className="w-24 h-24 rounded-full overflow-hidden flex-shrink-0">
@@ -161,7 +174,7 @@ export default function MyAccountPage() {
                 <div className="flex-1 space-y-4">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="flex items-center gap-3">
-                      <User className="h-5 w-5 text-gray-400" />
+                      <UserIcon className="h-5 w-5 text-gray-400" />
                       <div>
                         <p className="text-sm text-gray-500">Nom complet</p>
                         <p className="font-medium">{user.name}</p>
@@ -191,14 +204,125 @@ export default function MyAccountPage() {
                         <p className="font-medium">{user.address}</p>
                       </div>
                     </div>
+                    
+                    <div className="flex items-center gap-3">
+                      <Award className="h-5 w-5 text-gray-400" />
+                      <div>
+                        <p className="text-sm text-gray-500">Type d'élevage</p>
+                        <p className="font-medium">{user.typeElevage}</p>
+                      </div>
+                    </div>
+                    
+                    <div className="flex items-center gap-3">
+                      <FileText className="h-5 w-5 text-gray-400" />
+                      <div>
+                        <p className="text-sm text-gray-500">Licence/Autorisation</p>
+                        <p className="font-medium">{user.licence}</p>
+                      </div>
+                    </div>
+                    
+                    <div className="flex items-center gap-3">
+                      <MapPin className="h-5 w-5 text-gray-400" />
+                      <div>
+                        <p className="text-sm text-gray-500">Superficie</p>
+                        <p className="font-medium">{user.superficie}</p>
+                      </div>
+                    </div>
+                    
+                    <div className="flex items-center gap-3">
+                      <Package className="h-5 w-5 text-gray-400" />
+                      <div>
+                        <p className="text-sm text-gray-500">Capacité d'élevage</p>
+                        <p className="font-medium">{user.capacite}</p>
+                      </div>
+                    </div>
+                    
+                    <div className="flex items-center gap-3">
+                      <Shield className="h-5 w-5 text-gray-400" />
+                      <div>
+                        <p className="text-sm text-gray-500">Certification Bio</p>
+                        <div className="flex items-center gap-2">
+                          <span className="font-medium">{user.certificationBio ? 'Oui' : 'Non'}</span>
+                          <div className={`w-3 h-3 rounded-full ${user.certificationBio ? 'bg-green-500' : 'bg-gray-300'}`}></div>
+                        </div>
+                      </div>
+                    </div>
                   </div>
+                </div>
+              </div>
+            </Card>
+
+            {/* Informations Spécifiques Producteur */}
+            <Card className="p-6 mb-6">
+              <h2 className="text-xl font-semibold mb-6">Informations Producteur</h2>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-4">
+                  <div className="flex items-center gap-3">
+                    <Award className="h-5 w-5 text-gray-400" />
+                    <div>
+                      <p className="text-sm text-gray-500">Type d'élevage</p>
+                      <p className="font-medium">{user.typeElevage}</p>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-center gap-3">
+                    <FileText className="h-5 w-5 text-gray-400" />
+                    <div>
+                      <p className="text-sm text-gray-500">Licence/Autorisation</p>
+                      <p className="font-medium">{user.licence}</p>
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="space-y-4">
+                  <div className="flex items-center gap-3">
+                    <MapPin className="h-5 w-5 text-gray-400" />
+                    <div>
+                      <p className="text-sm text-gray-500">Superficie</p>
+                      <p className="font-medium">{user.superficie}</p>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-center gap-3">
+                    <Package className="h-5 w-5 text-gray-400" />
+                    <div>
+                      <p className="text-sm text-gray-500">Capacité d'élevage</p>
+                      <p className="font-medium">{user.capacite}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              {/* Certification Bio */}
+              <div className="mt-6 pt-6 border-t border-gray-200">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <Shield className="h-5 w-5 text-gray-400" />
+                    <div>
+                      <p className="font-medium">Certification Bio</p>
+                      <p className="text-sm text-gray-500">Produits certifiés biologiques</p>
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => setHasBioCertification(!hasBioCertification)}
+                    className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
+                      hasBioCertification ? 'bg-matix-green-medium' : 'bg-gray-300'
+                    }`}
+                  >
+                    <span
+                      className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                        hasBioCertification ? 'translate-x-6' : 'translate-x-1'
+                      }`}
+                    />
+                  </button>
                 </div>
               </div>
             </Card>
 
             {/* Statistics */}
             <Card className="p-6 mb-6">
-              <h2 className="text-xl font-semibold mb-6">Statistiques du Compte</h2>
+              <h2 className="text-xl font-semibold mb-6">Statistiques de Vente</h2>
               
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 <div className="text-center">
@@ -210,27 +334,75 @@ export default function MyAccountPage() {
                 </div>
                 
                 <div className="text-center">
-                  <div className="bg-purple-100 p-3 rounded-full w-12 h-12 mx-auto mb-3 flex items-center justify-center">
-                    <ShoppingBag className="h-6 w-6 text-purple-600" />
-                  </div>
-                  <p className="text-sm text-gray-500 mb-1">Total commandes</p>
-                  <p className="font-bold text-lg">{user.totalOrders}</p>
-                </div>
-                
-                <div className="text-center">
                   <div className="bg-green-100 p-3 rounded-full w-12 h-12 mx-auto mb-3 flex items-center justify-center">
-                    <CheckCircle className="h-6 w-6 text-green-600" />
+                    <ShoppingBag className="h-6 w-6 text-green-600" />
                   </div>
-                  <p className="text-sm text-gray-500 mb-1">Commandes livrées</p>
-                  <p className="font-bold text-lg">{user.deliveredOrders}</p>
+                  <p className="text-sm text-gray-500 mb-1">Total ventes</p>
+                  <p className="font-bold text-lg">{user.totalSales} commandes</p>
                 </div>
                 
-                <div className="text-center">
+                  <div className="bg-purple-100 p-3 rounded-full w-12 h-12 mx-auto mb-3 flex items-center justify-center">
+                    <DollarSign className="h-6 w-6 text-purple-600" />
                   <div className="bg-yellow-100 p-3 rounded-full w-12 h-12 mx-auto mb-3 flex items-center justify-center">
-                    <DollarSign className="h-6 w-6 text-yellow-600" />
+                  <p className="text-sm text-gray-500 mb-1">CA généré</p>
+                  <p className="font-bold text-lg">{user.totalRevenue} FCFA</p>
+                  <p className="text-sm text-gray-500 mb-1">Total ventes</p>
+                  <p className="font-bold text-lg">{user.totalSales}</p>
+                </div>
+                
+                    <Star className="h-6 w-6 text-yellow-600" />
+                    <Star className="h-6 w-6 text-green-600" />
+                  <p className="text-sm text-gray-500 mb-1">Note moyenne</p>
+                  <p className="font-bold text-lg">{user.averageRating}/5 ({user.totalReviews} avis)</p>
+                </div>
+              </div>
+            </Card>
+
+            {/* Documents */}
+            <Card className="p-6 mb-6">
+              <h2 className="text-xl font-semibold mb-6">Documents & Certifications</h2>
+              
+              <div className="space-y-4">
+                <div className="flex items-center justify-between p-4 border border-gray-200 rounded-lg">
+                  <div className="flex items-center gap-3">
+                    <FileText className="h-5 w-5 text-gray-400" />
+                    <div>
+                      <p className="font-medium">Licence d'élevage</p>
+                      <p className="text-sm text-gray-500">Document officiel requis</p>
+                    </div>
                   </div>
-                  <p className="text-sm text-gray-500 mb-1">Montant total dépensé</p>
-                  <p className="font-bold text-lg">{user.totalSpent} FCFA</p>
+                  <Button variant="outline" size="sm" className="flex items-center gap-2">
+                    <Upload className="h-4 w-4" />
+                    Upload
+                  </Button>
+                </div>
+                
+                <div className="flex items-center justify-between p-4 border border-gray-200 rounded-lg">
+                  <div className="flex items-center gap-3">
+                    <Shield className="h-5 w-5 text-gray-400" />
+                    <div>
+                      <p className="font-medium">Certificat vétérinaire</p>
+                      <p className="text-sm text-gray-500">Contrôle sanitaire</p>
+                    </div>
+                  </div>
+                  <Button variant="outline" size="sm" className="flex items-center gap-2">
+                    <Upload className="h-4 w-4" />
+                    Upload
+                  </Button>
+                </div>
+                
+                <div className="flex items-center justify-between p-4 border border-gray-200 rounded-lg">
+                  <div className="flex items-center gap-3">
+                    <FileText className="h-5 w-5 text-gray-400" />
+                    <div>
+                      <p className="font-medium">Assurance exploitation</p>
+                      <p className="text-sm text-gray-500">Couverture responsabilité</p>
+                    </div>
+                  </div>
+                  <Button variant="outline" size="sm" className="flex items-center gap-2">
+                    <Upload className="h-4 w-4" />
+                    Upload
+                  </Button>
                 </div>
               </div>
             </Card>
@@ -247,17 +419,17 @@ export default function MyAccountPage() {
                   </Button>
                 </Link>
                 
-                <Link href="/dashboard/password">
+                <Link href="/dashboard/products">
                   <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white flex items-center gap-2">
-                    <Lock className="h-4 w-4" />
-                    Changer Mot de Passe
+                    <Package className="h-4 w-4" />
+                    Gérer Produits
                   </Button>
                 </Link>
                 
-                <Link href="/dashboard/orders">
+                <Link href="/dashboard/stats">
                   <Button className="w-full bg-purple-600 hover:bg-purple-700 text-white flex items-center gap-2">
-                    <Package className="h-4 w-4" />
-                    Voir Mes Commandes
+                    <BarChart3 className="h-4 w-4" />
+                    Voir Statistiques
                   </Button>
                 </Link>
               </div>
