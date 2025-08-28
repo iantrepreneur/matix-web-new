@@ -63,7 +63,7 @@ export default function DeliveryRequestsPage() {
       date: "20/08/25",
       description: "50kg aliment ponte",
       budget: "25,000 FCFA",
-      devisRecus: 2
+      devisRecus: 2,
       statut: "Terminée"
     }
   ];
