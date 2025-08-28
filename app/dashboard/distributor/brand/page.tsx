@@ -217,208 +217,358 @@ export default function BrandPage() {
           {/* Main Content */}
           <div className="lg:col-span-3">
             <div className="mb-6">
-              <h1 className="text-2xl font-bold text-gray-900">Configuration Ma Marque</h1>
+              <div className="flex items-center justify-between">
+                <h1 className="text-2xl font-bold text-gray-900">Ma Boutique en Marque Blanche</h1>
+                <div className="flex items-center gap-4 text-sm">
+                  <div className="flex items-center gap-2">
+                    <TrendingUp className="h-4 w-4 text-green-600" />
+                    <span className="text-gray-600">Visites: <span className="font-bold text-green-600">{brandStats.visits}</span></span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-gray-600">CA: <span className="font-bold text-green-600">{brandStats.revenue} FCFA</span></span>
+                  </div>
+                </div>
+              </div>
             </div>
 
-            {/* Configuration Marque */}
-            <Card className="p-6 mb-6">
-              <h2 className="text-lg font-semibold mb-4">Identité de Marque</h2>
-              
-              <div className="grid md:grid-cols-2 gap-6">
-                {/* Upload Logo */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Logo de la marque</label>
-                  <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
-                    <Upload className="h-8 w-8 text-gray-400 mx-auto mb-2" />
-                    <p className="text-gray-600 mb-1">Glissez votre logo ici</p>
-                    <p className="text-xs text-gray-400">(PNG, JPG jusqu'à 2MB)</p>
-                  </div>
-                </div>
-
-                {/* Upload Bannière */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Bannière boutique</label>
-                  <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
-                    <Upload className="h-8 w-8 text-gray-400 mx-auto mb-2" />
-                    <p className="text-gray-600 mb-1">Glissez votre bannière ici</p>
-                    <p className="text-xs text-gray-400">(1200x400px recommandé)</p>
-                  </div>
-                </div>
+            {/* Onglets */}
+            <div className="mb-6">
+              <div className="flex border-b border-gray-200">
+                <button
+                  className={`px-6 py-3 font-medium text-sm ${
+                    activeTab === 'configuration'
+                      ? 'border-b-2 border-blue-600 text-blue-600'
+                      : 'text-gray-500 hover:text-gray-700'
+                  }`}
+                  onClick={() => setActiveTab('configuration')}
+                >
+                  Configuration
+                </button>
+                <button
+                  className={`px-6 py-3 font-medium text-sm ${
+                    activeTab === 'products'
+                      ? 'border-b-2 border-blue-600 text-blue-600'
+                      : 'text-gray-500 hover:text-gray-700'
+                  }`}
+                  onClick={() => setActiveTab('products')}
+                >
+                  Produits
+                </button>
+                <button
+                  className={`px-6 py-3 font-medium text-sm ${
+                    activeTab === 'preview'
+                      ? 'border-b-2 border-blue-600 text-blue-600'
+                      : 'text-gray-500 hover:text-gray-700'
+                  }`}
+                  onClick={() => setActiveTab('preview')}
+                >
+                  Aperçu Boutique
+                </button>
               </div>
+            </div>
 
-              <div className="grid md:grid-cols-2 gap-6 mt-6">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Nom de la marque</label>
-                  <Input
-                    value={brandName}
-                    onChange={(e) => setBrandName(e.target.value)}
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Description</label>
-                  <Input
-                    value={brandDescription}
-                    onChange={(e) => setBrandDescription(e.target.value)}
-                  />
-                </div>
-              </div>
-
-              {/* Couleurs */}
-              <div className="mt-6">
-                <h3 className="font-medium mb-3">Couleurs de la marque</h3>
-                <div className="grid grid-cols-3 gap-4">
-                  <div>
-                    <label className="block text-sm text-gray-600 mb-2">Couleur principale</label>
-                    <div className="flex items-center gap-2">
-                      <input
-                        type="color"
-                        value={brandColors.primary}
-                        onChange={(e) => setBrandColors({...brandColors, primary: e.target.value})}
-                        className="w-10 h-10 rounded border border-gray-300"
-                      />
+            {/* Contenu des onglets */}
+            {activeTab === 'configuration' && (
+              <>
+                {/* Section Identité */}
+                <Card className="p-6 mb-6">
+                  <h2 className="text-lg font-semibold mb-4">Identité de Marque</h2>
+                  
+                  <div className="grid md:grid-cols-2 gap-6 mb-6">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">Nom de marque</label>
                       <Input
-                        value={brandColors.primary}
-                        onChange={(e) => setBrandColors({...brandColors, primary: e.target.value})}
-                        className="flex-1"
+                        value={brandName}
+                        onChange={(e) => setBrandName(e.target.value)}
+                        placeholder="FreshFarm Sénégal"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">Slogan</label>
+                      <Input
+                        value={brandSlogan}
+                        onChange={(e) => setBrandSlogan(e.target.value)}
+                        placeholder="Fraîcheur garantie du producteur au consommateur"
                       />
                     </div>
                   </div>
 
-                  <div>
-                    <label className="block text-sm text-gray-600 mb-2">Couleur secondaire</label>
-                    <div className="flex items-center gap-2">
-                      <input
-                        type="color"
-                        value={brandColors.secondary}
-                        onChange={(e) => setBrandColors({...brandColors, secondary: e.target.value})}
-                        className="w-10 h-10 rounded border border-gray-300"
-                      />
-                      <Input
-                        value={brandColors.secondary}
-                        onChange={(e) => setBrandColors({...brandColors, secondary: e.target.value})}
-                        className="flex-1"
-                      />
+                  <div className="grid md:grid-cols-2 gap-6 mb-6">
+                    {/* Upload Logo */}
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">Logo de la marque</label>
+                      <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
+                        <Upload className="h-8 w-8 text-gray-400 mx-auto mb-2" />
+                        <p className="text-gray-600 mb-1">Glissez votre logo ici</p>
+                        <p className="text-xs text-gray-400">(PNG, JPG jusqu'à 2MB)</p>
+                      </div>
+                    </div>
+
+                    {/* Upload Bannière */}
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">Bannière boutique</label>
+                      <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
+                        <Upload className="h-8 w-8 text-gray-400 mx-auto mb-2" />
+                        <p className="text-gray-600 mb-1">Glissez votre bannière ici</p>
+                        <p className="text-xs text-gray-400">(1200x400px recommandé)</p>
+                      </div>
                     </div>
                   </div>
 
+                  {/* Couleurs */}
                   <div>
-                    <label className="block text-sm text-gray-600 mb-2">Couleur accent</label>
-                    <div className="flex items-center gap-2">
-                      <input
-                        type="color"
-                        value={brandColors.accent}
-                        onChange={(e) => setBrandColors({...brandColors, accent: e.target.value})}
-                        className="w-10 h-10 rounded border border-gray-300"
-                      />
+                    <h3 className="font-medium mb-3">Couleurs de la marque</h3>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-sm text-gray-600 mb-2">Couleur principale</label>
+                        <div className="flex items-center gap-2">
+                          <input
+                            type="color"
+                            value={brandColors.primary}
+                            onChange={(e) => setBrandColors({...brandColors, primary: e.target.value})}
+                            className="w-10 h-10 rounded border border-gray-300"
+                          />
+                          <Input
+                            value={brandColors.primary}
+                            onChange={(e) => setBrandColors({...brandColors, primary: e.target.value})}
+                            className="flex-1"
+                          />
+                        </div>
+                      </div>
+
+                      <div>
+                        <label className="block text-sm text-gray-600 mb-2">Couleur secondaire</label>
+                        <div className="flex items-center gap-2">
+                          <input
+                            type="color"
+                            value={brandColors.secondary}
+                            onChange={(e) => setBrandColors({...brandColors, secondary: e.target.value})}
+                            className="w-10 h-10 rounded border border-gray-300"
+                          />
+                          <Input
+                            value={brandColors.secondary}
+                            onChange={(e) => setBrandColors({...brandColors, secondary: e.target.value})}
+                            className="flex-1"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </Card>
+
+                {/* Section Contact */}
+                <Card className="p-6 mb-6">
+                  <h2 className="text-lg font-semibold mb-4">Informations de Contact</h2>
+                  
+                  <div className="grid md:grid-cols-2 gap-6">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">Adresse boutique</label>
                       <Input
-                        value={brandColors.accent}
-                        onChange={(e) => setBrandColors({...brandColors, accent: e.target.value})}
-                        className="flex-1"
+                        value={brandAddress}
+                        onChange={(e) => setBrandAddress(e.target.value)}
+                        placeholder="Marché Colobane, Dakar"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">Téléphone service client</label>
+                      <Input
+                        value={brandPhone}
+                        onChange={(e) => setBrandPhone(e.target.value)}
+                        placeholder="+221 77 123 45 67"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">Email professionnel</label>
+                      <Input
+                        type="email"
+                        value={brandEmail}
+                        onChange={(e) => setBrandEmail(e.target.value)}
+                        placeholder="contact@freshfarm.sn"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">Site web (optionnel)</label>
+                      <Input
+                        value={brandWebsite}
+                        onChange={(e) => setBrandWebsite(e.target.value)}
+                        placeholder="https://freshfarm.sn"
                       />
                     </div>
                   </div>
-                </div>
-              </div>
-            </Card>
+                </Card>
 
-            {/* Lien Public */}
-            <Card className="p-6 mb-6">
-              <h2 className="text-lg font-semibold mb-4">Lien Public de la Boutique</h2>
-              
-              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                <div className="flex items-center justify-between">
-                  <div className="flex-1">
-                    <p className="text-sm text-gray-600 mb-1">URL de votre boutique :</p>
-                    <p className="font-mono text-blue-600 break-all">{publicUrl}</p>
+                {/* Lien Public */}
+                <Card className="p-6 mb-6">
+                  <h2 className="text-lg font-semibold mb-4">Lien Public de la Boutique</h2>
+                  
+                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                    <div className="flex items-center justify-between">
+                      <div className="flex-1">
+                        <p className="text-sm text-gray-600 mb-1">URL de votre boutique :</p>
+                        <p className="font-mono text-blue-600 break-all">{publicUrl}</p>
+                      </div>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={copyUrl}
+                        className="ml-4 flex items-center gap-2"
+                      >
+                        {copiedUrl ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
+                        {copiedUrl ? 'Copié' : 'Copier'}
+                      </Button>
+                    </div>
+                    
+                    <div className="mt-3 flex gap-2">
+                      <Button 
+                        size="sm" 
+                        className="bg-blue-600 hover:bg-blue-700 text-white"
+                        onClick={() => setActiveTab('preview')}
+                      >
+                        <Eye className="h-4 w-4 mr-2" />
+                        Prévisualiser
+                      </Button>
+                      <Button variant="outline" size="sm">
+                        <Share2 className="h-4 w-4 mr-2" />
+                        Partager
+                      </Button>
+                    </div>
                   </div>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={copyUrl}
-                    className="ml-4 flex items-center gap-2"
-                  >
-                    {copiedUrl ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
-                    {copiedUrl ? 'Copié' : 'Copier'}
+                </Card>
+
+                {/* Bouton Sauvegarder */}
+                <div className="text-center">
+                  <Button className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 text-lg">
+                    Sauvegarder Configuration
                   </Button>
                 </div>
+              </>
+            )}
+
+            {activeTab === 'products' && (
+              <Card className="p-6">
+                <div className="flex items-center justify-between mb-4">
+                  <h2 className="text-lg font-semibold">Catalogue Produits Sélectionnés</h2>
+                  <Button className="bg-green-600 hover:bg-green-700 text-white flex items-center gap-2">
+                    <Plus className="h-4 w-4" />
+                    Ajouter Produits
+                  </Button>
+                </div>
+
+                <div className="overflow-x-auto">
+                  <table className="w-full">
+                    <thead>
+                      <tr className="border-b border-gray-200">
+                        <th className="text-left py-3 px-4 font-medium text-gray-600">Photo</th>
+                        <th className="text-left py-3 px-4 font-medium text-gray-600">Nom Personnalisé</th>
+                        <th className="text-left py-3 px-4 font-medium text-gray-600">Prix Producteur</th>
+                        <th className="text-left py-3 px-4 font-medium text-gray-600">Prix de Vente</th>
+                        <th className="text-left py-3 px-4 font-medium text-gray-600">Marge</th>
+                        <th className="text-left py-3 px-4 font-medium text-gray-600">Statut</th>
+                        <th className="text-left py-3 px-4 font-medium text-gray-600">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {catalogProducts.map((product, index) => (
+                        <tr key={index} className="border-b border-gray-100 hover:bg-gray-50 transition-colors">
+                          <td className="py-3 px-4">
+                            <img 
+                              src={product.image} 
+                              alt={product.name}
+                              className="w-12 h-12 object-cover rounded-lg"
+                            />
+                          </td>
+                          <td className="py-3 px-4 font-medium text-gray-900">{product.name}</td>
+                          <td className="py-3 px-4 text-gray-600">{product.originalPrice} FCFA</td>
+                          <td className="py-3 px-4 font-medium text-gray-900">{product.myPrice} FCFA</td>
+                          <td className="py-3 px-4 text-green-600 font-medium">{product.margin}</td>
+                          <td className="py-3 px-4">{getStatusBadge(product.status)}</td>
+                          <td className="py-3 px-4">
+                            <div className="flex items-center gap-2">
+                              <Button variant="ghost" size="sm" className="text-blue-600 hover:text-blue-800">
+                                <Eye className="h-4 w-4" />
+                              </Button>
+                              <Button variant="ghost" size="sm" className="text-green-600 hover:text-green-800">
+                                <Edit className="h-4 w-4" />
+                              </Button>
+                              <Button variant="ghost" size="sm" className="text-red-600 hover:text-red-800">
+                                <Trash2 className="h-4 w-4" />
+                              </Button>
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </Card>
+            )}
+
+            {activeTab === 'preview' && (
+              <Card className="p-6">
+                <h2 className="text-lg font-semibold mb-4">Aperçu de votre Boutique</h2>
                 
-                <div className="mt-3 flex gap-2">
-                  <Button size="sm" className="bg-blue-600 hover:bg-blue-700 text-white">
-                    <Eye className="h-4 w-4 mr-2" />
-                    Prévisualiser
-                  </Button>
-                  <Button variant="outline" size="sm">
-                    Partager
-                  </Button>
-                </div>
-              </div>
-            </Card>
+                {/* Preview mockée */}
+                <div className="border border-gray-200 rounded-lg overflow-hidden">
+                  {/* Header boutique */}
+                  <div 
+                    className="p-6 text-white"
+                    style={{ backgroundColor: brandColors.primary }}
+                  >
+                    <div className="flex items-center gap-4">
+                      <div className="w-16 h-16 bg-white rounded-lg flex items-center justify-center">
+                        <span className="text-2xl">🏪</span>
+                      </div>
+                      <div>
+                        <h3 className="text-2xl font-bold">{brandName}</h3>
+                        <p className="opacity-90">{brandSlogan}</p>
+                      </div>
+                    </div>
+                  </div>
 
-            {/* Catalogue Produits */}
-            <Card className="p-6">
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="text-lg font-semibold">Catalogue Produits</h2>
-                <Button className="bg-blue-600 hover:bg-blue-700 text-white flex items-center gap-2">
-                  <Plus className="h-4 w-4" />
-                  Ajouter Produit
-                </Button>
-              </div>
-
-              <div className="overflow-x-auto">
-                <table className="w-full">
-                  <thead>
-                    <tr className="border-b border-gray-200">
-                      <th className="text-left py-3 px-4 font-medium text-gray-600">Photo</th>
-                      <th className="text-left py-3 px-4 font-medium text-gray-600">Produit</th>
-                      <th className="text-left py-3 px-4 font-medium text-gray-600">Prix Producteur</th>
-                      <th className="text-left py-3 px-4 font-medium text-gray-600">Mon Prix</th>
-                      <th className="text-left py-3 px-4 font-medium text-gray-600">Marge</th>
-                      <th className="text-left py-3 px-4 font-medium text-gray-600">Statut</th>
-                      <th className="text-left py-3 px-4 font-medium text-gray-600">Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {catalogProducts.map((product, index) => (
-                      <tr key={index} className="border-b border-gray-100 hover:bg-gray-50 transition-colors">
-                        <td className="py-3 px-4">
+                  {/* Contenu boutique */}
+                  <div className="p-6 bg-gray-50">
+                    <h4 className="font-semibold mb-4">Nos Produits Sélectionnés</h4>
+                    <div className="grid grid-cols-3 gap-4">
+                      {catalogProducts.slice(0, 3).map((product, index) => (
+                        <div key={index} className="bg-white rounded-lg p-3 text-center">
                           <img 
                             src={product.image} 
                             alt={product.name}
-                            className="w-12 h-12 object-cover rounded-lg"
+                            className="w-full h-20 object-cover rounded mb-2"
                           />
-                        </td>
-                        <td className="py-3 px-4 font-medium text-gray-900">{product.name}</td>
-                        <td className="py-3 px-4 text-gray-600">{product.originalPrice} FCFA</td>
-                        <td className="py-3 px-4 font-medium text-gray-900">{product.myPrice} FCFA</td>
-                        <td className="py-3 px-4 text-green-600 font-medium">{product.margin}</td>
-                        <td className="py-3 px-4">{getStatusBadge(product.status)}</td>
-                        <td className="py-3 px-4">
-                          <div className="flex items-center gap-2">
-                            <Button variant="ghost" size="sm" className="text-blue-600 hover:text-blue-800">
-                              <Eye className="h-4 w-4" />
-                            </Button>
-                            <Button variant="ghost" size="sm" className="text-green-600 hover:text-green-800">
-                              <Edit className="h-4 w-4" />
-                            </Button>
-                            <Button variant="ghost" size="sm" className="text-red-600 hover:text-red-800">
-                              <Trash2 className="h-4 w-4" />
-                            </Button>
-                          </div>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </Card>
+                          <h5 className="text-sm font-medium mb-1">{product.name}</h5>
+                          <p className="text-sm font-bold" style={{ color: brandColors.primary }}>
+                            {product.myPrice} FCFA
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
 
-            {/* Bouton Sauvegarder */}
-            <div className="text-center">
-              <Button className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 text-lg">
-                Sauvegarder Configuration
-              </Button>
-            </div>
+                  {/* Footer boutique */}
+                  <div className="p-4 bg-gray-100 text-center">
+                    <p className="text-sm text-gray-600">
+                      📞 {brandPhone} | ✉️ {brandEmail}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="mt-6 flex gap-4">
+                  <Button className="bg-blue-600 hover:bg-blue-700 text-white flex items-center gap-2">
+                    <ExternalLink className="h-4 w-4" />
+                    Voir en tant que client
+                  </Button>
+                  <Button variant="outline" className="flex items-center gap-2">
+                    <Share2 className="h-4 w-4" />
+                    Partager la boutique
+                  </Button>
+                </div>
+              </Card>
+            )}
           </div>
         </div>
       </div>
