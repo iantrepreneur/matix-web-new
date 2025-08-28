@@ -29,19 +29,45 @@ export default function ClientProfilePage() {
   const user = {
     name: "Ibrahima Ba",
     email: "ibrahima@gmail.com",
-    phone: "+221 75 345 6789",
-    address: "Pikine, Dakar",
+    phone: "+221 75 345 6789", 
+    address: "Marché Colobane, Dakar",
     avatar: "https://images.pexels.com/photos/1222271/pexels-photo-1222271.jpeg?auto=compress&cs=tinysrgb&w=100",
-    // Informations spécifiques client
-    adresseLivraison: "Quartier Randoulène, Pikine, Dakar",
+    // Adresses de livraison
+    adressePrincipale: "Marché Colobane, Dakar",
+    adressesSecondaires: [
+      "Quartier Randoulène, Pikine, Dakar",
+      "Zone industrielle, Rufisque"
+    ],
+    // Préférences client
+    preferences: {
+      typesPreferences: ["Volailles", "Bio", "Local"],
+      budgetMin: 10000,
+      budgetMax: 50000,
+      frequenceAchats: "Hebdomadaire",
+      modeLivraison: "Express à domicile"
+    },
+    // Notifications
+    notifications: {
+      emailOffres: true,
+      smsLivraison: true,
+      alertesPrix: true,
+      newsletter: false
+    },
+    // Programme fidélité
+    fidelite: {
+      statut: "Bronze",
+      points: 287,
+      pointsProchainNiveau: 213,
+      avantages: "Livraison gratuite à partir de 30,000 FCFA"
+    },
+    // Informations spécifiques client existantes
     typeClient: "Particulier",
-    preferences: ["Poulets bio", "Livraison weekend", "Paiement à la livraison"],
     // Statistiques client
     memberSince: "Juin 2024",
-    totalOrders: 12,
-    totalSpent: "145,000",
-    averageRating: 4.6,
-    favoriteProducts: 8
+    totalOrders: 23,
+    totalSpent: "287,500",
+    vendeurPrefere: "Ferme Diallo",
+    achatsVendeurPrefere: 8
   };
 
   const menuItems = [
