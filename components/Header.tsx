@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { Search, Heart, ShoppingCart, User, Menu, X, Mic, Bell, ChevronDown, BarChart3, Package, Edit, Lock } from 'lucide-react';
+import { Search, Heart, ShoppingCart, User as UserIcon, Menu, X, Mic, Bell, ChevronDown, BarChart3, Package, Edit, Lock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import CartSidebar from './CartSidebar';
@@ -169,7 +169,7 @@ export default function Header() {
                           onClick={handleLogout}
                           className="w-full flex items-center gap-3 px-4 py-2 text-red-600 hover:bg-red-50 transition-colors"
                         >
-                          <User className="h-4 w-4" />
+                          <UserIcon className="h-4 w-4" />
                           <span className="text-sm">Déconnexion</span>
                         </button>
                       </div>

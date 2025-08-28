@@ -9,7 +9,7 @@ import {
   BarChart3, 
   Package, 
   Star, 
-  User, 
+  User as UserIcon, 
   Edit, 
   Lock, 
   LogOut,

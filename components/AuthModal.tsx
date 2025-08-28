@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card } from '@/components/ui/card';
-import { X, User, Building, ShoppingCart } from 'lucide-react';
+import { X, User as UserIcon, Building, ShoppingCart } from 'lucide-react';
 import { authService, User as UserType } from '@/lib/auth';
 
 interface AuthModalProps {
@@ -47,7 +47,7 @@ export default function AuthModal({ isOpen, onClose, onLogin }: AuthModalProps) 
     },
     {
       id: 'client' as const,
-      icon: <User className="h-8 w-8" />,
+      icon: <UserIcon className="h-8 w-8" />,
       title: 'Client Final',
       subtitle: 'J\'achète pour ma consommation',
       color: 'bg-purple-50 border-purple-200 hover:bg-purple-100'

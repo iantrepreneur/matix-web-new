@@ -10,7 +10,7 @@ import {
   BarChart3, 
   Package, 
   Star, 
-  User, 
+  User as UserIcon, 
   Edit, 
   Lock, 
   LogOut,
@@ -181,7 +181,7 @@ export default function DashboardPage() {
     { id: 'dashboard', label: 'Dashboard', icon: <BarChart3 className="h-4 w-4" /> },
     { id: 'orders', label: 'Mes Commandes', icon: <Package className="h-4 w-4" /> },
     { id: 'reviews', label: 'Mes Avis', icon: <Star className="h-4 w-4" /> },
-    { id: 'account', label: 'Mon Compte', icon: <User className="h-4 w-4" /> },
+    { id: 'account', label: 'Mon Compte', icon: <UserIcon className="h-4 w-4" /> },
     { id: 'profile', label: 'Modifier Profil', icon: <Edit className="h-4 w-4" /> },
     { id: 'password', label: 'Changer Mot de Passe', icon: <Lock className="h-4 w-4" /> },
     { id: 'logout', label: 'Déconnexion', icon: <LogOut className="h-4 w-4" /> }
