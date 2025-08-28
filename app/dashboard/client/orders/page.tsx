@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { Card } from '@/components/ui/card';
 import { 
   Home, 
@@ -15,12 +16,23 @@ import {
   Truck,
   Star,
   Phone,
-  MessageSquare
+  MessageSquare,
+  Search,
+  Filter,
+  RotateCcw,
+  MapPin,
+  Clock,
+  CheckCircle,
+  X
 } from 'lucide-react';
 
 export default function ClientOrdersPage() {
   const [activePage, setActivePage] = useState('orders');
-  const [activeTab, setActiveTab] = useState('all');
+  const [searchTerm, setSearchTerm] = useState('');
+  const [statusFilter, setStatusFilter] = useState('all');
+  const [periodFilter, setPeriodFilter] = useState('all');
+  const [showTrackingModal, setShowTrackingModal] = useState(false);
+  const [selectedOrder, setSelectedOrder] = useState<any>(null);
 
   const user = {
     name: "Ibrahima Ba",
@@ -31,59 +43,79 @@ export default function ClientOrdersPage() {
   const orders = [
     {
       id: "CMD001",
-      date: "25/08/25",
-      distributeur: "FreshFarm Sénégal",
-      produits: "5 poulets fermiers + aliments",
-      montant: "28,500 FCFA",
-      statut: "Livrée",
-      note: 4.8,
-      livraison: "26/08/25",
-      adresse: "Pikine, Dakar"
+      date: "28/08/25",
+      vendeur: "Ferme Diallo",
+      produits: "3 poulets fermiers",
+      montant: "13,500 FCFA",
+      statut: "En livraison",
+      note: null,
+      eta: "Dans 45 minutes",
+      livreur: "Moussa Sarr",
+      livreurPhone: "+221 77 555 123"
     },
     {
       id: "CMD002",
-      date: "20/08/25", 
-      distributeur: "Élevage Premium",
-      produits: "10 poussins pondeuses",
-      montant: "8,500 FCFA",
-      statut: "En cours",
-      note: null,
-      livraison: "Aujourd'hui",
-      adresse: "Pikine, Dakar"
+      date: "25/08/25",
+      vendeur: "Élevage Bio",
+      produits: "2 douzaines œufs",
+      montant: "4,800 FCFA",
+      statut: "Livrée",
+      note: 4.5,
+      eta: "Livrée",
+      livreur: "Fatou Diop",
+      livreurPhone: "+221 76 444 567"
     },
     {
       id: "CMD003",
-      date: "18/08/25",
-      distributeur: "MatEquip Plus",
-      produits: "Mangeoire automatique",
-      montant: "15,500 FCFA", 
+      date: "22/08/25",
+      vendeur: "Distribution Sénégal",
+      produits: "Cage + mangeoire",
+      montant: "45,000 FCFA",
       statut: "Livrée",
-      note: 4.5,
-      livraison: "19/08/25",
-      adresse: "Pikine, Dakar"
+      note: 4.8,
+      eta: "Livrée",
+      livreur: "Amadou Fall",
+      livreurPhone: "+221 78 333 999"
     },
     {
       id: "CMD004",
-      date: "15/08/25",
-      distributeur: "Nutrition Plus",
-      produits: "2 sacs aliment ponte",
-      montant: "37,000 FCFA",
-      statut: "Livrée", 
-      note: 5.0,
-      livraison: "16/08/25",
-      adresse: "Pikine, Dakar"
+      date: "20/08/25",
+      vendeur: "Ferme Premium",
+      produits: "5 poussins pondeuses",
+      montant: "4,250 FCFA",
+      statut: "En préparation",
+      note: null,
+      eta: "Demain matin",
+      livreur: "En attente",
+      livreurPhone: ""
     },
     {
       id: "CMD005",
-      date: "12/08/25",
-      distributeur: "VetSen Laboratoire",
-      produits: "Vaccins + vitamines",
-      montant: "19,500 FCFA",
+      date: "18/08/25",
+      vendeur: "MatEquip Plus",
+      produits: "Mangeoire automatique",
+      montant: "15,500 FCFA",
       statut: "Annulée",
       note: null,
-      livraison: "-",
-      adresse: "Pikine, Dakar"
+      eta: "Annulée",
+      livreur: "-",
+      livreurPhone: ""
     }
+  ];
+
+  const statusOptions = [
+    { value: 'all', label: 'Toutes' },
+    { value: 'preparation', label: 'En préparation' },
+    { value: 'livraison', label: 'En livraison' },
+    { value: 'livree', label: 'Livrées' },
+    { value: 'annulee', label: 'Annulées' }
+  ];
+
+  const periodOptions = [
+    { value: 'all', label: 'Toute période' },
+    { value: 'month', label: 'Ce mois' },
+    { value: '3months', label: '3 derniers mois' },
+    { value: 'year', label: 'Cette année' }
   ];
 
   const menuItems = [
@@ -97,7 +129,8 @@ export default function ClientOrdersPage() {
 
   const getStatusBadge = (status: string) => {
     const statusStyles = {
-      'En cours': 'bg-orange-100 text-orange-800',
+      'En préparation': 'bg-orange-100 text-orange-800',
+      'En livraison': 'bg-blue-100 text-blue-800',
       'Livrée': 'bg-green-100 text-green-800',
       'Annulée': 'bg-red-100 text-red-800'
     };
@@ -120,13 +153,16 @@ export default function ClientOrdersPage() {
     );
   };
 
-  const filteredOrders = orders.filter(order => {
-    if (activeTab === 'all') return true;
-    if (activeTab === 'pending') return order.statut === 'En cours';
-    if (activeTab === 'delivered') return order.statut === 'Livrée';
-    if (activeTab === 'cancelled') return order.statut === 'Annulée';
-    return true;
-  });
+  const handleTrackOrder = (order: any) => {
+    setSelectedOrder(order);
+    setShowTrackingModal(true);
+  };
+
+  const resetFilters = () => {
+    setSearchTerm('');
+    setStatusFilter('all');
+    setPeriodFilter('all');
+  };
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -228,51 +264,65 @@ export default function ClientOrdersPage() {
               <h1 className="text-2xl font-bold text-gray-900">Mes Commandes</h1>
             </div>
 
-            {/* Onglets */}
-            <div className="mb-6">
-              <div className="flex border-b border-gray-200">
-                <button
-                  className={`px-6 py-3 font-medium text-sm ${
-                    activeTab === 'all'
-                      ? 'border-b-2 border-purple-600 text-purple-600'
-                      : 'text-gray-500 hover:text-gray-700'
-                  }`}
-                  onClick={() => setActiveTab('all')}
-                >
-                  Toutes les Commandes
-                </button>
-                <button
-                  className={`px-6 py-3 font-medium text-sm ${
-                    activeTab === 'pending'
-                      ? 'border-b-2 border-purple-600 text-purple-600'
-                      : 'text-gray-500 hover:text-gray-700'
-                  }`}
-                  onClick={() => setActiveTab('pending')}
-                >
-                  En Cours
-                </button>
-                <button
-                  className={`px-6 py-3 font-medium text-sm ${
-                    activeTab === 'delivered'
-                      ? 'border-b-2 border-purple-600 text-purple-600'
-                      : 'text-gray-500 hover:text-gray-700'
-                  }`}
-                  onClick={() => setActiveTab('delivered')}
-                >
-                  Livrées
-                </button>
-                <button
-                  className={`px-6 py-3 font-medium text-sm ${
-                    activeTab === 'cancelled'
-                      ? 'border-b-2 border-purple-600 text-purple-600'
-                      : 'text-gray-500 hover:text-gray-700'
-                  }`}
-                  onClick={() => setActiveTab('cancelled')}
-                >
-                  Annulées
-                </button>
+            {/* Filtres */}
+            <Card className="p-6 mb-6">
+              <h2 className="text-lg font-semibold mb-4">Filtres de Recherche</h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Recherche</label>
+                  <div className="relative">
+                    <Search className="h-4 w-4 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                    <Input
+                      placeholder="Produit ou vendeur..."
+                      value={searchTerm}
+                      onChange={(e) => setSearchTerm(e.target.value)}
+                      className="pl-10"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Statut</label>
+                  <select 
+                    className="w-full border border-gray-300 rounded-lg px-3 py-2 bg-white"
+                    value={statusFilter}
+                    onChange={(e) => setStatusFilter(e.target.value)}
+                  >
+                    {statusOptions.map((option) => (
+                      <option key={option.value} value={option.value}>
+                        {option.label}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Période</label>
+                  <select 
+                    className="w-full border border-gray-300 rounded-lg px-3 py-2 bg-white"
+                    value={periodFilter}
+                    onChange={(e) => setPeriodFilter(e.target.value)}
+                  >
+                    {periodOptions.map((option) => (
+                      <option key={option.value} value={option.value}>
+                        {option.label}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className="flex items-end">
+                  <Button 
+                    variant="outline" 
+                    onClick={resetFilters}
+                    className="w-full flex items-center gap-2"
+                  >
+                    <RotateCcw className="h-4 w-4" />
+                    Reset
+                  </Button>
+                </div>
               </div>
-            </div>
+            </Card>
 
             {/* Tableau Commandes */}
             <Card className="p-6">
@@ -282,28 +332,35 @@ export default function ClientOrdersPage() {
                     <tr className="border-b border-gray-200">
                       <th className="text-left py-3 px-4 font-medium text-gray-600">N° Commande</th>
                       <th className="text-left py-3 px-4 font-medium text-gray-600">Date</th>
-                      <th className="text-left py-3 px-4 font-medium text-gray-600">Distributeur</th>
+                      <th className="text-left py-3 px-4 font-medium text-gray-600">Vendeur</th>
                       <th className="text-left py-3 px-4 font-medium text-gray-600">Produits</th>
                       <th className="text-left py-3 px-4 font-medium text-gray-600">Montant</th>
                       <th className="text-left py-3 px-4 font-medium text-gray-600">Statut</th>
-                      <th className="text-left py-3 px-4 font-medium text-gray-600">Note</th>
+                      <th className="text-left py-3 px-4 font-medium text-gray-600">Suivi</th>
                       <th className="text-left py-3 px-4 font-medium text-gray-600">Actions</th>
                     </tr>
                   </thead>
                   <tbody>
-                    {filteredOrders.map((order, index) => (
+                    {orders.map((order, index) => (
                       <tr key={index} className="border-b border-gray-100 hover:bg-gray-50 transition-colors">
                         <td className="py-3 px-4 font-medium text-gray-900">{order.id}</td>
                         <td className="py-3 px-4 text-gray-600">{order.date}</td>
-                        <td className="py-3 px-4 text-gray-600">{order.distributeur}</td>
+                        <td className="py-3 px-4 text-gray-600">{order.vendeur}</td>
                         <td className="py-3 px-4 text-gray-600">{order.produits}</td>
                         <td className="py-3 px-4 font-medium text-gray-900">{order.montant}</td>
                         <td className="py-3 px-4">{getStatusBadge(order.statut)}</td>
                         <td className="py-3 px-4">
-                          {order.note ? (
-                            renderStars(order.note)
+                          {order.statut === 'En livraison' ? (
+                            <Button 
+                              size="sm" 
+                              className="bg-blue-600 hover:bg-blue-700 text-white text-xs"
+                              onClick={() => handleTrackOrder(order)}
+                            >
+                              <MapPin className="h-3 w-3 mr-1" />
+                              Suivre
+                            </Button>
                           ) : (
-                            <span className="text-xs text-gray-400">Non notée</span>
+                            <span className="text-xs text-gray-500">{order.eta}</span>
                           )}
                         </td>
                         <td className="py-3 px-4">
@@ -311,14 +368,14 @@ export default function ClientOrdersPage() {
                             <Button variant="ghost" size="sm" className="text-purple-600 hover:text-purple-800">
                               <Eye className="h-4 w-4" />
                             </Button>
-                            {order.statut === 'En cours' && (
-                              <Button variant="ghost" size="sm" className="text-blue-600 hover:text-blue-800">
-                                <Truck className="h-4 w-4" />
-                              </Button>
-                            )}
                             {order.statut === 'Livrée' && !order.note && (
                               <Button variant="ghost" size="sm" className="text-yellow-600 hover:text-yellow-800">
                                 <Star className="h-4 w-4" />
+                              </Button>
+                            )}
+                            {order.statut === 'En livraison' && (
+                              <Button variant="ghost" size="sm" className="text-green-600 hover:text-green-800">
+                                <Phone className="h-4 w-4" />
                               </Button>
                             )}
                           </div>
@@ -332,6 +389,302 @@ export default function ClientOrdersPage() {
           </div>
         </div>
       </div>
+
+      {/* Modal Suivi Livraison */}
+      {showTrackingModal && selectedOrder && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-lg max-w-md w-full">
+            <div className="flex items-center justify-between p-6 border-b">
+              <h3 className="text-lg font-semibold">Suivi Commande #{selectedOrder.id}</h3>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setShowTrackingModal(false)}
+              >
+                <X className="h-4 w-4" />
+              </Button>
+            </div>
+
+            <div className="p-6 space-y-6">
+              {/* Carte GPS simulée */}
+              <div className="bg-gradient-to-br from-blue-100 to-green-100 rounded-lg h-48 relative overflow-hidden">
+                <div className="absolute inset-0 bg-gray-200 opacity-30"></div>
+                
+                {/* Position livreur */}
+                <div className="absolute top-1/3 left-1/2 -translate-x-1/2">
+                  <div className="relative">
+                    <div className="w-4 h-4 bg-blue-500 rounded-full animate-pulse"></div>
+                    <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 bg-white px-2 py-1 rounded shadow text-xs font-medium whitespace-nowrap">
+                      {selectedOrder.livreur}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Destination */}
+                <div className="absolute bottom-1/4 right-1/3">
+                  <div className="relative">
+                    <MapPin className="h-5 w-5 text-red-500" />
+                    <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 bg-white px-2 py-1 rounded shadow text-xs font-medium whitespace-nowrap">
+                      Votre adresse
+                    </div>
+                  </div>
+                </div>
+
+                {/* Trajet */}
+                <div className="absolute top-1/3 left-1/2 w-20 h-1 bg-blue-500 transform rotate-45 opacity-70"></div>
+              </div>
+
+              {/* Étapes livraison */}
+              <div className="space-y-3">
+                <div className="flex items-center gap-3">
+                  <CheckCircle className="h-5 w-5 text-green-500" />
+                  <div>
+                    <p className="font-medium text-gray-900">Commande confirmée</p>
+                    <p className="text-xs text-gray-500">28/08/25 à 10:30</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-3">
+                  <CheckCircle className="h-5 w-5 text-green-500" />
+                  <div>
+                    <p className="font-medium text-gray-900">Produits préparés</p>
+                    <p className="text-xs text-gray-500">28/08/25 à 14:15</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-3">
+                  <div className="h-5 w-5 bg-blue-500 rounded-full animate-pulse"></div>
+                  <div>
+                    <p className="font-medium text-blue-600">En route vers vous</p>
+                    <p className="text-xs text-gray-500">ETA: {selectedOrder.eta}</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-3">
+                  <Clock className="h-5 w-5 text-gray-300" />
+                  <div>
+                    <p className="font-medium text-gray-400">Livraison</p>
+                    <p className="text-xs text-gray-400">En attente</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Contact livreur */}
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="font-medium text-blue-900">Livreur: {selectedOrder.livreur}</p>
+                    <p className="text-sm text-blue-700">{selectedOrder.livreurPhone}</p>
+                  </div>
+                  <Button size="sm" className="bg-blue-600 hover:bg-blue-700 text-white">
+                    <Phone className="h-4 w-4 mr-1" />
+                    Appeler
+                  </Button>
+                </div>
+              </div>
+
+              {/* Actions */}
+              <div className="flex gap-3">
+                <Button variant="outline" className="flex-1">
+                  Signaler problème
+                </Button>
+                <Button className="flex-1 bg-purple-600 hover:bg-purple-700 text-white">
+                  Contacter vendeur
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Section App */}
+      <div className="bg-gradient-to-r from-green-50 to-blue-50 py-16">
+        <div className="container mx-auto px-4">
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            <div className="text-center lg:text-left">
+              <div className="text-6xl mb-4">📱</div>
+              <h3 className="text-3xl font-bold text-gray-900 mb-4">
+                Obtenez Vos Besoins Quotidiens Depuis Notre Boutique Matix
+              </h3>
+              <p className="text-gray-600 mb-6 text-lg">
+                Il y a de nombreux produits que vous trouverez dans notre boutique. 
+                Choisissez votre produit nécessaire quotidien dans notre boutique Matix 
+                et obtenez des offres spéciales.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+                <Button className="bg-black hover:bg-gray-800 text-white flex items-center gap-2">
+                  <img src="https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg" alt="Google Play" className="h-6" />
+                  Google Play
+                </Button>
+                <Button className="bg-black hover:bg-gray-800 text-white flex items-center gap-2">
+                  <img src="https://upload.wikimedia.org/wikipedia/commons/3/3c/Download_on_the_App_Store_Badge.svg" alt="App Store" className="h-6" />
+                  App Store
+                </Button>
+              </div>
+            </div>
+            <div className="text-center">
+              <div className="text-8xl">🛒</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Features Bar */}
+      <div className="bg-white py-8">
+        <div className="container mx-auto px-4">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+            <div className="flex items-center gap-3">
+              <div className="bg-green-100 p-3 rounded-full">
+                <svg className="h-6 w-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                </svg>
+              </div>
+              <div>
+                <div className="font-semibold">Livraison Gratuite</div>
+                <div className="text-sm text-gray-500">À partir de 50,000 FCFA</div>
+              </div>
+            </div>
+            <div className="flex items-center gap-3">
+              <div className="bg-green-100 p-3 rounded-full">
+                <svg className="h-6 w-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                </svg>
+              </div>
+              <div>
+                <div className="font-semibold">Support 24/7</div>
+                <div className="text-sm text-gray-500">À tout moment</div>
+              </div>
+            </div>
+            <div className="flex items-center gap-3">
+              <div className="bg-green-100 p-3 rounded-full">
+                <svg className="h-6 w-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                </svg>
+              </div>
+              <div>
+                <div className="font-semibold">Paiement Sécurisé</div>
+                <div className="text-sm text-gray-500">100% Sécurisé</div>
+              </div>
+            </div>
+            <div className="flex items-center gap-3">
+              <div className="bg-green-100 p-3 rounded-full">
+                <svg className="h-6 w-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
+                </svg>
+              </div>
+              <div>
+                <div className="font-semibold">Dernières Offres</div>
+                <div className="text-sm text-gray-500">Jusqu'à 25% de réduction</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Footer */}
+      <footer className="bg-matix-footer-dark text-white py-12">
+        <div className="container mx-auto px-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {/* Company */}
+            <div>
+              <h3 className="text-xl font-bold text-matix-yellow mb-6">Company</h3>
+              <ul className="space-y-3">
+                <li><a href="#" className="text-gray-300 hover:text-white transition-colors">À Propos Matix</a></li>
+                <li><a href="#" className="text-gray-300 hover:text-white transition-colors">Contact</a></li>
+                <li><a href="#" className="text-gray-300 hover:text-white transition-colors">Carrières</a></li>
+                <li><a href="#" className="text-gray-300 hover:text-white transition-colors">Dernières Nouvelles</a></li>
+              </ul>
+            </div>
+
+            {/* Latest News */}
+            <div>
+              <h3 className="text-xl font-bold text-matix-yellow mb-6">Latest News</h3>
+              <ul className="space-y-3">
+                <li><a href="#" className="text-gray-300 hover:text-white transition-colors">Volailles & Viande</a></li>
+                <li><a href="#" className="text-gray-300 hover:text-white transition-colors">Aliments Avicoles</a></li>
+                <li><a href="#" className="text-gray-300 hover:text-white transition-colors">Équipements</a></li>
+                <li><a href="#" className="text-gray-300 hover:text-white transition-colors">Santé & Vétérinaire</a></li>
+              </ul>
+            </div>
+
+            {/* My Account */}
+            <div>
+              <h3 className="text-xl font-bold text-matix-yellow mb-6">My Account</h3>
+              <ul className="space-y-3">
+                <li><a href="#" className="text-gray-300 hover:text-white transition-colors">Dashboard</a></li>
+                <li><a href="#" className="text-gray-300 hover:text-white transition-colors">Mes Commandes</a></li>
+                <li><a href="#" className="text-gray-300 hover:text-white transition-colors">Commandes Récentes</a></li>
+                <li><a href="#" className="text-gray-300 hover:text-white transition-colors">Mettre à Jour Profil</a></li>
+              </ul>
+            </div>
+
+            {/* Contact */}
+            <div>
+              <div className="flex items-center gap-2 mb-6">
+                <div className="bg-white text-matix-green-dark p-2 rounded-lg">
+                  <svg className="h-6 w-6" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M3 1a1 1 0 000 2h1.22l.305 1.222a.997.997 0 00.01.042l1.358 5.43-.893.892C3.74 11.846 4.632 14 6.414 14H15a1 1 0 000-2H6.414l1-1H14a1 1 0 00.894-.553l3-6A1 1 0 0017 3H6.28l-.31-1.243A1 1 0 005 1H3zM16 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zM6.5 18a1.5 1.5 0 100-3 1.5 1.5 0 000 3z"/>
+                  </svg>
+                </div>
+                <div>
+                  <h1 className="text-xl font-bold text-matix-yellow">MATIX MART</h1>
+                </div>
+              </div>
+              <p className="text-gray-300 mb-4">
+                Marché Colobane, Dakar, Sénégal
+              </p>
+              <p className="text-gray-300 mb-2">Tél : +221 77 123 45 67</p>
+              <p className="text-gray-300">Email : contact@matix.sn</p>
+            </div>
+          </div>
+
+          {/* Bottom */}
+          <div className="border-t border-gray-800 mt-12 pt-8">
+            <div className="mb-6">
+            <div className="flex flex-col lg:flex-row justify-between items-center gap-6">
+              <div className="flex items-center gap-4">
+                <span className="text-gray-400">Suivez-nous:</span>
+                <div className="flex gap-3">
+                  <div className="bg-blue-600 p-2 rounded-full">
+                    <span className="text-white text-sm">f</span>
+                  </div>
+                  <div className="bg-black p-2 rounded-full">
+                    <span className="text-white text-sm">X</span>
+                  </div>
+                  <div className="bg-red-500 p-2 rounded-full">
+                    <span className="text-white text-sm">P</span>
+                  </div>
+                  <div className="bg-blue-700 p-2 rounded-full">
+                    <span className="text-white text-sm">in</span>
+                  </div>
+                  <div className="bg-green-500 p-2 rounded-full">
+                    <span className="text-white text-sm">W</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="text-center">
+                <p className="text-gray-400">
+                  Appelez-nous: <span className="text-matix-yellow font-bold text-xl">+221771234567</span>
+                </p>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/0/04/Visa.svg" alt="Visa" className="h-8" />
+                <img src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg" alt="Mastercard" className="h-8" />
+                <div className="bg-orange-500 text-white px-2 py-1 rounded text-xs">Orange Money</div>
+                <div className="bg-blue-500 text-white px-2 py-1 rounded text-xs">Wave</div>
+              </div>
+            </div>
+
+            <div className="text-center mt-8 pt-6 border-t border-gray-800">
+              <p className="text-gray-400">
+                Copyright 2024 © <span className="text-matix-yellow">MatixLover</span>. Tous droits réservés.
+              </p>
+            </div>
+          </div>
+        </div>
+      </footer>
+    </div>
+  );
+}
 
       {/* Section App */}
       <div className="bg-gradient-to-r from-green-50 to-blue-50 py-16">
