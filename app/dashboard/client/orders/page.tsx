@@ -638,46 +638,47 @@ export default function ClientOrdersPage() {
           {/* Bottom */}
           <div className="border-t border-gray-800 mt-12 pt-8">
             <div className="mb-6">
-            <div className="flex flex-col lg:flex-row justify-between items-center gap-6">
-              <div className="flex items-center gap-4">
-                <span className="text-gray-400">Suivez-nous:</span>
-                <div className="flex gap-3">
-                  <div className="bg-blue-600 p-2 rounded-full">
-                    <span className="text-white text-sm">f</span>
+              <div className="flex flex-col lg:flex-row justify-between items-center gap-6">
+                <div className="flex items-center gap-4">
+                  <span className="text-gray-400">Suivez-nous:</span>
+                  <div className="flex gap-3">
+                    <div className="bg-blue-600 p-2 rounded-full">
+                      <span className="text-white text-sm">f</span>
+                    </div>
+                    <div className="bg-black p-2 rounded-full">
+                      <span className="text-white text-sm">X</span>
+                    </div>
+                    <div className="bg-red-500 p-2 rounded-full">
+                      <span className="text-white text-sm">P</span>
+                    </div>
+                    <div className="bg-blue-700 p-2 rounded-full">
+                      <span className="text-white text-sm">in</span>
+                    </div>
+                    <div className="bg-green-500 p-2 rounded-full">
+                      <span className="text-white text-sm">W</span>
+                    </div>
                   </div>
-                  <div className="bg-black p-2 rounded-full">
-                    <span className="text-white text-sm">X</span>
-                  </div>
-                  <div className="bg-red-500 p-2 rounded-full">
-                    <span className="text-white text-sm">P</span>
-                  </div>
-                  <div className="bg-blue-700 p-2 rounded-full">
-                    <span className="text-white text-sm">in</span>
-                  </div>
-                  <div className="bg-green-500 p-2 rounded-full">
-                    <span className="text-white text-sm">W</span>
-                  </div>
+                </div>
+
+                <div className="text-center">
+                  <p className="text-gray-400">
+                    Appelez-nous: <span className="text-matix-yellow font-bold text-xl">+221771234567</span>
+                  </p>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <img src="https://upload.wikimedia.org/wikipedia/commons/0/04/Visa.svg" alt="Visa" className="h-8" />
+                  <img src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg" alt="Mastercard" className="h-8" />
+                  <div className="bg-orange-500 text-white px-2 py-1 rounded text-xs">Orange Money</div>
+                  <div className="bg-blue-500 text-white px-2 py-1 rounded text-xs">Wave</div>
                 </div>
               </div>
 
-              <div className="text-center">
+              <div className="text-center mt-8 pt-6 border-t border-gray-800">
                 <p className="text-gray-400">
-                  Appelez-nous: <span className="text-matix-yellow font-bold text-xl">+221771234567</span>
+                  Copyright 2024 © <span className="text-matix-yellow">MatixLover</span>. Tous droits réservés.
                 </p>
               </div>
-
-              <div className="flex items-center gap-2">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/0/04/Visa.svg" alt="Visa" className="h-8" />
-                <img src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg" alt="Mastercard" className="h-8" />
-                <div className="bg-orange-500 text-white px-2 py-1 rounded text-xs">Orange Money</div>
-                <div className="bg-blue-500 text-white px-2 py-1 rounded text-xs">Wave</div>
-              </div>
-            </div>
-
-            <div className="text-center mt-8 pt-6 border-t border-gray-800">
-              <p className="text-gray-400">
-                Copyright 2024 © <span className="text-matix-yellow">MatixLover</span>. Tous droits réservés.
-              </p>
             </div>
           </div>
         </div>
