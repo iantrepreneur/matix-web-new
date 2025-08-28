@@ -167,6 +167,7 @@ export default function DistributorDashboardPage() {
     { id: 'quotes', label: 'Mes Devis', icon: <FileText className="h-4 w-4" /> },
     { id: 'brand', label: 'Ma Marque', icon: <Store className="h-4 w-4" /> },
     { id: 'clients', label: 'Mes Clients', icon: <Users className="h-4 w-4" /> },
+    { id: 'clients', label: 'Mes Clients', icon: <Users className="h-4 w-4" /> },
     { id: 'profile', label: 'Mon Profil', icon: <UserIcon className="h-4 w-4" /> },
     { id: 'logout', label: 'Déconnexion', icon: <LogOut className="h-4 w-4" /> }
   ];
@@ -324,13 +325,13 @@ export default function DistributorDashboardPage() {
                       <th className="text-left py-3 px-4 font-medium text-gray-600">Produit</th>
                       <th className="text-left py-3 px-4 font-medium text-gray-600">Quantité</th>
                       <th className="text-left py-3 px-4 font-medium text-gray-600">Prix</th>
+                      <th className="text-left py-3 px-4 font-medium text-gray-600">Prix</th>
                       <th className="text-left py-3 px-4 font-medium text-gray-600">Statut</th>
-                      <th className="text-left py-3 px-4 font-medium text-gray-600">Action</th>
                     </tr>
                   </thead>
                   <tbody>
                     {currentAlerts.map((alert, index) => (
-                      <tr key={index} className="border-b border-gray-100 hover:bg-gray-50 transition-colors">
+                    {currentAlerts.map((alert, index) => (
                         <td className="py-3 px-4 font-medium text-gray-900">{alert.id}</td>
                         <td className="py-3 px-4 text-gray-600">{alert.producteur}</td>
                         <td className="py-3 px-4 text-gray-600">{alert.produit}</td>
@@ -342,11 +343,6 @@ export default function DistributorDashboardPage() {
                             variant="ghost" 
                             size="sm" 
                             className="text-blue-600 hover:text-blue-800"
-                          >
-                            <Eye className="h-4 w-4" />
-                          </Button>
-                        </td>
-                      </tr>
                     ))}
                   </tbody>
                 </table>
@@ -398,14 +394,6 @@ export default function DistributorDashboardPage() {
         </div>
       </div>
 
-      {/* Section App */}
-      <div className="bg-gradient-to-r from-green-50 to-blue-50 py-16">
-        <div className="container mx-auto px-4">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
-            <div className="text-center lg:text-left">
-              <div className="text-6xl mb-4">📱</div>
-              <h3 className="text-3xl font-bold text-gray-900 mb-4">
-                Obtenez Vos Besoins Quotidiens Depuis Notre Boutique Matix
               </h3>
               <p className="text-gray-600 mb-6 text-lg">
                 Il y a de nombreux produits que vous trouverez dans notre boutique. 
