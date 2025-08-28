@@ -304,18 +304,7 @@ export default function MyAccountPage() {
                       <p className="text-sm text-gray-500">Produits certifiés biologiques</p>
                     </div>
                   </div>
-                  <button
-                    onClick={() => setHasBioCertification(!hasBioCertification)}
-                    className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                      hasBioCertification ? 'bg-matix-green-medium' : 'bg-gray-300'
-                    }`}
-                  >
-                    <span
-                      className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                        hasBioCertification ? 'translate-x-6' : 'translate-x-1'
-                      }`}
-                    />
-                  </button>
+                  <div className={`w-3 h-3 rounded-full ${user.certificationBio ? 'bg-green-500' : 'bg-gray-300'}`}></div>
                 </div>
               </div>
             </Card>
@@ -341,19 +330,20 @@ export default function MyAccountPage() {
                   <p className="font-bold text-lg">{user.totalSales} commandes</p>
                 </div>
                 
-                  <div className="bg-purple-100 p-3 rounded-full w-12 h-12 mx-auto mb-3 flex items-center justify-center">
-                    <DollarSign className="h-6 w-6 text-purple-600" />
-                  <div className="bg-yellow-100 p-3 rounded-full w-12 h-12 mx-auto mb-3 flex items-center justify-center">
-                  <p className="text-sm text-gray-500 mb-1">CA généré</p>
-                  <p className="font-bold text-lg">{user.totalRevenue} FCFA</p>
-                  <p className="text-sm text-gray-500 mb-1">Total ventes</p>
-                  <p className="font-bold text-lg">{user.totalSales}</p>
+                 <div className="text-center">
+                   <div className="bg-purple-100 p-3 rounded-full w-12 h-12 mx-auto mb-3 flex items-center justify-center">
+                     <DollarSign className="h-6 w-6 text-purple-600" />
+                   </div>
+                   <p className="text-sm text-gray-500 mb-1">CA généré</p>
+                   <p className="font-bold text-lg">{user.revenue} FCFA</p>
                 </div>
                 
-                    <Star className="h-6 w-6 text-yellow-600" />
-                    <Star className="h-6 w-6 text-green-600" />
-                  <p className="text-sm text-gray-500 mb-1">Note moyenne</p>
-                  <p className="font-bold text-lg">{user.averageRating}/5 ({user.totalReviews} avis)</p>
+                 <div className="text-center">
+                   <div className="bg-yellow-100 p-3 rounded-full w-12 h-12 mx-auto mb-3 flex items-center justify-center">
+                     <Star className="h-6 w-6 text-yellow-600" />
+                   </div>
+                   <p className="text-sm text-gray-500 mb-1">Note moyenne</p>
+                   <p className="font-bold text-lg">{user.rating}/5 ({user.reviews} avis)</p>
                 </div>
               </div>
             </Card>
