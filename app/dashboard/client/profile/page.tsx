@@ -534,7 +534,7 @@ export default function ClientProfilePage() {
                 
                 <Link href="/categories">
                   <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white flex items-center gap-2">
-                    <ShoppingCart className="h-4 w-4" />
+                    <ShoppingBag className="h-4 w-4" />
                     Nouvelle Commande
                   </Button>
                 </Link>
