@@ -120,6 +120,46 @@ export default function DistributorDashboard() {
       quantite: "5",
       prix: "15,500 FCFA",
       statut: "Nouveau"
+    },
+    {
+      id: "AL006",
+      producteur: "Bineta Sarr",
+      produit: "Abreuvoirs nipple",
+      quantite: "20",
+      prix: "3,200 FCFA",
+      statut: "Vu"
+    },
+    {
+      id: "AL007",
+      producteur: "Cheikh Ndiaye",
+      produit: "Couveuse 100 œufs",
+      quantite: "2",
+      prix: "89,500 FCFA",
+      statut: "Contacté"
+    },
+    {
+      id: "AL008",
+      producteur: "Mariama Cissé",
+      produit: "Désinfectant bio",
+      quantite: "15 bidons",
+      prix: "8,500 FCFA",
+      statut: "Nouveau"
+    },
+    {
+      id: "AL009",
+      producteur: "Ibrahima Fall",
+      produit: "Vitamines AD3E",
+      quantite: "30 flacons",
+      prix: "6,500 FCFA",
+      statut: "Vu"
+    },
+    {
+      id: "AL010",
+      producteur: "Khadija Diop",
+      produit: "Thermomètres",
+      quantite: "8",
+      prix: "12,500 FCFA",
+      statut: "Nouveau"
     }
   ];
 
