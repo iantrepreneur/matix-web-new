@@ -25,11 +25,12 @@ export default function AlertsPage() {
   const [activePage, setActivePage] = useState('alerts');
   const [showModal, setShowModal] = useState(false);
   const [newAlert, setNewAlert] = useState({
-    product: '',
+    name: '',
+    category: '',
     maxPrice: '',
-    minQuantity: '',
+    minStock: '',
     maxDistance: 50,
-    region: ''
+    frequency: 'immediate'
   });
 
   const user = {
@@ -40,49 +41,25 @@ export default function AlertsPage() {
 
   const alerts = [
     {
-      id: "AL001",
-      product: "Poulets fermiers",
-      criteria: "Prix ≤ 4000 FCFA, Qté ≥ 50, Distance ≤ 30km",
-      region: "Dakar",
-      status: "Active",
+      name: "Poulets < 4000 FCFA",
+      criteria: "Volailles, max 4000F, rayon 30km",
+      lastNotification: "Il y a 2h",
       matches: 3,
-      created: "28/08/25"
+      status: "Active"
     },
     {
-      id: "AL002",
-      product: "Poussins ISA Brown",
-      criteria: "Prix ≤ 800 FCFA, Qté ≥ 100, Distance ≤ 25km",
-      region: "Thiès",
-      status: "Active",
+      name: "Stock Œufs > 200",
+      criteria: "Œufs, stock min 200, max 25km",
+      lastNotification: "Hier",
       matches: 1,
-      created: "27/08/25"
+      status: "Active"
     },
     {
-      id: "AL003",
-      product: "Œufs à couver",
-      criteria: "Prix ≤ 120 FCFA, Qté ≥ 200, Distance ≤ 40km",
-      region: "Rufisque",
-      status: "Pause",
+      name: "Équipements Neufs",
+      criteria: "Catégorie équipements, état neuf",
+      lastNotification: "Il y a 5j",
       matches: 0,
-      created: "26/08/25"
-    },
-    {
-      id: "AL004",
-      product: "Aliment ponte 25kg",
-      criteria: "Prix ≤ 18000 FCFA, Qté ≥ 20, Distance ≤ 35km",
-      region: "Kaolack",
-      status: "Active",
-      matches: 2,
-      created: "25/08/25"
-    },
-    {
-      id: "AL005",
-      product: "Mangeoires automatiques",
-      criteria: "Prix ≤ 15000 FCFA, Qté ≥ 10, Distance ≤ 50km",
-      region: "Dakar",
-      status: "Active",
-      matches: 1,
-      created: "24/08/25"
+      status: "Pause"
     }
   ];
 
@@ -116,11 +93,12 @@ export default function AlertsPage() {
     console.log('Nouvelle alerte créée:', newAlert);
     setShowModal(false);
     setNewAlert({
-      product: '',
+      name: '',
+      category: '',
       maxPrice: '',
-      minQuantity: '',
+      minStock: '',
       maxDistance: 50,
-      region: ''
+      frequency: 'immediate'
     });
   };
 
@@ -221,63 +199,98 @@ export default function AlertsPage() {
           {/* Main Content */}
           <div className="lg:col-span-3">
             <div className="flex items-center justify-between mb-6">
-              <h1 className="text-2xl font-bold text-gray-900">Mes Alertes</h1>
+              <h1 className="text-2xl font-bold text-gray-900">Mes Alertes Personnalisées</h1>
               <Button 
-                className="bg-blue-600 hover:bg-blue-700 text-white flex items-center gap-2"
+                className="bg-green-600 hover:bg-green-700 text-white flex items-center gap-2"
                 onClick={() => setShowModal(true)}
               >
                 <Plus className="h-4 w-4" />
-                Nouvelle Alerte
+                Créer Nouvelle Alerte
               </Button>
             </div>
 
-            {/* Alerts Table */}
-            <Card className="p-6">
-              <div className="overflow-x-auto">
-                <table className="w-full">
-                  <thead>
-                    <tr className="border-b border-gray-200">
-                      <th className="text-left py-3 px-4 font-medium text-gray-600">Alert ID</th>
-                      <th className="text-left py-3 px-4 font-medium text-gray-600">Produit</th>
-                      <th className="text-left py-3 px-4 font-medium text-gray-600">Critères</th>
-                      <th className="text-left py-3 px-4 font-medium text-gray-600">Région</th>
-                      <th className="text-left py-3 px-4 font-medium text-gray-600">Statut</th>
-                      <th className="text-left py-3 px-4 font-medium text-gray-600">Correspondances</th>
-                      <th className="text-left py-3 px-4 font-medium text-gray-600">Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {alerts.map((alert, index) => (
-                      <tr key={index} className="border-b border-gray-100 hover:bg-gray-50 transition-colors">
-                        <td className="py-3 px-4 font-medium text-gray-900">{alert.id}</td>
-                        <td className="py-3 px-4 text-gray-600">{alert.product}</td>
-                        <td className="py-3 px-4 text-gray-600 text-sm">{alert.criteria}</td>
-                        <td className="py-3 px-4 text-gray-600">{alert.region}</td>
-                        <td className="py-3 px-4">{getStatusBadge(alert.status)}</td>
-                        <td className="py-3 px-4">
-                          <span className={`font-bold ${alert.matches > 0 ? 'text-green-600' : 'text-gray-400'}`}>
-                            {alert.matches}
-                          </span>
-                        </td>
-                        <td className="py-3 px-4">
-                          <div className="flex items-center gap-2">
-                            <Button variant="ghost" size="sm" className="text-blue-600 hover:text-blue-800">
-                              <Eye className="h-4 w-4" />
-                            </Button>
-                            <Button variant="ghost" size="sm" className="text-green-600 hover:text-green-800">
-                              <Edit className="h-4 w-4" />
-                            </Button>
-                            <Button variant="ghost" size="sm" className="text-red-600 hover:text-red-800">
-                              <Trash2 className="h-4 w-4" />
-                            </Button>
-                          </div>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+            <div className="grid lg:grid-cols-4 gap-6">
+              {/* Tableau Alertes - 75% */}
+              <div className="lg:col-span-3">
+                <Card className="p-6">
+                  <div className="overflow-x-auto">
+                    <table className="w-full">
+                      <thead>
+                        <tr className="border-b border-gray-200">
+                          <th className="text-left py-3 px-4 font-medium text-gray-600">Nom Alerte</th>
+                          <th className="text-left py-3 px-4 font-medium text-gray-600">Critères</th>
+                          <th className="text-left py-3 px-4 font-medium text-gray-600">Dernière Notification</th>
+                          <th className="text-left py-3 px-4 font-medium text-gray-600">Matches Trouvés</th>
+                          <th className="text-left py-3 px-4 font-medium text-gray-600">Statut</th>
+                          <th className="text-left py-3 px-4 font-medium text-gray-600">Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {alerts.map((alert, index) => (
+                          <tr key={index} className="border-b border-gray-100 hover:bg-gray-50 transition-colors">
+                            <td className="py-3 px-4 font-medium text-gray-900">{alert.name}</td>
+                            <td className="py-3 px-4 text-gray-600 text-sm">{alert.criteria}</td>
+                            <td className="py-3 px-4 text-gray-600">{alert.lastNotification}</td>
+                            <td className="py-3 px-4">
+                              <span className={`font-bold ${alert.matches > 0 ? 'text-green-600' : 'text-gray-400'}`}>
+                                {alert.matches} {alert.matches > 0 ? 'nouveaux' : ''}
+                              </span>
+                            </td>
+                            <td className="py-3 px-4">{getStatusBadge(alert.status)}</td>
+                            <td className="py-3 px-4">
+                              <div className="flex items-center gap-2">
+                                <Button variant="ghost" size="sm" className="text-green-600 hover:text-green-800">
+                                  <Edit className="h-4 w-4" />
+                                </Button>
+                                <Button variant="ghost" size="sm" className="text-orange-600 hover:text-orange-800">
+                                  {alert.status === 'Active' ? 'Pause' : 'Activer'}
+                                </Button>
+                              </div>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </Card>
               </div>
-            </Card>
+
+              {/* Panel Notifications - 25% */}
+              <div className="lg:col-span-1">
+                <Card className="p-6">
+                  <h3 className="text-lg font-semibold mb-4">Notifications Récentes</h3>
+                  <div className="space-y-4">
+                    <div className="bg-green-50 border border-green-200 rounded-lg p-3">
+                      <p className="text-sm font-medium text-green-800 mb-1">3 nouveaux poulets</p>
+                      <p className="text-xs text-green-600">correspondent à vos critères</p>
+                      <Button size="sm" className="mt-2 bg-green-600 hover:bg-green-700 text-white text-xs">
+                        Voir matches
+                      </Button>
+                    </div>
+                    
+                    <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+                      <p className="text-sm font-medium text-blue-800 mb-1">Stock œufs bio</p>
+                      <p className="text-xs text-blue-600">disponible chez Ferme Diallo</p>
+                      <Button size="sm" className="mt-2 bg-blue-600 hover:bg-blue-700 text-white text-xs">
+                        Contacter
+                      </Button>
+                    </div>
+                    
+                    <div className="bg-orange-50 border border-orange-200 rounded-lg p-3">
+                      <p className="text-sm font-medium text-orange-800 mb-1">Nouveau équipement</p>
+                      <p className="text-xs text-orange-600">mangeoire automatique disponible</p>
+                      <Button size="sm" className="mt-2 bg-orange-600 hover:bg-orange-700 text-white text-xs">
+                        Voir détails
+                      </Button>
+                    </div>
+                  </div>
+                  
+                  <Button variant="outline" className="w-full mt-4 text-sm">
+                    Voir tous les matches
+                  </Button>
+                </Card>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -300,14 +313,32 @@ export default function AlertsPage() {
             <form onSubmit={handleCreateAlert} className="p-6 space-y-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Produit recherché
+                  Nom de l'alerte
                 </label>
                 <Input
-                  value={newAlert.product}
-                  onChange={(e) => setNewAlert({...newAlert, product: e.target.value})}
-                  placeholder="Ex: Poulets fermiers"
+                  value={newAlert.name}
+                  onChange={(e) => setNewAlert({...newAlert, name: e.target.value})}
+                  placeholder="Ex: Poulets pas chers"
                   required
                 />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Catégorie produit
+                </label>
+                <select 
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 bg-white"
+                  value={newAlert.category}
+                  onChange={(e) => setNewAlert({...newAlert, category: e.target.value})}
+                  required
+                >
+                  <option value="">Sélectionner une catégorie</option>
+                  <option value="volailles">Volailles</option>
+                  <option value="equipements">Équipements</option>
+                  <option value="aliments">Aliments</option>
+                  <option value="soins">Soins</option>
+                </select>
               </div>
 
               <div>
@@ -325,12 +356,12 @@ export default function AlertsPage() {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Quantité minimum
+                  Stock minimum requis
                 </label>
                 <Input
                   type="number"
-                  value={newAlert.minQuantity}
-                  onChange={(e) => setNewAlert({...newAlert, minQuantity: e.target.value})}
+                  value={newAlert.minStock}
+                  onChange={(e) => setNewAlert({...newAlert, minStock: e.target.value})}
                   placeholder="Ex: 50"
                   required
                 />
@@ -352,20 +383,17 @@ export default function AlertsPage() {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Région
+                  Fréquence notifications
                 </label>
                 <select 
                   className="w-full border border-gray-300 rounded-lg px-3 py-2 bg-white"
-                  value={newAlert.region}
-                  onChange={(e) => setNewAlert({...newAlert, region: e.target.value})}
+                  value={newAlert.frequency}
+                  onChange={(e) => setNewAlert({...newAlert, frequency: e.target.value})}
                   required
                 >
-                  <option value="">Sélectionner une région</option>
-                  <option value="Dakar">Dakar</option>
-                  <option value="Thiès">Thiès</option>
-                  <option value="Kaolack">Kaolack</option>
-                  <option value="Rufisque">Rufisque</option>
-                  <option value="Pikine">Pikine</option>
+                  <option value="immediate">Immédiate</option>
+                  <option value="daily">Quotidienne</option>
+                  <option value="weekly">Hebdomadaire</option>
                 </select>
               </div>
 
@@ -380,7 +408,7 @@ export default function AlertsPage() {
                 </Button>
                 <Button
                   type="submit"
-                  className="flex-1 bg-blue-600 hover:bg-blue-700 text-white"
+                  className="flex-1 bg-green-600 hover:bg-green-700 text-white"
                 >
                   Créer Alerte
                 </Button>
