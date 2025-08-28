@@ -51,7 +51,8 @@ export default function AddProductPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <>
+      <div className="min-h-screen bg-gray-50">
       {/* Header identique */}
       <div className="bg-gray-100 text-gray-700 text-sm py-2">
         <div className="container mx-auto px-4 flex justify-between items-center">
@@ -594,6 +595,7 @@ export default function AddProductPage() {
           </div>
         </div>
       </footer>
-    </div>
+      </div>
+    </>
   );
 }
