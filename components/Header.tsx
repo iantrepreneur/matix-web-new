@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { Search, Heart, ShoppingCart, User as UserIcon, Menu, X, Mic, Bell, ChevronDown, BarChart3, Package, Edit, Lock } from 'lucide-react';
+import { Search, Heart, ShoppingCart, User as UserIcon, Menu, X, Mic, Bell, ChevronDown, BarChart3, Package, Edit, Lock, TrendingUp, Store, Users, FileText, DollarSign, Home } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import CartSidebar from './CartSidebar';
@@ -23,12 +23,21 @@ export default function Header() {
 
   const handleLogin = (user: UserType) => {
     setCurrentUser(user);
+    // Redirection après connexion selon le profil
+    if (user.profile === 'producteur') {
+      window.location.href = '/dashboard';
+    } else if (user.profile === 'distributeur') {
+      window.location.href = '/dashboard/distributor';
+    } else if (user.profile === 'client') {
+      window.location.href = '/dashboard/client';
+    }
   };
 
   const handleLogout = () => {
     authService.logout();
     setCurrentUser(null);
     setIsProfileDropdownOpen(false);
+    window.location.href = '/';
   };
 
   const getProfileColor = (profile: string) => {
@@ -48,6 +57,82 @@ export default function Header() {
       default: return '';
     }
   };
+
+  // Navigation selon le profil
+  const getNavigationItems = () => {
+    if (!currentUser) {
+      return [
+        { href: '/categories', label: 'Catégories' },
+        { href: '/marques', label: 'Marques Distributeurs' },
+        { href: '/offres', label: 'Offres', isSpecial: true }
+      ];
+    }
+
+    switch (currentUser.profile) {
+      case 'producteur':
+        return [
+          { href: '/', label: 'Accueil' },
+          { href: '/dashboard/products', label: 'Mes Produits' },
+          { href: '/dashboard/orders', label: 'Commandes' },
+          { href: '/dashboard/stats', label: 'Statistiques' }
+        ];
+      case 'distributeur':
+        return [
+          { href: '/', label: 'Accueil' },
+          { href: '/dashboard/distributor/search', label: 'Producteurs' },
+          { href: '/dashboard/distributor/clients', label: 'Clients' },
+          { href: '/dashboard/distributor/brand', label: 'Ma Marque' },
+          { href: '/dashboard/distributor/alerts', label: 'Alertes' }
+        ];
+      case 'client':
+        return [
+          { href: '/', label: 'Accueil' },
+          { href: '/categories', label: 'Catégories' },
+          { href: '/dashboard/client/orders', label: 'Mes Commandes' },
+          { href: '/dashboard/client/requests', label: 'Demandes' },
+          { href: '/dashboard/client/favorites', label: 'Favoris' }
+        ];
+      default:
+        return [];
+    }
+  };
+
+  // Menu dropdown selon le profil
+  const getProfileMenuItems = () => {
+    if (!currentUser) return [];
+
+    switch (currentUser.profile) {
+      case 'producteur':
+        return [
+          { href: '/dashboard', icon: <BarChart3 className="h-4 w-4" />, label: 'Dashboard' },
+          { href: '/dashboard/products', icon: <Package className="h-4 w-4" />, label: 'Gérer mes produits' },
+          { href: '/dashboard/stats', icon: <TrendingUp className="h-4 w-4" />, label: 'Voir statistiques' },
+          { href: '/dashboard/account', icon: <UserIcon className="h-4 w-4" />, label: 'Mon profil' },
+          { href: '/dashboard/stats', icon: <DollarSign className="h-4 w-4" />, label: 'Mes revenus' }
+        ];
+      case 'distributeur':
+        return [
+          { href: '/dashboard/distributor', icon: <BarChart3 className="h-4 w-4" />, label: 'Dashboard' },
+          { href: '/dashboard/distributor/search', icon: <Search className="h-4 w-4" />, label: 'Chercher producteurs' },
+          { href: '/dashboard/distributor/brand', icon: <Store className="h-4 w-4" />, label: 'Ma boutique' },
+          { href: '/dashboard/distributor/alerts', icon: <Bell className="h-4 w-4" />, label: 'Mes alertes' },
+          { href: '/dashboard/distributor/profile', icon: <UserIcon className="h-4 w-4" />, label: 'Mon profil' }
+        ];
+      case 'client':
+        return [
+          { href: '/dashboard/client', icon: <Home className="h-4 w-4" />, label: 'Mon compte' },
+          { href: '/dashboard/client/orders', icon: <Package className="h-4 w-4" />, label: 'Mes commandes' },
+          { href: '/dashboard/client/requests', icon: <FileText className="h-4 w-4" />, label: 'Mes demandes' },
+          { href: '/dashboard/client/favorites', icon: <Heart className="h-4 w-4" />, label: 'Mes favoris' },
+          { href: '/dashboard/client/profile', icon: <UserIcon className="h-4 w-4" />, label: 'Mon profil' }
+        ];
+      default:
+        return [];
+    }
+  };
+
+  const navigationItems = getNavigationItems();
+  const profileMenuItems = getProfileMenuItems();
 
   return (
     <>
@@ -79,7 +164,7 @@ export default function Header() {
           <div className="container mx-auto px-4">
             <div className="flex items-center justify-between">
               {/* Logo */}
-              <div className="flex items-center">
+              <Link href="/" className="flex items-center">
                 <div className="bg-white text-matix-green-dark p-2 rounded-lg mr-3">
                   <ShoppingCart className="h-6 w-6" />
                 </div>
@@ -87,7 +172,7 @@ export default function Header() {
                   <h1 className="text-2xl font-bold text-matix-yellow">MATIX</h1>
                   <p className="text-xs text-matix-yellow opacity-90">M A R T</p>
                 </div>
-              </div>
+              </Link>
 
               {/* Search Bar */}
               <div className="flex-1 max-w-2xl mx-8 hidden md:block">
@@ -149,22 +234,17 @@ export default function Header() {
                             {getProfileLabel(currentUser.profile)}
                           </p>
                         </div>
-                        <Link href="/dashboard" className="flex items-center gap-3 px-4 py-2 text-gray-700 hover:bg-gray-50 transition-colors" onClick={() => setIsProfileDropdownOpen(false)}>
-                          <BarChart3 className="h-4 w-4" />
-                          <span className="text-sm">Dashboard</span>
-                        </Link>
-                        <Link href="/dashboard/orders" className="flex items-center gap-3 px-4 py-2 text-gray-700 hover:bg-gray-50 transition-colors" onClick={() => setIsProfileDropdownOpen(false)}>
-                          <Package className="h-4 w-4" />
-                          <span className="text-sm">Mes Commandes</span>
-                        </Link>
-                        <Link href="/dashboard/profile" className="flex items-center gap-3 px-4 py-2 text-gray-700 hover:bg-gray-50 transition-colors" onClick={() => setIsProfileDropdownOpen(false)}>
-                          <Edit className="h-4 w-4" />
-                          <span className="text-sm">Modifier Profil</span>
-                        </Link>
-                        <Link href="/dashboard/password" className="flex items-center gap-3 px-4 py-2 text-gray-700 hover:bg-gray-50 transition-colors" onClick={() => setIsProfileDropdownOpen(false)}>
-                          <Lock className="h-4 w-4" />
-                          <span className="text-sm">Mot de Passe</span>
-                        </Link>
+                        {profileMenuItems.map((item, index) => (
+                          <Link 
+                            key={index}
+                            href={item.href} 
+                            className="flex items-center gap-3 px-4 py-2 text-gray-700 hover:bg-gray-50 transition-colors" 
+                            onClick={() => setIsProfileDropdownOpen(false)}
+                          >
+                            {item.icon}
+                            <span className="text-sm">{item.label}</span>
+                          </Link>
+                        ))}
                         <button 
                           onClick={handleLogout}
                           className="w-full flex items-center gap-3 px-4 py-2 text-red-600 hover:bg-red-50 transition-colors"
@@ -223,17 +303,27 @@ export default function Header() {
             <div className="flex items-center justify-between">
               {/* Left Navigation */}
               <nav className="hidden lg:flex items-center space-x-8">
-                <Link href="/categories" className="flex items-center gap-1 text-gray-700 hover:text-matix-green-medium cursor-pointer font-medium transition-colors">
-                  <span>Catégories</span>
-                  <ChevronDown className="h-4 w-4" />
-                </Link>
-                <Link href="/marques" className="text-gray-700 hover:text-matix-green-medium font-medium transition-colors">Marques Distributeurs</Link>
-                <div className="relative">
-                  <a href="/offres" className="text-black bg-matix-yellow hover:bg-yellow-500 px-3 py-1 rounded-full text-sm font-medium transition-colors">
-                    Offres
-                  </a>
-                  <span className="absolute -top-1 -right-1 bg-matix-yellow w-2 h-2 rounded-full animate-pulse-yellow"></span>
-                </div>
+                {navigationItems.map((item, index) => (
+                  <div key={index}>
+                    {item.isSpecial ? (
+                      <div className="relative">
+                        <Link href={item.href} className="text-black bg-matix-yellow hover:bg-yellow-500 px-3 py-1 rounded-full text-sm font-medium transition-colors">
+                          {item.label}
+                        </Link>
+                        <span className="absolute -top-1 -right-1 bg-matix-yellow w-2 h-2 rounded-full animate-pulse-yellow"></span>
+                      </div>
+                    ) : item.label === 'Catégories' ? (
+                      <Link href={item.href} className="flex items-center gap-1 text-gray-700 hover:text-matix-green-medium cursor-pointer font-medium transition-colors">
+                        <span>{item.label}</span>
+                        <ChevronDown className="h-4 w-4" />
+                      </Link>
+                    ) : (
+                      <Link href={item.href} className="text-gray-700 hover:text-matix-green-medium font-medium transition-colors">
+                        {item.label}
+                      </Link>
+                    )}
+                  </div>
+                ))}
               </nav>
 
               {/* Right Navigation */}
@@ -250,9 +340,20 @@ export default function Header() {
               {isMenuOpen && (
                 <div className="lg:hidden absolute top-full left-0 right-0 bg-white border-t border-matix-green-pale py-4 px-4 shadow-matix">
                   <nav className="flex flex-col space-y-4">
-                    <Link href="/categories" className="text-gray-700 hover:text-matix-green-medium font-medium transition-colors">Catégories</Link>
-                    <Link href="/marques" className="text-gray-700 hover:text-matix-green-medium font-medium transition-colors">Marques Distributeurs</Link>
-                    <a href="#" className="text-matix-yellow hover:text-yellow-600 font-medium transition-colors">Offres</a>
+                    {navigationItems.map((item, index) => (
+                      <Link 
+                        key={index}
+                        href={item.href} 
+                        className={`font-medium transition-colors ${
+                          item.isSpecial 
+                            ? 'text-matix-yellow hover:text-yellow-600' 
+                            : 'text-gray-700 hover:text-matix-green-medium'
+                        }`}
+                        onClick={() => setIsMenuOpen(false)}
+                      >
+                        {item.label}
+                      </Link>
+                    ))}
                   </nav>
                 </div>
               )}
