@@ -1,44 +1,58 @@
-// Utilisateurs de test basés sur votre base de données Supabase
-// IMPORTANT: Ces utilisateurs doivent être créés via l'interface d'inscription
-// Vous ne pouvez pas vous connecter avec ces identifiants tant qu'ils n'existent pas dans Supabase Auth
+// Utilisateurs de test correspondant à vos comptes Supabase Auth
+// IMPORTANT: Utilisez ces identifiants EXACTS pour vous connecter
 
 export const testUsers = [
   {
-    email: 'test.producteur@gmail.com',
-    password: 'test123456',
+    email: 'producteur2@gmail.com',
+    password: 'votre_mot_de_passe', // Remplacez par le vrai mot de passe
     type: 'producer',
-    name: 'Test Producteur',
+    name: 'Producteur Test',
     description: 'Producteur de volailles premium'
   },
   {
-    email: 'test.distributeur@gmail.com', 
-    password: 'test123456',
-    type: 'distributor',
-    name: 'Test Distribution',
-    description: 'Distributeur spécialisé en produits avicoles'
+    email: 'producteur1@gmail.com', 
+    password: 'votre_mot_de_passe', // Remplacez par le vrai mot de passe
+    type: 'producer',
+    name: 'Producteur Test 2',
+    description: 'Élevage traditionnel'
   },
   {
-    email: 'test.client@gmail.com',
-    password: 'test123456',
+    email: 'client@gmail.com',
+    password: 'votre_mot_de_passe', // Remplacez par le vrai mot de passe
     type: 'client', 
-    name: 'Test Client',
+    name: 'Client Test',
     description: 'Client particulier'
+  },
+  {
+    email: 'iantrepreneur221@gmail.com',
+    password: 'votre_mot_de_passe', // Remplacez par le vrai mot de passe
+    type: 'distributor',
+    name: 'Distributeur Test',
+    description: 'Distributeur spécialisé'
+  },
+  {
+    email: 'diahatematlick@gmail.com',
+    password: 'votre_mot_de_passe', // Remplacez par le vrai mot de passe
+    type: 'producer',
+    name: 'Ferme Avicole',
+    description: 'Ferme avicole de Dakar'
   }
 ];
 
-// 🚨 IMPORTANT: Comment créer ces utilisateurs de test
-// 
-// Les utilisateurs visibles dans votre base de données (table users) ne sont que des PROFILS.
-// Pour vous connecter, vous devez créer les comptes dans Supabase Auth :
+// 🚨 INSTRUCTIONS POUR ÉVITER LE RATE LIMIT :
 //
-// 1. Attendez 10-15 minutes pour que le rate limit se réinitialise
-// 2. Utilisez le modal d'inscription sur votre site
-// 3. Créez des comptes avec ces nouveaux emails de test
-// 4. Utilisez des emails différents de ceux que vous avez déjà testés
+// 1. ⏰ ATTENDEZ 15-20 MINUTES avant de réessayer
+// 2. 🔄 Utilisez F5 pour recharger complètement la page
+// 3. 🧹 Videz le cache du navigateur (Ctrl+Shift+R)
+// 4. 🌐 Essayez depuis un autre navigateur (Chrome → Firefox)
+// 5. 📱 Ou essayez depuis votre téléphone en 4G
 //
-// Exemple d'emails à utiliser :
-// - test.producteur.2024@gmail.com
-// - test.distributeur.2024@gmail.com  
-// - test.client.2024@gmail.com
-//
-// Mot de passe suggéré : Test123456!
+// 🎯 POUR LES TESTS FUTURS :
+// - Attendez 2-3 secondes entre chaque tentative
+// - Ne pas spammer les boutons de connexion
+// - Utilisez des emails différents pour chaque test
+// - Fermez/rouvrez l'onglet entre les tests
+
+// 🔍 VÉRIFIER LE RATE LIMIT :
+// Allez dans Supabase Dashboard → Authentication → Rate Limits
+// pour voir le statut actuel et quand il sera réinitialisé
