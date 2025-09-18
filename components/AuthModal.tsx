@@ -71,6 +71,8 @@ export default function AuthModal({ isOpen, onClose, onLogin }: AuthModalProps) 
           setError('❌ Email ou mot de passe incorrect. Vérifiez vos identifiants ou créez un compte d\'abord.');
         } else if (error.message.includes('Email not confirmed')) {
           setError('📧 Veuillez confirmer votre email avant de vous connecter.');
+        } else if (error.message.includes('Too many requests') || error.message.includes('rate limit')) {
+          setError('⏰ Trop de tentatives de connexion. Veuillez attendre 5-10 minutes avant de réessayer.');
         } else if (error.message.includes('Too many requests')) {
           setError('⏰ Trop de tentatives. Veuillez attendre quelques minutes.');
         } else {
@@ -126,6 +128,8 @@ export default function AuthModal({ isOpen, onClose, onLogin }: AuthModalProps) 
           setError('🔒 Le mot de passe doit contenir au moins 6 caractères.');
         } else if (error.message.includes('Invalid email')) {
           setError('📧 Format d\'email invalide.');
+        } else if (error.message.includes('Too many requests') || error.message.includes('rate limit')) {
+          setError('⏰ Trop de tentatives d\'inscription. Veuillez attendre 5-10 minutes avant de réessayer.');
         } else {
           setError(`❌ Erreur d\'inscription: ${error.message}`);
         }
