@@ -1,5 +1,6 @@
 // Configuration complète de l'authentification Supabase
 import { supabase } from './supabase';
+import { getBaseURL } from './get-local-ip';
 
 export interface AuthConfig {
   emailConfirmation: boolean;
@@ -19,6 +20,7 @@ export const authConfig: AuthConfig = {
 export const authService = {
   // Inscription avec confirmation email
   async signUpWithEmail(email: string, password: string, userData: any) {
+    const baseURL = getBaseURL();
     const { data, error } = await supabase.auth.signUp({
       email,
       password,
@@ -29,7 +31,7 @@ export const authService = {
           phone: userData.phone,
           full_name: userData.name
         },
-        emailRedirectTo: `${window.location.origin}/auth/callback`
+        emailRedirectTo: `${baseURL}/auth/callback`
       }
     });
     
@@ -88,10 +90,11 @@ export const authService = {
 
   // Connexion avec OTP par email
   async signInWithOTP(email: string) {
+    const baseURL = getBaseURL();
     const { data, error } = await supabase.auth.signInWithOtp({
       email,
       options: {
-        emailRedirectTo: `${window.location.origin}/auth/callback`
+        emailRedirectTo: `${baseURL}/auth/callback`
       }
     });
     
@@ -109,8 +112,9 @@ export const authService = {
 
   // Réinitialisation de mot de passe
   async resetPassword(email: string) {
+    const baseURL = getBaseURL();
     const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: `${window.location.origin}/auth/reset-password`
+      redirectTo: `${baseURL}/auth/reset-password`
     });
     
     return { data, error };

@@ -6,6 +6,10 @@ const nextConfig = {
   images: { 
     unoptimized: true 
   },
+  // Permettre l'accès depuis d'autres appareils du réseau local
+  experimental: {
+    serverComponentsExternalPackages: []
+  }
 };
 
 module.exports = nextConfig;
