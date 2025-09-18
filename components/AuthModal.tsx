@@ -78,7 +78,13 @@ export default function AuthModal({ isOpen, onClose, onLogin }: AuthModalProps) 
         }
       } else if (data.user) {
         console.log('✅ Connexion réussie:', data.user);
-        onLogin(data.user);
+        // Récupérer le profil utilisateur depuis la base de données
+        const { data: profile } = await userService.getProfile(data.user.id);
+        if (profile) {
+          onLogin({ ...data.user, profile });
+        } else {
+          onLogin(data.user);
+        }
         onClose();
         resetForm();
       }
@@ -128,8 +134,16 @@ export default function AuthModal({ isOpen, onClose, onLogin }: AuthModalProps) 
 
       if (data.user) {
         console.log('✅ Inscription réussie:', data.user);
-        // Le profil sera créé automatiquement par le trigger de la base de données
-        onLogin(data.user);
+        // Le profil est créé automatiquement par le trigger de la base de données
+        // Récupérer le profil créé
+        setTimeout(async () => {
+          const { data: profile } = await userService.getProfile(data.user.id);
+          if (profile) {
+            onLogin({ ...data.user, profile });
+          } else {
+            onLogin(data.user);
+          }
+        }, 1000); // Attendre que le trigger s'exécute
         onClose();
         resetForm();
       }
