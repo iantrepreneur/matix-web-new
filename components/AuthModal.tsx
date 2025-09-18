@@ -5,9 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card } from '@/components/ui/card';
 import { X, User as UserIcon, Building, ShoppingCart } from 'lucide-react';
-import { useAuth } from '@/hooks/useSupabase';
-import { userService } from '@/lib/services';
-import { UserType } from '@/lib/types';
+import { authService } from '@/lib/auth';
 
 interface AuthModalProps {
   isOpen: boolean;
@@ -16,7 +14,6 @@ interface AuthModalProps {
 }
 
 export default function AuthModal({ isOpen, onClose, onLogin }: AuthModalProps) {
-  const { signUp, signIn } = useAuth();
   const [activeTab, setActiveTab] = useState<'login' | 'register'>('login');
   const [selectedProfile, setSelectedProfile] = useState<'producer' | 'distributor' | 'client' | null>(null);
   const [formData, setFormData] = useState({
@@ -62,40 +59,16 @@ export default function AuthModal({ isOpen, onClose, onLogin }: AuthModalProps) 
     e.preventDefault();
     setError('');
     setLoading(true);
-    
-    try {
-      const { data, error } = await signIn(formData.email, formData.password);
-      if (error) {
-        console.error('Erreur de connexion:', error);
-        if (error.message.includes('Invalid login credentials') || error.message.includes('invalid_credentials')) {
-          setError('❌ Email ou mot de passe incorrect. Vérifiez vos identifiants ou créez un compte d\'abord.');
-        } else if (error.message.includes('Email not confirmed')) {
-          setError('📧 Veuillez confirmer votre email avant de vous connecter.');
-        } else if (error.message.includes('Too many requests') || error.message.includes('rate limit')) {
-          setError('⏰ Trop de tentatives de connexion. Veuillez attendre 5-10 minutes avant de réessayer.');
-        } else if (error.message.includes('Too many requests')) {
-          setError('⏰ Trop de tentatives. Veuillez attendre quelques minutes.');
-        } else {
-          setError(`❌ Erreur de connexion: ${error.message}`);
-        }
-      } else if (data.user) {
-        console.log('✅ Connexion réussie:', data.user);
-        // Récupérer le profil utilisateur depuis la base de données
-        const { data: profile } = await userService.getProfile(data.user.id);
-        if (profile) {
-          onLogin({ ...data.user, profile });
-        } else {
-          onLogin(data.user);
-        }
-        onClose();
-        resetForm();
-      }
-    } catch (err) {
-      console.error('Login error:', err);
-      setError('❌ Une erreur est survenue lors de la connexion. Veuillez réessayer.');
-    } finally {
-      setLoading(false);
+
+    const user = authService.login(formData.email, formData.password);
+    if (user) {
+      onLogin(user);
+      onClose();
+      resetForm();
+    } else {
+      setError('❌ Email ou mot de passe incorrect. Utilisez "123456" comme mot de passe pour les comptes de test.');
     }
+    setLoading(false);
   };
 
   const handleRegister = async (e: React.FormEvent) => {
@@ -109,60 +82,25 @@ export default function AuthModal({ isOpen, onClose, onLogin }: AuthModalProps) 
       return;
     }
 
-    try {
-      console.log('🔄 Tentative d\'inscription avec:', { email: formData.email, profile: selectedProfile });
-      
-      // Créer le compte Supabase
-      const { data, error } = await signUp(formData.email, formData.password, {
-        name: formData.name,
-        user_type: selectedProfile,
-        business_name: selectedProfile === 'distributor' ? formData.entreprise : formData.name,
-        phone: formData.phone
-      });
+    const userData = {
+      email: formData.email,
+      name: formData.name,
+      phone: formData.phone,
+      profile: selectedProfile,
+      ...(selectedProfile === 'producer' && { city: '', typeElevage: '' }),
+      ...(selectedProfile === 'distributor' && { entreprise: formData.entreprise || formData.name, ninea: '', zone: '' }),
+      ...(selectedProfile === 'client' && { adresseLivraison: '' })
+    };
 
-      if (error) {
-        console.error('Erreur d\'inscription:', error);
-        if (error.message.includes('already registered')) {
-          setError('📧 Cette adresse email est déjà utilisée. Essayez de vous connecter.');
-        } else if (error.message.includes('Password should be at least')) {
-          setError('🔒 Le mot de passe doit contenir au moins 6 caractères.');
-        } else if (error.message.includes('Invalid email')) {
-          setError('📧 Format d\'email invalide.');
-        } else if (error.message.includes('Too many requests') || error.message.includes('rate limit')) {
-          setError('⏰ Trop de tentatives d\'inscription. Veuillez attendre 5-10 minutes avant de réessayer.');
-        } else {
-          setError(`❌ Erreur d\'inscription: ${error.message}`);
-        }
-        return;
-      }
-
-      if (data.user) {
-        console.log('✅ Inscription réussie:', data.user);
-        // Le profil est créé automatiquement par le trigger de la base de données
-        // Récupérer le profil créé
-        setTimeout(async () => {
-          const { data: profile } = await userService.getProfile(data.user.id);
-          if (profile) {
-            onLogin({ ...data.user, profile });
-          } else {
-            onLogin(data.user);
-          }
-          
-          // Forcer le rechargement pour s'assurer que l'état est correct
-          setTimeout(() => {
-            window.location.reload();
-          }, 100);
-          
-        }, 1000); // Attendre que le trigger s'exécute
-        onClose();
-        resetForm();
-      }
-    } catch (err) {
-      console.error('Registration error:', err);
-      setError('❌ Une erreur est survenue lors de l\'inscription. Veuillez réessayer.');
-    } finally {
-      setLoading(false);
+    const user = authService.register(userData);
+    if (user) {
+      onLogin(user);
+      onClose();
+      resetForm();
+    } else {
+      setError('❌ Erreur lors de l\'inscription. Veuillez réessayer.');
     }
+    setLoading(false);
   };
 
   const resetForm = () => {
@@ -257,20 +195,6 @@ export default function AuthModal({ isOpen, onClose, onLogin }: AuthModalProps) 
 
         <form onSubmit={activeTab === 'login' ? handleLogin : handleRegister}>
           {activeTab === 'register' && (
-            <>
-              <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Nom complet
-                </label>
-                <Input
-                  type="text"
-                  name="name"
-                  value={formData.name}
-                  onChange={handleInputChange}
-                  required
-                  placeholder="Votre nom complet"
-                />
-              </div>
             </>
           )}
 
@@ -390,38 +314,14 @@ export default function AuthModal({ isOpen, onClose, onLogin }: AuthModalProps) 
               {selectedProfile === 'client' && (
                 <div className="mb-4">
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Adresse de livraison
+                    {selectedProfile === 'distributor' ? 'Nom de l\'entreprise' : 'Nom complet'}
                   </label>
                   <Input
                     type="text"
-                    name="adresseLivraison"
-                    value={formData.adresseLivraison}
+                    name={selectedProfile === 'distributor' ? 'entreprise' : 'name'}
+                    value={selectedProfile === 'distributor' ? formData.entreprise : formData.name}
                     onChange={handleInputChange}
-                    placeholder="Votre adresse de livraison"
-                  />
-                </div>
-              )}
-            </>
-          )}
-
-          <Button
-            type="submit"
-            className="w-full"
-            disabled={loading}
-          >
-            {loading ? 'Chargement...' : (activeTab === 'login' ? 'Se connecter' : 'S\'inscrire')}
-          </Button>
-        </form>
-
-        {activeTab === 'login' && (
-          <div className="mt-4 text-center">
-            <Button
-              variant="link"
-              onClick={() => setActiveTab('register')}
-              className="text-sm"
-            >
-              Pas encore de compte ? S'inscrire
-            </Button>
+                    placeholder={selectedProfile === 'distributor' ? 'Nom de votre entreprise' : 'Votre nom complet'}
           </div>
         )}
 
