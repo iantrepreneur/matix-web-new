@@ -66,14 +66,14 @@ export default function AuthModal({ isOpen, onClose, onLogin }: AuthModalProps) 
     try {
       const { data, error } = await signIn(formData.email, formData.password);
       if (error) {
-        setError('Email ou mot de passe incorrect');
+        setError(error.message || 'Email ou mot de passe incorrect');
       } else if (data.user) {
         onLogin(data.user);
         onClose();
         resetForm();
       }
     } catch (err) {
-      setError('Une erreur est survenue');
+      setError('Une erreur est survenue lors de la connexion');
     } finally {
       setLoading(false);
     }
