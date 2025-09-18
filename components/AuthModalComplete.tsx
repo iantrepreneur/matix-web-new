@@ -109,13 +109,7 @@ export default function AuthModalComplete({ isOpen, onClose, onLogin }: AuthModa
         }
       } else if (data.user) {
         onLogin(data.user);
-        onClose();
-        resetForm();
-      }
-    } catch (err) {
-      setError('❌ Une erreur est survenue lors de la connexion.');
-    } finally {
-      setLoading(false);
+        onLogin(data.user);
     }
   };
 
@@ -238,6 +232,11 @@ export default function AuthModalComplete({ isOpen, onClose, onLogin }: AuthModa
         onLogin(result.data.user);
         onClose();
         resetForm();
+        
+        // Forcer le rechargement pour s'assurer que l'état est correct
+        setTimeout(() => {
+          window.location.reload();
+        }, 100);
       }
     } catch (err) {
       setError('❌ Erreur lors de la vérification OTP.');

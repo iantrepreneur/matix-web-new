@@ -20,6 +20,9 @@ export const authConfig: AuthConfig = {
 export const authService = {
   // Inscription avec confirmation email
   async signUpWithEmail(email: string, password: string, userData: any) {
+    // Ajouter un délai pour éviter le rate limit
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    
     const baseURL = getBaseURL();
     const { data, error } = await supabase.auth.signUp({
       email,
@@ -80,6 +83,9 @@ export const authService = {
 
   // Connexion avec email/mot de passe
   async signInWithPassword(email: string, password: string) {
+    // Ajouter un délai pour éviter le rate limit
+    await new Promise(resolve => setTimeout(resolve, 500));
+    
     const { data, error } = await supabase.auth.signInWithPassword({
       email,
       password
@@ -90,6 +96,9 @@ export const authService = {
 
   // Connexion avec OTP par email
   async signInWithOTP(email: string) {
+    // Ajouter un délai pour éviter le rate limit
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    
     const baseURL = getBaseURL();
     const { data, error } = await supabase.auth.signInWithOtp({
       email,
