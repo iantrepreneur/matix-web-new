@@ -32,6 +32,14 @@ export function useUser() {
       return
     }
 
+    // Vérifier d'abord si on a un utilisateur de test
+    const testUser2 = authBypassService.getCurrentTestUser()
+    if (testUser2) {
+      setUser(testUser2 as any)
+      setLoading(false)
+      return
+    }
+
     const getUser = async () => {
       try {
         const { data: { user } } = await supabase.auth.getUser()
@@ -68,23 +76,10 @@ export function useSession() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    // Si on est en mode test, pas de session Supabase
-    if (authBypassService.isInTestMode()) {
-      setSession(null)
-      setLoading(false)
-      return
-    }
-
     const getSession = async () => {
-      try {
-        const { data: { session } } = await supabase.auth.getSession()
-        setSession(session)
-      } catch (error) {
-        console.warn('Erreur lors de la récupération de la session:', error)
-        setSession(null)
-      } finally {
-        setLoading(false)
-      }
+      const { data: { session } } = await supabase.auth.getSession()
+      setSession(session)
+      setLoading(false)
     }
 
     getSession()
