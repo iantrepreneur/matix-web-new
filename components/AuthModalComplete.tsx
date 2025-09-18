@@ -109,7 +109,13 @@ export default function AuthModalComplete({ isOpen, onClose, onLogin }: AuthModa
         }
       } else if (data.user) {
         onLogin(data.user);
-        onLogin(data.user);
+        onClose();
+        resetForm();
+      }
+    } catch (err) {
+      setError('❌ Une erreur est survenue lors de la connexion.');
+    } finally {
+      setLoading(false);
     }
   };
 
