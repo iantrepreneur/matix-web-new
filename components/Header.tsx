@@ -42,10 +42,18 @@ export default function Header() {
 
   const handleLogout = async () => {
     try {
-      await signOut();
+      const { error } = await signOut();
+      if (error) {
+        console.error('Erreur lors de la déconnexion:', error);
+        return;
+      }
+      
+      // Nettoyer l'état local
       setUserProfile(null);
       setIsProfileDropdownOpen(false);
-      window.location.href = '/';
+      
+      // Forcer le rechargement de la page pour nettoyer complètement l'état
+      window.location.reload();
     } catch (error) {
       console.error('Erreur lors de la déconnexion:', error);
     }

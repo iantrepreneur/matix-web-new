@@ -96,8 +96,26 @@ export function useAuth() {
   }
 
   const signOut = async () => {
-    const { error } = await supabase.auth.signOut()
-    return { error }
+    try {
+      // Déconnexion de Supabase
+      const { error } = await supabase.auth.signOut();
+      
+      if (error) {
+        console.error('Erreur Supabase signOut:', error);
+        return { error };
+      }
+      
+      // Nettoyer le localStorage si utilisé
+      if (typeof window !== 'undefined') {
+        localStorage.removeItem('supabase.auth.token');
+        localStorage.removeItem('sb-' + supabaseUrl.split('//')[1].split('.')[0] + '-auth-token');
+      }
+      
+      return { error: null };
+    } catch (err) {
+      console.error('Erreur lors de la déconnexion:', err);
+      return { error: err };
+    }
   }
 
   const resetPassword = async (email: string) => {
