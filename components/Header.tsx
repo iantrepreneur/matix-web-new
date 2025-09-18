@@ -6,7 +6,7 @@ import { Search, Heart, ShoppingCart, User as UserIcon, Menu, X, Mic, Bell, Chev
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import CartSidebar from './CartSidebar';
-import AuthModal from './AuthModal';
+import AuthModalComplete from './AuthModalComplete';
 import { useAuth } from '@/hooks/useSupabase';
 import { userService } from '@/lib/services';
 
@@ -317,7 +317,7 @@ export default function Header() {
       </header>
 
       {/* Auth Modal */}
-      <AuthModal
+      <AuthModalComplete
         isOpen={isAuthModalOpen}
         onClose={() => setIsAuthModalOpen(false)}
         onLogin={handleLogin}
