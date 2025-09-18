@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Card } from '@/components/ui/card';
 import { X, User as UserIcon, Building, ShoppingCart, Mail, Phone, ArrowLeft, Check } from 'lucide-react';
 import { authService, authValidation } from '@/lib/auth-config';
+import { authBypassService, testUsers } from '@/lib/auth-bypass';
 
 interface AuthModalCompleteProps {
   isOpen: boolean;
@@ -28,6 +29,7 @@ export default function AuthModalComplete({ isOpen, onClose, onLogin }: AuthModa
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [otpSent, setOtpSent] = useState(false);
+  const [isTestMode, setIsTestMode] = useState(false);
 
   const profiles = [
     {
@@ -69,6 +71,34 @@ export default function AuthModalComplete({ isOpen, onClose, onLogin }: AuthModa
     setOtpSent(false);
   };
 
+  // Mode test pour contourner le rate limit
+  const handleTestLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError('');
+    setLoading(true);
+
+    try {
+      const testUser = authBypassService.testLogin(formData.email, formData.password);
+      
+      if (testUser) {
+        console.log('✅ Connexion test réussie:', testUser);
+        onLogin(testUser);
+        onClose();
+        resetForm();
+        
+        // Forcer le rechargement pour s'assurer que l'état est correct
+        setTimeout(() => {
+          window.location.reload();
+        }, 100);
+      } else {
+        setError('❌ Email ou mot de passe incorrect pour le mode test');
+      }
+    } catch (err) {
+      setError('❌ Erreur en mode test');
+    } finally {
+      setLoading(false);
+    }
+  };
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({
       ...formData,
@@ -331,6 +361,37 @@ export default function AuthModalComplete({ isOpen, onClose, onLogin }: AuthModa
         {/* Étape 2: Connexion */}
         {currentStep === 'login' && (
           <div className="space-y-4">
+            {/* Toggle Mode Test */}
+            <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3 mb-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-yellow-800">Mode Test (Rate Limit)</p>
+                  <p className="text-xs text-yellow-600">Contourne les limites Supabase pour les tests</p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setIsTestMode(!isTestMode)}
+                  className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
+                    isTestMode ? 'bg-yellow-600' : 'bg-gray-300'
+                  }`}
+                >
+                  <span
+                    className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                      isTestMode ? 'translate-x-6' : 'translate-x-1'
+                    }`}
+                  />
+                </button>
+              </div>
+              
+              {isTestMode && (
+                <div className="mt-3 text-xs text-yellow-700">
+                  <p className="font-medium mb-1">Comptes de test disponibles :</p>
+                  {testUsers.map((user, index) => (
+                    <p key={index}>• {user.email} (mot de passe: test123)</p>
+                  ))}
+                </div>
+              )}
+            </div>
             <div className="text-center mb-4">
               <h3 className="text-lg font-semibold">
                 Connexion par {authMethod === 'email' ? 'Email' : 'Téléphone'}
@@ -338,7 +399,7 @@ export default function AuthModalComplete({ isOpen, onClose, onLogin }: AuthModa
             </div>
 
             {authMethod === 'email' ? (
-              <form onSubmit={handleEmailLogin} className="space-y-4">
+              <form onSubmit={isTestMode ? handleTestLogin : handleEmailLogin} className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
                     Adresse email
@@ -368,10 +429,11 @@ export default function AuthModalComplete({ isOpen, onClose, onLogin }: AuthModa
                 </div>
 
                 <Button type="submit" className="w-full" disabled={loading}>
-                  {loading ? 'Connexion...' : 'Se connecter'}
+                  {loading ? 'Connexion...' : (isTestMode ? 'Connexion Test' : 'Se connecter')}
                 </Button>
 
-                <div className="text-center">
+                {!isTestMode && (
+                  <div className="text-center">
                   <Button
                     type="button"
                     variant="link"
@@ -381,7 +443,8 @@ export default function AuthModalComplete({ isOpen, onClose, onLogin }: AuthModa
                   >
                     Ou recevoir un code par email
                   </Button>
-                </div>
+                  </div>
+                )}
               </form>
             ) : (
               <div className="space-y-4">
