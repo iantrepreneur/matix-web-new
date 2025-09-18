@@ -195,7 +195,18 @@ export default function AuthModal({ isOpen, onClose, onLogin }: AuthModalProps) 
 
         <form onSubmit={activeTab === 'login' ? handleLogin : handleRegister}>
           {activeTab === 'register' && (
-            </>
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                {selectedProfile === 'distributor' ? 'Nom de l\'entreprise' : 'Nom complet'}
+              </label>
+              <Input
+                type="text"
+                name={selectedProfile === 'distributor' ? 'entreprise' : 'name'}
+                value={selectedProfile === 'distributor' ? formData.entreprise : formData.name}
+                onChange={handleInputChange}
+                placeholder={selectedProfile === 'distributor' ? 'Nom de votre entreprise' : 'Votre nom complet'}
+              />
+            </div>
           )}
 
           <div className="mb-4">
@@ -314,16 +325,28 @@ export default function AuthModal({ isOpen, onClose, onLogin }: AuthModalProps) 
               {selectedProfile === 'client' && (
                 <div className="mb-4">
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    {selectedProfile === 'distributor' ? 'Nom de l\'entreprise' : 'Nom complet'}
+                    Adresse de livraison
                   </label>
                   <Input
                     type="text"
-                    name={selectedProfile === 'distributor' ? 'entreprise' : 'name'}
-                    value={selectedProfile === 'distributor' ? formData.entreprise : formData.name}
+                    name="adresseLivraison"
+                    value={formData.adresseLivraison}
                     onChange={handleInputChange}
-                    placeholder={selectedProfile === 'distributor' ? 'Nom de votre entreprise' : 'Votre nom complet'}
-          </div>
-        )}
+                    placeholder="Votre adresse de livraison"
+                  />
+                </div>
+              )}
+            </>
+          )}
+
+          <Button
+            type="submit"
+            className="w-full"
+            disabled={loading || (activeTab === 'register' && !selectedProfile)}
+          >
+            {loading ? 'Chargement...' : (activeTab === 'login' ? 'Se connecter' : 'S\'inscrire')}
+          </Button>
+        </form>
 
         {activeTab === 'register' && (
           <div className="mt-4 text-center">
