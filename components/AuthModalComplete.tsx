@@ -17,7 +17,6 @@ interface AuthModalCompleteProps {
 
 export default function AuthModalComplete({ isOpen, onClose, onLogin }: AuthModalCompleteProps) {
   const { signIn, signUp } = useAuth();
-  const { signIn, signUp } = useAuth();
   const [currentStep, setCurrentStep] = useState<'method' | 'login' | 'register' | 'otp' | 'success'>('method');
   const [authMethod, setAuthMethod] = useState<'email' | 'phone' | null>(null);
   const [selectedProfile, setSelectedProfile] = useState<'producer' | 'distributor' | 'client' | null>(null);
