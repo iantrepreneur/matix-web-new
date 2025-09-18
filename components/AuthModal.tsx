@@ -66,14 +66,19 @@ export default function AuthModal({ isOpen, onClose, onLogin }: AuthModalProps) 
     try {
       const { data, error } = await signIn(formData.email, formData.password);
       if (error) {
-        setError(error.message || 'Email ou mot de passe incorrect');
+        if (error.message.includes('Invalid login credentials')) {
+          setError('Email ou mot de passe incorrect. Vérifiez vos identifiants ou créez un compte.');
+        } else {
+          setError(error.message);
+        }
       } else if (data.user) {
         onLogin(data.user);
         onClose();
         resetForm();
       }
     } catch (err) {
-      setError('Une erreur est survenue lors de la connexion');
+      console.error('Login error:', err);
+      setError('Une erreur est survenue lors de la connexion. Veuillez réessayer.');
     } finally {
       setLoading(false);
     }
@@ -94,37 +99,29 @@ export default function AuthModal({ isOpen, onClose, onLogin }: AuthModalProps) 
       // Créer le compte Supabase
       const { data, error } = await signUp(formData.email, formData.password, {
         name: formData.name,
-        user_type: selectedProfile
+        user_type: selectedProfile,
+        business_name: selectedProfile === 'distributor' ? formData.entreprise : formData.name,
+        phone: formData.phone
       });
 
       if (error) {
-        setError(error.message);
+        if (error.message.includes('already registered')) {
+          setError('Cette adresse email est déjà utilisée. Essayez de vous connecter.');
+        } else {
+          setError(error.message);
+        }
         return;
       }
 
       if (data.user) {
-        // Créer le profil utilisateur dans notre table
-        const userData = {
-          user_type: selectedProfile as UserType,
-          subscription_status: 'inactive' as const,
-          is_verified: false,
-          business_name: selectedProfile === 'distributor' ? formData.entreprise : undefined,
-          business_license: selectedProfile === 'distributor' ? formData.ninea : undefined,
-        };
-
-        const { error: profileError } = await userService.createProfile(data.user.id, userData);
-        
-        if (profileError) {
-          setError('Erreur lors de la création du profil');
-          return;
-        }
-
+        // Le profil sera créé automatiquement par le trigger de la base de données
         onLogin(data.user);
         onClose();
         resetForm();
       }
     } catch (err) {
-      setError('Une erreur est survenue');
+      console.error('Registration error:', err);
+      setError('Une erreur est survenue lors de l\'inscription. Veuillez réessayer.');
     } finally {
       setLoading(false);
     }
