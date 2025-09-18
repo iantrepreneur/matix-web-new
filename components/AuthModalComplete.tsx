@@ -102,6 +102,8 @@ export default function AuthModalComplete({ isOpen, onClose, onLogin }: AuthModa
           setError('❌ Email ou mot de passe incorrect. Vérifiez vos identifiants ou créez un compte.');
         } else if (error.message.includes('Email not confirmed')) {
           setError('📧 Veuillez confirmer votre email avant de vous connecter.');
+        } else if (error.message.includes('Too many requests') || error.message.includes('rate limit')) {
+          setError('⏰ Trop de tentatives de connexion. Veuillez attendre 10-15 minutes avant de réessayer. Utilisez un email différent si nécessaire.');
         } else {
           setError(`❌ Erreur de connexion: ${error.message}`);
         }
@@ -197,6 +199,10 @@ export default function AuthModalComplete({ isOpen, onClose, onLogin }: AuthModa
       if (error) {
         if (error.message.includes('already registered')) {
           setError('📧 Cette adresse email est déjà utilisée. Essayez de vous connecter.');
+        } else if (error.message.includes('Invalid email')) {
+          setError('📧 Format d\'email invalide.');
+        } else if (error.message.includes('Too many requests') || error.message.includes('rate limit')) {
+          setError('⏰ Trop de tentatives d\'inscription. Veuillez attendre 10-15 minutes ou utiliser un email différent.');
         } else {
           setError(`❌ Erreur d\'inscription: ${error.message}`);
         }
