@@ -7,6 +7,7 @@ import { Card } from '@/components/ui/card';
 import { X, User as UserIcon, Building, ShoppingCart, Mail, Phone, ArrowLeft, Check } from 'lucide-react';
 import { authService, authValidation } from '@/lib/auth-config';
 import { authBypassService, testUsers } from '@/lib/auth-bypass';
+import { useAuth } from '@/hooks/useSupabase';
 
 interface AuthModalCompleteProps {
   isOpen: boolean;
@@ -15,6 +16,7 @@ interface AuthModalCompleteProps {
 }
 
 export default function AuthModalComplete({ isOpen, onClose, onLogin }: AuthModalCompleteProps) {
+  const { signIn, signUp } = useAuth();
   const [currentStep, setCurrentStep] = useState<'method' | 'login' | 'register' | 'otp' | 'success'>('method');
   const [authMethod, setAuthMethod] = useState<'email' | 'phone' | null>(null);
   const [selectedProfile, setSelectedProfile] = useState<'producer' | 'distributor' | 'client' | null>(null);
@@ -78,11 +80,11 @@ export default function AuthModalComplete({ isOpen, onClose, onLogin }: AuthModa
     setLoading(true);
 
     try {
-      const testUser = authBypassService.testLogin(formData.email, formData.password);
+      const result = await signIn(formData.email, formData.password);
       
-      if (testUser) {
-        console.log('✅ Connexion test réussie:', testUser);
-        onLogin(testUser);
+      if (result.data?.user) {
+        console.log('✅ Connexion réussie:', result.data.user);
+        onLogin(result.data.user);
         onClose();
         resetForm();
         
@@ -91,10 +93,10 @@ export default function AuthModalComplete({ isOpen, onClose, onLogin }: AuthModa
           window.location.reload();
         }, 100);
       } else {
-        setError('❌ Email ou mot de passe incorrect pour le mode test');
+        setError(result.error?.message || '❌ Email ou mot de passe incorrect');
       }
     } catch (err) {
-      setError('❌ Erreur en mode test');
+      setError('❌ Erreur lors de la connexion');
     } finally {
       setLoading(false);
     }
@@ -125,7 +127,7 @@ export default function AuthModalComplete({ isOpen, onClose, onLogin }: AuthModa
     }
 
     try {
-      const { data, error } = await authService.signInWithPassword(formData.email, formData.password);
+      const { data, error } = await signIn(formData.email, formData.password);
       
       if (error) {
         if (error.message.includes('Invalid login credentials')) {
@@ -219,7 +221,7 @@ export default function AuthModalComplete({ isOpen, onClose, onLogin }: AuthModa
     }
 
     try {
-      const { data, error } = await authService.signUpWithEmail(formData.email, formData.password, {
+      const { data, error } = await signUp(formData.email, formData.password, {
         userType: selectedProfile,
         name: formData.name,
         businessName: formData.businessName || formData.name,

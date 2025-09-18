@@ -115,3 +115,34 @@ export const authBypassService = {
     return false;
   }
 };
+// Inscription de test (sans Supabase)
+testRegister: (email: string, password: string, userData: any): TestUser | null => {
+  // Vérifier si l'email existe déjà
+  const existingUser = testUsers.find(u => u.email === email);
+  if (existingUser) {
+    return null; // Email déjà utilisé
+  }
+
+  // Créer un nouvel utilisateur de test
+  const newUser: TestUser = {
+    id: `test-${Date.now()}`,
+    email,
+    password,
+    user_type: userData.userType || 'client',
+    business_name: userData.businessName || userData.name || 'Test User',
+    phone: userData.phone || '',
+    avatar: 'https://images.pexels.com/photos/1222271/pexels-photo-1222271.jpeg?auto=compress&cs=tinysrgb&w=100',
+    is_verified: false
+  };
+
+  // Ajouter à la liste des utilisateurs de test
+  testUsers.push(newUser);
+
+  // Stocker dans localStorage
+  if (typeof window !== 'undefined') {
+    localStorage.setItem('test_user', JSON.stringify(newUser));
+    localStorage.setItem('auth_mode', 'test');
+  }
+
+  return newUser;
+},

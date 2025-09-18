@@ -24,18 +24,35 @@ export function useUser() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    const getUser = async () => {
-      const { data: { user } } = await supabase.auth.getUser()
-      setUser(user)
+    // Vérifier d'abord si on a un utilisateur de test
+    const testUser = authBypassService.getCurrentTestUser()
+    if (testUser) {
+      setUser(testUser as any)
       setLoading(false)
+      return
+    }
+
+    const getUser = async () => {
+      try {
+        const { data: { user } } = await supabase.auth.getUser()
+        setUser(user)
+      } catch (error) {
+        console.warn('Erreur lors de la récupération de l\'utilisateur:', error)
+        setUser(null)
+      } finally {
+        setLoading(false)
+      }
     }
 
     getUser()
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
-        setUser(session?.user ?? null)
-        setLoading(false)
+        // Ne pas écouter les changements si on est en mode test
+        if (!authBypassService.isInTestMode()) {
+          setUser(session?.user ?? null)
+          setLoading(false)
+        }
       }
     )
 
@@ -89,6 +106,17 @@ export function useAuth() {
   const user = testUser || supabaseUser
 
   const signUp = async (email: string, password: string, userData: any) => {
+    // Si on est en mode test, utiliser le système de contournement
+    if (authBypassService.isInTestMode() || process.env.NODE_ENV === 'development') {
+      const testUser = authBypassService.testRegister(email, password, userData);
+      if (testUser) {
+        setTestUser(testUser);
+        return { data: { user: testUser }, error: null };
+      } else {
+        return { data: null, error: { message: 'Email déjà utilisé en mode test' } };
+      }
+    }
+
     const { data, error } = await supabase.auth.signUp({
       email,
       password,
@@ -100,6 +128,17 @@ export function useAuth() {
   }
 
   const signIn = async (email: string, password: string) => {
+    // Si on est en mode test, utiliser le système de contournement
+    if (authBypassService.isInTestMode() || process.env.NODE_ENV === 'development') {
+      const testUser = authBypassService.testLogin(email, password);
+      if (testUser) {
+        setTestUser(testUser);
+        return { data: { user: testUser }, error: null };
+      } else {
+        return { data: null, error: { message: 'Email ou mot de passe incorrect pour le mode test' } };
+      }
+    }
+
     const { data, error } = await supabase.auth.signInWithPassword({
       email,
       password
