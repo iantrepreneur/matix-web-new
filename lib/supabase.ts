@@ -4,16 +4,22 @@ const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 
 if (!supabaseUrl) {
-  console.error('Missing NEXT_PUBLIC_SUPABASE_URL environment variable')
-  throw new Error('Missing NEXT_PUBLIC_SUPABASE_URL environment variable')
+  console.error('❌ Variable d\'environnement NEXT_PUBLIC_SUPABASE_URL manquante')
+  throw new Error('Variable d\'environnement NEXT_PUBLIC_SUPABASE_URL manquante')
 }
 
 if (!supabaseAnonKey) {
-  console.error('Missing NEXT_PUBLIC_SUPABASE_ANON_KEY environment variable')
-  throw new Error('Missing NEXT_PUBLIC_SUPABASE_ANON_KEY environment variable')
+  console.error('❌ Variable d\'environnement NEXT_PUBLIC_SUPABASE_ANON_KEY manquante')
+  throw new Error('Variable d\'environnement NEXT_PUBLIC_SUPABASE_ANON_KEY manquante')
 }
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey)
+export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
+  auth: {
+    autoRefreshToken: true,
+    persistSession: true,
+    detectSessionInUrl: true
+  }
+})
 
 // Client pour les opérations côté serveur (si nécessaire)
 const supabaseServiceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY

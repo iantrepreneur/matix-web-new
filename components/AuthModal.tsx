@@ -66,19 +66,25 @@ export default function AuthModal({ isOpen, onClose, onLogin }: AuthModalProps) 
     try {
       const { data, error } = await signIn(formData.email, formData.password);
       if (error) {
-        if (error.message.includes('Invalid login credentials')) {
-          setError('Email ou mot de passe incorrect. Vérifiez vos identifiants ou créez un compte.');
+        console.error('Erreur de connexion:', error);
+        if (error.message.includes('Invalid login credentials') || error.message.includes('invalid_credentials')) {
+          setError('❌ Email ou mot de passe incorrect. Vérifiez vos identifiants ou créez un compte d\'abord.');
+        } else if (error.message.includes('Email not confirmed')) {
+          setError('📧 Veuillez confirmer votre email avant de vous connecter.');
+        } else if (error.message.includes('Too many requests')) {
+          setError('⏰ Trop de tentatives. Veuillez attendre quelques minutes.');
         } else {
-          setError(error.message);
+          setError(`❌ Erreur de connexion: ${error.message}`);
         }
       } else if (data.user) {
+        console.log('✅ Connexion réussie:', data.user);
         onLogin(data.user);
         onClose();
         resetForm();
       }
     } catch (err) {
       console.error('Login error:', err);
-      setError('Une erreur est survenue lors de la connexion. Veuillez réessayer.');
+      setError('❌ Une erreur est survenue lors de la connexion. Veuillez réessayer.');
     } finally {
       setLoading(false);
     }
@@ -90,12 +96,14 @@ export default function AuthModal({ isOpen, onClose, onLogin }: AuthModalProps) 
     setLoading(true);
     
     if (!selectedProfile) {
-      setError('Veuillez sélectionner un profil');
+      setError('⚠️ Veuillez sélectionner un profil');
       setLoading(false);
       return;
     }
 
     try {
+      console.log('🔄 Tentative d\'inscription avec:', { email: formData.email, profile: selectedProfile });
+      
       // Créer le compte Supabase
       const { data, error } = await signUp(formData.email, formData.password, {
         name: formData.name,
@@ -105,15 +113,21 @@ export default function AuthModal({ isOpen, onClose, onLogin }: AuthModalProps) 
       });
 
       if (error) {
+        console.error('Erreur d\'inscription:', error);
         if (error.message.includes('already registered')) {
-          setError('Cette adresse email est déjà utilisée. Essayez de vous connecter.');
+          setError('📧 Cette adresse email est déjà utilisée. Essayez de vous connecter.');
+        } else if (error.message.includes('Password should be at least')) {
+          setError('🔒 Le mot de passe doit contenir au moins 6 caractères.');
+        } else if (error.message.includes('Invalid email')) {
+          setError('📧 Format d\'email invalide.');
         } else {
-          setError(error.message);
+          setError(`❌ Erreur d\'inscription: ${error.message}`);
         }
         return;
       }
 
       if (data.user) {
+        console.log('✅ Inscription réussie:', data.user);
         // Le profil sera créé automatiquement par le trigger de la base de données
         onLogin(data.user);
         onClose();
@@ -121,7 +135,7 @@ export default function AuthModal({ isOpen, onClose, onLogin }: AuthModalProps) 
       }
     } catch (err) {
       console.error('Registration error:', err);
-      setError('Une erreur est survenue lors de l\'inscription. Veuillez réessayer.');
+      setError('❌ Une erreur est survenue lors de l\'inscription. Veuillez réessayer.');
     } finally {
       setLoading(false);
     }
