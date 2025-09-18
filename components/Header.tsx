@@ -6,67 +6,32 @@ import { Search, Heart, ShoppingCart, User as UserIcon, Menu, X, Mic, Bell, Chev
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import CartSidebar from './CartSidebar';
-import AuthModalComplete from './AuthModalComplete';
-import { useAuth } from '@/hooks/useSupabase';
-import { userService } from '@/lib/services';
-import { authBypassService } from '@/lib/auth-bypass';
+import AuthModal from './AuthModal';
+import { authService } from '@/lib/auth';
 
 export default function Header() {
-  const { user, signOut } = useAuth();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
-  const [userProfile, setUserProfile] = useState<any>(null);
+  const [currentUser, setCurrentUser] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const loadUserProfile = async () => {
-      if (user) {
-        try {
-          const { data: profile } = await userService.getProfile(user.id);
-          setUserProfile(profile);
-        } catch (error) {
-          console.error('Erreur lors du chargement du profil:', error);
-        }
-      }
-      setLoading(false);
-    };
-
-    loadUserProfile();
-  }, [user]);
+    const user = authService.getCurrentUser();
+    setCurrentUser(user);
+    setLoading(false);
+  }, []);
 
   const handleLogin = (user: any) => {
-    // Le profil sera chargé automatiquement par useEffect
+    setCurrentUser(user);
     setIsAuthModalOpen(false);
   };
 
   const handleLogout = async () => {
-    try {
-      // Vérifier si on est en mode test
-      if (authBypassService.isInTestMode()) {
-        authBypassService.testLogout();
-        setUserProfile(null);
-        setIsProfileDropdownOpen(false);
-        window.location.reload();
-        return;
-      }
-      
-      const { error } = await signOut();
-      if (error) {
-        console.error('Erreur lors de la déconnexion:', error);
-        return;
-      }
-      
-      // Nettoyer l'état local
-      setUserProfile(null);
-      setIsProfileDropdownOpen(false);
-      
-      // Forcer le rechargement de la page pour nettoyer complètement l'état
-      window.location.reload();
-    } catch (error) {
-      console.error('Erreur lors de la déconnexion:', error);
-    }
+    authService.logout();
+    setCurrentUser(null);
+    setIsProfileDropdownOpen(false);
   };
 
   const getProfileColor = (userType: string) => {
@@ -89,7 +54,7 @@ export default function Header() {
 
   // Navigation selon le profil
   const getNavigationItems = () => {
-    if (!userProfile) {
+    if (!currentUser) {
       return [
         { href: '/categories', label: 'Catégories' },
         { href: '/marques', label: 'Marques Distributeurs' },
@@ -97,7 +62,7 @@ export default function Header() {
       ];
     }
 
-    switch (userProfile.user_type) {
+    switch (currentUser.profile) {
       case 'producer':
         return [
           { href: '/', label: 'Accueil' },
@@ -128,9 +93,9 @@ export default function Header() {
 
   // Menu dropdown selon le profil
   const getProfileMenuItems = () => {
-    if (!userProfile) return [];
+    if (!currentUser) return [];
 
-    switch (userProfile.user_type) {
+    switch (currentUser.profile) {
       case 'producer':
         return [
           { href: '/dashboard/profile', label: 'Mon Profil', icon: UserIcon },
@@ -239,7 +204,7 @@ export default function Header() {
               </Button>
 
               {/* User Menu */}
-              {userProfile ? (
+              {currentUser ? (
                 <div className="relative">
                   <Button
                     variant="ghost"
@@ -248,7 +213,7 @@ export default function Header() {
                   >
                     <UserIcon className="h-5 w-5" />
                     <span className="hidden md:block text-sm">
-                      {userProfile.business_name || user.email}
+                      {currentUser.name}
                     </span>
                     <ChevronDown className="h-4 w-4" />
                   </Button>
@@ -258,10 +223,10 @@ export default function Header() {
                       {/* Profile Header */}
                       <div className="px-4 py-2 border-b">
                         <p className="text-sm font-medium text-gray-900">
-                          {userProfile.business_name || user.email}
+                          {currentUser.name}
                         </p>
-                        <p className={`text-xs ${getProfileColor(userProfile.user_type)}`}>
-                          {getProfileLabel(userProfile.user_type)}
+                        <p className={`text-xs ${getProfileColor(currentUser.profile)}`}>
+                          {getProfileLabel(currentUser.profile)}
                         </p>
                       </div>
 
@@ -335,7 +300,7 @@ export default function Header() {
       </header>
 
       {/* Auth Modal */}
-      <AuthModalComplete
+      <AuthModal
         isOpen={isAuthModalOpen}
         onClose={() => setIsAuthModalOpen(false)}
         onLogin={handleLogin}
