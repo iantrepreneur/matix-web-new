@@ -117,6 +117,17 @@ export function useAuth() {
       }
     }
 
+    // Si on est en mode test, utiliser le système de contournement
+    if (authBypassService.isInTestMode() || process.env.NODE_ENV === 'development') {
+      const testUser = authBypassService.testRegister(email, password, userData);
+      if (testUser) {
+        setTestUser(testUser);
+        return { data: { user: testUser }, error: null };
+      } else {
+        return { data: null, error: { message: 'Email déjà utilisé en mode test' } };
+      }
+    }
+
     const { data, error } = await supabase.auth.signUp({
       email,
       password,
@@ -128,6 +139,17 @@ export function useAuth() {
   }
 
   const signIn = async (email: string, password: string) => {
+    // Si on est en mode test, utiliser le système de contournement
+    if (authBypassService.isInTestMode() || process.env.NODE_ENV === 'development') {
+      const testUser = authBypassService.testLogin(email, password);
+      if (testUser) {
+        setTestUser(testUser);
+        return { data: { user: testUser }, error: null };
+      } else {
+        return { data: null, error: { message: 'Email ou mot de passe incorrect pour le mode test' } };
+      }
+    }
+
     // Si on est en mode test, utiliser le système de contournement
     if (authBypassService.isInTestMode() || process.env.NODE_ENV === 'development') {
       const testUser = authBypassService.testLogin(email, password);

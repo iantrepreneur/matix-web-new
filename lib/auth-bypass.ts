@@ -1,148 +1,205 @@
-// Système d'authentification de contournement pour les tests
-// Permet de tester sans être limité par Supabase Rate Limits
+'use client'
 
-export interface TestUser {
-  id: string;
-  email: string;
-  password: string;
-  user_type: 'producer' | 'distributor' | 'client';
-  business_name: string;
-  phone: string;
-  avatar: string;
-  is_verified: boolean;
+import { createBrowserClient } from '@supabase/ssr'
+import { useEffect, useState } from 'react'
+import { User, Session } from '@supabase/supabase-js'
+import { Database } from '@/lib/types'
+import { authBypassService } from '@/lib/auth-bypass'
+
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+
+export const createClient = () => {
+  return createBrowserClient<Database>(supabaseUrl, supabaseAnonKey)
 }
 
-// Utilisateurs de test correspondant à vos comptes Supabase
-export const testUsers: TestUser[] = [
-  {
-    id: '4c903b38-5346-4d43-bc99-40691ae45145',
-    email: 'producteur2@gmail.com',
-    password: 'test123',
-    user_type: 'producer',
-    business_name: 'Volaille Premium de Thiès',
-    phone: '+221 77 123 4567',
-    avatar: 'https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=100',
-    is_verified: true
-  },
-  {
-    id: '267060b0-13d5-4fa9-a414-dbc1e533f05b',
-    email: 'producteur1@gmail.com',
-    password: 'test123',
-    user_type: 'producer',
-    business_name: 'Élevage Traditionnel du Sénégal',
-    phone: '+221 76 234 5678',
-    avatar: 'https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=100',
-    is_verified: true
-  },
-  {
-    id: 'c9fc3505-954d-4f96-b79e-bfbe87cf9992',
-    email: 'client@gmail.com',
-    password: 'test123',
-    user_type: 'client',
-    business_name: 'Client Test',
-    phone: '+221 75 345 6789',
-    avatar: 'https://images.pexels.com/photos/1222271/pexels-photo-1222271.jpeg?auto=compress&cs=tinysrgb&w=100',
-    is_verified: false
-  },
-  {
-    id: '303f243a-9129-4e94-8a6f-f8e247f0d15e',
-    email: 'iantrepreneur221@gmail.com',
-    password: 'test123',
-    user_type: 'distributor',
-    business_name: 'Djoloff_Distribution',
-    phone: '+221 78 456 7890',
-    avatar: 'https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&w=100',
-    is_verified: true
-  },
-  {
-    id: 'b9e68c20-60df-40d9-9a35-1df76838bc29',
-    email: 'diahatematlick@gmail.com',
-    password: 'test123',
-    user_type: 'producer',
-    business_name: 'Ferme Avicole de Dakar',
-    phone: '+221 77 987 6543',
-    avatar: 'https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=100',
-    is_verified: true
-  }
-];
+export function useSupabase() {
+  const [supabase] = useState(() => createClient())
+  return supabase
+}
 
-// Service d'authentification de contournement pour les tests
-export const authBypassService = {
-  // Mode de test activé
-  isTestMode: process.env.NODE_ENV === 'development',
+export function useUser() {
+  const supabase = useSupabase()
+  const [user, setUser] = useState<User | null>(null)
+  const [loading, setLoading] = useState(true)
 
-  // Connexion de test (sans Supabase)
-  testLogin: (email: string, password: string): TestUser | null => {
-    const user = testUsers.find(u => u.email === email && u.password === password);
-    if (user) {
-      // Stocker dans localStorage pour persistance
-      if (typeof window !== 'undefined') {
-        localStorage.setItem('test_user', JSON.stringify(user));
-        localStorage.setItem('auth_mode', 'test');
+  useEffect(() => {
+    // Vérifier d'abord si on a un utilisateur de test
+    const testUser = authBypassService.getCurrentTestUser()
+    if (testUser) {
+      setUser(testUser as any)
+      setLoading(false)
+      return
+    }
+
+    const getUser = async () => {
+      try {
+        const { data: { user } } = await supabase.auth.getUser()
+        setUser(user)
+      } catch (error) {
+        console.warn('Erreur lors de la récupération de l\'utilisateur:', error)
+        setUser(null)
+      } finally {
+        setLoading(false)
       }
-      return user;
     }
-    return null;
-  },
 
-  // Déconnexion de test
-  testLogout: () => {
-    if (typeof window !== 'undefined') {
-      localStorage.removeItem('test_user');
-      localStorage.removeItem('auth_mode');
-    }
-  },
+    getUser()
 
-  // Obtenir l'utilisateur de test actuel
-  getCurrentTestUser: (): TestUser | null => {
-    if (typeof window !== 'undefined') {
-      const authMode = localStorage.getItem('auth_mode');
-      if (authMode === 'test') {
-        const stored = localStorage.getItem('test_user');
-        if (stored) {
-          return JSON.parse(stored);
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      async (event, session) => {
+        // Ne pas écouter les changements si on est en mode test
+        if (!authBypassService.isInTestMode()) {
+          setUser(session?.user ?? null)
+          setLoading(false)
         }
       }
-    }
-    return null;
-  },
+    )
 
+    return () => subscription.unsubscribe()
+  }, [supabase])
+
+  return { user, loading }
+}
+
+export function useSession() {
+  const supabase = useSupabase()
+  const [session, setSession] = useState<Session | null>(null)
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    // Si on est en mode test, pas de session Supabase
+    if (authBypassService.isInTestMode()) {
+      setSession(null)
+      setLoading(false)
+      return
+    }
+
+    const getSession = async () => {
+      try {
+        const { data: { session } } = await supabase.auth.getSession()
+        setSession(session)
+      } catch (error) {
+        console.warn('Erreur lors de la récupération de la session:', error)
+        setSession(null)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    getSession()
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      async (event, session) => {
+        setSession(session)
+        setLoading(false)
+      }
+    )
+
+    return () => subscription.unsubscribe()
+  }, [supabase])
+
+  return { session, loading }
+}
+
+// Hook pour l'authentification
+export function useAuth() {
+  const supabase = useSupabase()
+  const { user: supabaseUser, loading } = useUser()
+  
   // Vérifier si on est en mode test
-  isInTestMode: (): boolean => {
-    if (typeof window !== 'undefined') {
-      return localStorage.getItem('auth_mode') === 'test';
+  const [testUser, setTestUser] = useState(null)
+  
+  useEffect(() => {
+    const currentTestUser = authBypassService.getCurrentTestUser()
+    setTestUser(currentTestUser)
+  }, [])
+  
+  // Utiliser l'utilisateur test ou Supabase selon le mode
+  const user = testUser || supabaseUser
+
+  const signUp = async (email: string, password: string, userData: any) => {
+    // Si on est en mode test, utiliser le système de contournement
+    if (authBypassService.isInTestMode() || process.env.NODE_ENV === 'development') {
+      const testUser = authBypassService.testRegister(email, password, userData);
+      if (testUser) {
+        setTestUser(testUser);
+        return { data: { user: testUser }, error: null };
+      } else {
+        return { data: null, error: { message: 'Email déjà utilisé en mode test' } };
+      }
     }
-    return false;
-  }
-};
-// Inscription de test (sans Supabase)
-testRegister: (email: string, password: string, userData: any): TestUser | null => {
-  // Vérifier si l'email existe déjà
-  const existingUser = testUsers.find(u => u.email === email);
-  if (existingUser) {
-    return null; // Email déjà utilisé
-  }
 
-  // Créer un nouvel utilisateur de test
-  const newUser: TestUser = {
-    id: `test-${Date.now()}`,
-    email,
-    password,
-    user_type: userData.userType || 'client',
-    business_name: userData.businessName || userData.name || 'Test User',
-    phone: userData.phone || '',
-    avatar: 'https://images.pexels.com/photos/1222271/pexels-photo-1222271.jpeg?auto=compress&cs=tinysrgb&w=100',
-    is_verified: false
-  };
-
-  // Ajouter à la liste des utilisateurs de test
-  testUsers.push(newUser);
-
-  // Stocker dans localStorage
-  if (typeof window !== 'undefined') {
-    localStorage.setItem('test_user', JSON.stringify(newUser));
-    localStorage.setItem('auth_mode', 'test');
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        data: userData
+      }
+    })
+    return { data, error }
   }
 
-  return newUser;
-},
+  const signIn = async (email: string, password: string) => {
+    // Si on est en mode test, utiliser le système de contournement
+    if (authBypassService.isInTestMode() || process.env.NODE_ENV === 'development') {
+      const testUser = authBypassService.testLogin(email, password);
+      if (testUser) {
+        setTestUser(testUser);
+        return { data: { user: testUser }, error: null };
+      } else {
+        return { data: null, error: { message: 'Email ou mot de passe incorrect pour le mode test' } };
+      }
+    }
+
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email,
+      password
+    })
+    return { data, error }
+  }
+
+  const signOut = async () => {
+    try {
+      // Si on est en mode test, déconnexion test
+      if (authBypassService.isInTestMode()) {
+        authBypassService.testLogout()
+        setTestUser(null)
+        return { error: null }
+      }
+      
+      // Déconnexion de Supabase
+      const { error } = await supabase.auth.signOut();
+      
+      if (error) {
+        console.error('Erreur Supabase signOut:', error);
+        return { error };
+      }
+      
+      // Nettoyer le localStorage si utilisé
+      if (typeof window !== 'undefined') {
+        localStorage.removeItem('supabase.auth.token');
+        localStorage.removeItem('sb-' + supabaseUrl.split('//')[1].split('.')[0] + '-auth-token');
+      }
+      
+      return { error: null };
+    } catch (err) {
+      console.error('Erreur lors de la déconnexion:', err);
+      return { error: err };
+    }
+  }
+
+  const resetPassword = async (email: string) => {
+    const { data, error } = await supabase.auth.resetPasswordForEmail(email)
+    return { data, error }
+  }
+
+  return {
+    user,
+    loading,
+    signUp,
+    signIn,
+    signOut,
+    resetPassword
+  }
+}
