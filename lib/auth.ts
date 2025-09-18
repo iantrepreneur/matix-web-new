@@ -83,6 +83,14 @@ export const authService = {
     currentUser = null;
     if (typeof window !== 'undefined') {
       localStorage.removeItem('currentUser');
+      // Nettoyer aussi les tokens Supabase
+      localStorage.removeItem('supabase.auth.token');
+      // Nettoyer tous les items liés à l'auth
+      Object.keys(localStorage).forEach(key => {
+        if (key.includes('supabase') || key.includes('auth')) {
+          localStorage.removeItem(key);
+        }
+      });
     }
   },
 

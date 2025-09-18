@@ -143,6 +143,12 @@ export default function AuthModal({ isOpen, onClose, onLogin }: AuthModalProps) 
           } else {
             onLogin(data.user);
           }
+          
+          // Forcer le rechargement pour s'assurer que l'état est correct
+          setTimeout(() => {
+            window.location.reload();
+          }, 100);
+          
         }, 1000); // Attendre que le trigger s'exécute
         onClose();
         resetForm();
