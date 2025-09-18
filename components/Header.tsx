@@ -9,6 +9,7 @@ import CartSidebar from './CartSidebar';
 import AuthModalComplete from './AuthModalComplete';
 import { useAuth } from '@/hooks/useSupabase';
 import { userService } from '@/lib/services';
+import { authBypassService } from '@/lib/auth-bypass';
 
 export default function Header() {
   const { user, signOut } = useAuth();
@@ -42,6 +43,15 @@ export default function Header() {
 
   const handleLogout = async () => {
     try {
+      // Vérifier si on est en mode test
+      if (authBypassService.isInTestMode()) {
+        authBypassService.testLogout();
+        setUserProfile(null);
+        setIsProfileDropdownOpen(false);
+        window.location.reload();
+        return;
+      }
+      
       const { error } = await signOut();
       if (error) {
         console.error('Erreur lors de la déconnexion:', error);
