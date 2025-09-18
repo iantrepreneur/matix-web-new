@@ -9,15 +9,15 @@ Le fichier `.env.local` a été créé avec les clés Supabase suivantes :
 ```env
 # Supabase Configuration
 NEXT_PUBLIC_SUPABASE_URL=https://nwxmedwoykcptzpkvphe.supabase.co
-NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
-SUPABASE_SERVICE_ROLE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im53eG1lZHdveWtjcHR6cGt2cGhlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU2Mzk4NjgsImV4cCI6MjA3MTIxNTg2OH0.XNIWy1MSpagizYq72tQcta1QxqK_Fe4CotuhqK3R26Y
+SUPABASE_SERVICE_ROLE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im53eG1lZHdveWtjcHR6cGt2cGhlIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1NTYzOTg2OCwiZXhwIjoyMDcxMjE1ODY4fQ.iIYNqSztsr7hFl8D6K_kLslYT4k1AzkCLNaHlGrRDs4
 ```
 
 ### 2. Initialisation de la Base de Données
 
 1. Connectez-vous à votre projet Supabase
 2. Allez dans l'éditeur SQL
-3. Copiez et exécutez le contenu du fichier `database/schema.sql`
+3. Copiez et exécutez le contenu des fichiers de migration dans `supabase/migrations/`
 
 ### 3. Dépendances Installées
 

@@ -7,30 +7,22 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import CartSidebar from './CartSidebar';
 import AuthModal from './AuthModal';
-import { authService } from '@/lib/auth';
+import { useAuth } from '@/hooks/useSupabase';
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
-  const [currentUser, setCurrentUser] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
+  const { user: currentUser, loading, signOut } = useAuth();
 
-  useEffect(() => {
-    const user = authService.getCurrentUser();
-    setCurrentUser(user);
-    setLoading(false);
-  }, []);
 
   const handleLogin = (user: any) => {
-    setCurrentUser(user);
     setIsAuthModalOpen(false);
   };
 
   const handleLogout = async () => {
-    authService.logout();
-    setCurrentUser(null);
+    await signOut();
     setIsProfileDropdownOpen(false);
   };
 
@@ -62,7 +54,7 @@ export default function Header() {
       ];
     }
 
-    switch (currentUser.profile) {
+    switch (currentUser.user_metadata?.user_type || 'client') {
       case 'producer':
         return [
           { href: '/', label: 'Accueil' },
@@ -95,7 +87,7 @@ export default function Header() {
   const getProfileMenuItems = () => {
     if (!currentUser) return [];
 
-    switch (currentUser.profile) {
+    switch (currentUser.user_metadata?.user_type || 'client') {
       case 'producer':
         return [
           { href: '/dashboard/profile', label: 'Mon Profil', icon: UserIcon },
@@ -213,7 +205,7 @@ export default function Header() {
                   >
                     <UserIcon className="h-5 w-5" />
                     <span className="hidden md:block text-sm">
-                      {currentUser.name}
+                      {currentUser.user_metadata?.name || currentUser.email}
                     </span>
                     <ChevronDown className="h-4 w-4" />
                   </Button>
@@ -223,10 +215,10 @@ export default function Header() {
                       {/* Profile Header */}
                       <div className="px-4 py-2 border-b">
                         <p className="text-sm font-medium text-gray-900">
-                          {currentUser.name}
+                          {currentUser.user_metadata?.name || currentUser.email}
                         </p>
-                        <p className={`text-xs ${getProfileColor(currentUser.profile)}`}>
-                          {getProfileLabel(currentUser.profile)}
+                        <p className={`text-xs ${getProfileColor(currentUser.user_metadata?.user_type || 'client')}`}>
+                          {getProfileLabel(currentUser.user_metadata?.user_type || 'client')}
                         </p>
                       </div>
 

@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card } from '@/components/ui/card';
 import { X, User as UserIcon, Building, ShoppingCart } from 'lucide-react';
-import { authService } from '@/lib/auth';
+import { useAuth } from '@/hooks/useSupabase';
 
 interface AuthModalProps {
   isOpen: boolean;
@@ -16,6 +16,7 @@ interface AuthModalProps {
 export default function AuthModal({ isOpen, onClose, onLogin }: AuthModalProps) {
   const [activeTab, setActiveTab] = useState<'login' | 'register'>('login');
   const [selectedProfile, setSelectedProfile] = useState<'producer' | 'distributor' | 'client' | null>(null);
+  const { signIn, signUp, loading } = useAuth();
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -29,7 +30,6 @@ export default function AuthModal({ isOpen, onClose, onLogin }: AuthModalProps) 
     adresseLivraison: ''
   });
   const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
 
   const profiles = [
     {
@@ -58,49 +58,57 @@ export default function AuthModal({ isOpen, onClose, onLogin }: AuthModalProps) 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
-    setLoading(true);
 
-    const user = authService.login(formData.email, formData.password);
-    if (user) {
-      onLogin(user);
-      onClose();
-      resetForm();
-    } else {
-      setError('❌ Email ou mot de passe incorrect. Utilisez "123456" comme mot de passe pour les comptes de test.');
+    try {
+      const { data, error } = await signIn(formData.email, formData.password);
+      
+      if (error) {
+        setError(`❌ Erreur de connexion: ${error.message}`);
+      } else if (data.user) {
+        onLogin(data.user);
+        onClose();
+        resetForm();
+      }
+    } catch (err) {
+      setError('❌ Une erreur est survenue lors de la connexion');
     }
-    setLoading(false);
   };
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
-    setLoading(true);
     
     if (!selectedProfile) {
       setError('⚠️ Veuillez sélectionner un profil');
-      setLoading(false);
       return;
     }
 
-    const userData = {
-      email: formData.email,
-      name: formData.name,
-      phone: formData.phone,
-      profile: selectedProfile,
-      ...(selectedProfile === 'producer' && { city: '', typeElevage: '' }),
-      ...(selectedProfile === 'distributor' && { entreprise: formData.entreprise || formData.name, ninea: '', zone: '' }),
-      ...(selectedProfile === 'client' && { adresseLivraison: '' })
-    };
+    try {
+      const metadata = {
+        user_type: selectedProfile,
+        name: formData.name,
+        business_name: selectedProfile === 'distributor' ? formData.entreprise : formData.name,
+        phone: formData.phone,
+        city: formData.city,
+        type_elevage: formData.typeElevage,
+        entreprise: formData.entreprise,
+        ninea: formData.ninea,
+        zone: formData.zone,
+        adresse_livraison: formData.adresseLivraison
+      };
 
-    const user = authService.register(userData);
-    if (user) {
-      onLogin(user);
-      onClose();
-      resetForm();
-    } else {
-      setError('❌ Erreur lors de l\'inscription. Veuillez réessayer.');
+      const { data, error } = await signUp(formData.email, formData.password, metadata);
+      
+      if (error) {
+        setError(`❌ Erreur d'inscription: ${error.message}`);
+      } else if (data.user) {
+        onLogin(data.user);
+        onClose();
+        resetForm();
+      }
+    } catch (err) {
+      setError('❌ Une erreur est survenue lors de l\'inscription');
     }
-    setLoading(false);
   };
 
   const resetForm = () => {
